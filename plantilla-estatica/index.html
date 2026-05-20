@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Plan de Fitness Personalizado - FitGem Élite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0f120f',
+                            card: '#161d17',
+                            accent: '#2d874e',
+                            lightAccent: '#81d997',
+                            mutedText: '#a5ada4',
+                            border: '#2b322b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0f120f;
+            color: #ffffff;
+        }
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f120f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2b322b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2d874e;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <header class="border-b border-brand-border bg-black/40 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-lightAccent flex items-center justify-center font-bold text-black text-xl shadow-lg shadow-brand-accent/20">
+                    FG
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wider uppercase text-white">FitGem <span class="text-brand-accent">Élite</span></h1>
+                    <p class="text-xs text-brand-mutedText">Planes de Nutrición & Entrenamiento Científico</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4 bg-brand-card/80 border border-brand-border px-4 py-2 rounded-xl">
+                <div class="text-right">
+                    <span class="block text-xs text-brand-mutedText">Usuario en Optimización</span>
+                    <span class="text-sm font-bold text-white">Masculino • 31 años • 1.73m • 69kg</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8 space-y-8">
+
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-card to-black/80 border border-brand-border p-6 sm:p-8">
+            <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-brand-accent/10 rounded-full blur-3xl"></div>
+            <div class="relative z-10">
+                <span class="text-xs font-bold tracking-widest text-brand-accent uppercase bg-brand-accent/10 px-3 py-1 rounded-full border border-brand-accent/20">Meta Principal</span>
+                <h2 class="text-2xl sm:text-3xl font-black text-white mt-3">Volumen Magro & Priorización del Tren Inferior</h2>
+                <p class="text-brand-mutedText mt-3 text-sm sm:text-base leading-relaxed max-w-3xl">
+                    Desarrollo progresivo y controlado de masa muscular (hipertrofia magra) buscando un balance estético óptimo. Se prioriza el desarrollo del tren inferior (cuádriceps, isquiotibiales, glúteos y pantorrillas) para corregir asimetrías de proporción, utilizando una división de cargas estructurada en 5 días semanales que se adapta dinámicamente a tus horarios en Fitness24Seven.
+                </p>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-brand-accent"></span> Perfil Metabólico
+                    </h3>
+                    <ul class="space-y-3 text-sm text-brand-mutedText">
+                        <li class="flex justify-between border-b border-brand-border/40 pb-2"><span class="font-medium">Peso Actual:</span> <span class="text-white font-bold">69 kg</span></li>
+                        <li class="flex justify-between border-b border-brand-border/40 pb-2"><span class="font-medium">IMC Base:</span> <span class="text-white font-bold">23.1</span></li>
+                        <li class="flex justify-between border-b border-brand-border/40 pb-2"><span class="font-medium">TMB Est.:</span> <span class="text-white font-bold">~1,650 kcal</span></li>
+                        <li class="flex justify-between"><span class="font-medium">Superávit Objetivo:</span> <span class="text-brand-lightAccent font-bold">2,900 kcal/día</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-brand-accent"></span> Ritmo Circadiano
+                    </h3>
+                    <p class="text-sm text-brand-mutedText leading-relaxed mb-4">
+                        Tus entrenamientos oscilan entre las <strong>3:20 AM, 5:00 AM y 7:00 AM</strong>. Esto exige un enfoque estricto en la <strong>carga de carbohidratos en la cena previa</strong>.
+                    </p>
+                    <div class="bg-black/30 p-3 rounded-lg border border-brand-border/60">
+                        <span class="text-xs text-brand-lightAccent font-semibold block">Regla Innegociable:</span>
+                        <p class="text-xs text-brand-mutedText mt-1">Glicinato de magnesio a las 8:30 PM para forzar el sueño profundo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-brand-card border border-brand-border rounded-2xl p-6 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                        <span class="w-2 h-2 rounded-full bg-brand-accent"></span> Gestión de Presupuesto
+                    </h3>
+                    <p class="text-sm text-brand-mutedText leading-relaxed mb-4">
+                        Presupuesto exclusivo de <strong>400,000 COP/mes para comida</strong> inteligente. Suplementos corren por un presupuesto independiente de alta prioridad.
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="text-xs bg-brand-border px-2 py-1 rounded text-white font-bold">Creatina</span>
+                        <span class="text-xs bg-brand-border px-2 py-1 rounded text-white font-bold">Magnesio</span>
+                        <span class="text-xs bg-brand-border px-2 py-1 rounded text-white font-bold">Omega-3</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="border-l-4 border-brand-accent pl-4">
+                <h2 class="text-2xl font-black uppercase tracking-wider text-white">Programa de Entrenamiento: Frecuencia 2 + Core</h2>
+                <p class="text-sm text-brand-mutedText">Rutinas diseñadas para el equipamiento comercial de Fitness24Seven.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
+                    <div class="bg-gradient-to-r from-brand-accent/20 to-transparent p-4 border-b border-brand-border flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-brand-lightAccent uppercase">Lunes / Bloque A</span>
+                            <h3 class="text-lg font-bold text-white">Pierna (Enfoque Cuádriceps)</h3>
+                        </div>
+                        <span class="text-xs bg-brand-accent text-black font-extrabold px-3 py-1 rounded-full">Fuerza & Tensión</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-brand-border text-brand-mutedText text-xs uppercase">
+                                        <th class="py-2">Ejercicio</th>
+                                        <th class="py-2 text-center">Series</th>
+                                        <th class="py-2 text-center">Reps</th>
+                                        <th class="py-2 text-center">RPE</th>
+                                        <th class="py-2 text-right">Descanso</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-border/40 text-brand-mutedText">
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Sentadilla Libre con Barra</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">6 - 8</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">3 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Prensa de Pierna (Pies Bajos)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">10 - 12</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">2 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Extensiones de Cuádriceps</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Curl Femoral Tumbado</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">12</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Elevación Pantorrilla (Smith/Hack)</td>
+                                        <td class="py-3 text-center text-white font-bold">4</td>
+                                        <td class="py-3 text-center">15 - 20</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">10</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
+                    <div class="bg-gradient-to-r from-brand-border to-transparent p-4 border-b border-brand-border flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-brand-mutedText uppercase">Martes / Bloque B</span>
+                            <h3 class="text-lg font-bold text-white">Push (Pecho, Hombro, Tríceps) + Abdomen</h3>
+                        </div>
+                        <span class="text-xs bg-brand-border text-white font-extrabold px-3 py-1 rounded-full">Torso V-Taper</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-brand-border text-brand-mutedText text-xs uppercase">
+                                        <th class="py-2">Ejercicio</th>
+                                        <th class="py-2 text-center">Series</th>
+                                        <th class="py-2 text-center">Reps</th>
+                                        <th class="py-2 text-center">RPE</th>
+                                        <th class="py-2 text-right">Descanso</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-border/40 text-brand-mutedText">
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Press Plano con Mancuernas</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">8 - 10</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">2 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Press Militar con Mancuernas</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">10</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Fondos en Paralelas (Pecho)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">Fallo T.</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Extensión de Tríceps en Polea</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">12 - 15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                    <tr class="bg-brand-accent/5">
+                                        <td class="py-3 font-bold text-brand-lightAccent">Crunches en Polea Alta (Abdomen)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">12 - 15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
+                    <div class="bg-gradient-to-r from-brand-border to-transparent p-4 border-b border-brand-border flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-brand-mutedText uppercase">Miércoles / Bloque C</span>
+                            <h3 class="text-lg font-bold text-white">Pull (Espalda, Hombro Post, Bíceps)</h3>
+                        </div>
+                        <span class="text-xs bg-brand-border text-white font-extrabold px-3 py-1 rounded-full">Amplitud Lat</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-brand-border text-brand-mutedText text-xs uppercase">
+                                        <th class="py-2">Ejercicio</th>
+                                        <th class="py-2 text-center">Series</th>
+                                        <th class="py-2 text-center">Reps</th>
+                                        <th class="py-2 text-center">RPE</th>
+                                        <th class="py-2 text-right">Descanso</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-border/40 text-brand-mutedText">
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Jalón al Pecho (Polea Alta)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">10 - 12</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">2 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Remo con Barra Prono</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">8 - 10</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Elevaciones Laterales (Hombro)</td>
+                                        <td class="py-3 text-center text-white font-bold">4</td>
+                                        <td class="py-3 text-center">15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Curl de Bíceps con Barra EZ</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">12</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl">
+                    <div class="bg-gradient-to-r from-brand-accent/20 to-transparent p-4 border-b border-brand-border flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-brand-lightAccent uppercase">Jueves / Bloque D</span>
+                            <h3 class="text-lg font-bold text-white">Pierna (Enfoque Isquiotibiales & Glúteo)</h3>
+                        </div>
+                        <span class="text-xs bg-brand-accent text-black font-extrabold px-3 py-1 rounded-full">Máxima Curvatura</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-brand-border text-brand-mutedText text-xs uppercase">
+                                        <th class="py-2">Ejercicio</th>
+                                        <th class="py-2 text-center">Series</th>
+                                        <th class="py-2 text-center">Reps</th>
+                                        <th class="py-2 text-center">RPE</th>
+                                        <th class="py-2 text-right">Descanso</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-border/40 text-brand-mutedText">
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Peso Muerto Rumano con Barra</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">8 - 10</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">3 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Curl Femoral Sentado (o Tumbado)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">12 - 15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Zancadas Caminando c/Mancuerna</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">12 / pierna</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">2 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Aductores en Máquina</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">15 - 20</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Sólio (Pantorrilla Sentado)</td>
+                                        <td class="py-3 text-center text-white font-bold">4</td>
+                                        <td class="py-3 text-center">15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">10</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl lg:col-span-2">
+                    <div class="bg-gradient-to-r from-brand-border to-transparent p-4 border-b border-brand-border flex justify-between items-center">
+                        <div>
+                            <span class="text-xs font-bold text-brand-mutedText uppercase">Viernes / Bloque E</span>
+                            <h3 class="text-lg font-bold text-white">Torso Full (Hipertrofia Estética General) + Abdomen</h3>
+                        </div>
+                        <span class="text-xs bg-brand-border text-white font-extrabold px-3 py-1 rounded-full">Balance Simétrico</span>
+                    </div>
+                    <div class="p-4 space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-brand-border text-brand-mutedText text-xs uppercase">
+                                        <th class="py-2">Ejercicio</th>
+                                        <th class="py-2 text-center">Series</th>
+                                        <th class="py-2 text-center">Reps</th>
+                                        <th class="py-2 text-center">RPE</th>
+                                        <th class="py-2 text-right">Descanso</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-border/40 text-brand-mutedText">
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Press Inclinado con Mancuernas</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">10 - 12</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">2 min</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Remo con Soporte al Pecho (Máquina)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">10 - 12</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Press de Hombros en Máquina</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">10</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">90 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Facepulls en Polea Alta</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">15</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">8</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                    <tr class="hover:bg-black/20">
+                                        <td class="py-3 font-semibold text-white">Bíceps Martillo (Super-serie c/Fondos entre bancos)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">Fallo T.</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">10</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                    <tr class="bg-brand-accent/5">
+                                        <td class="py-3 font-bold text-brand-lightAccent">Elevaciones de Piernas Colgado (Abdomen)</td>
+                                        <td class="py-3 text-center text-white font-bold">3</td>
+                                        <td class="py-3 text-center">Fallo T.</td>
+                                        <td class="py-3 text-center text-brand-lightAccent font-bold">9</td>
+                                        <td class="py-3 text-right">60 seg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <div class="border-l-4 border-brand-accent pl-4">
+                <h2 class="text-2xl font-black uppercase tracking-wider text-white">Protocolo Nutricional: 2,900 KCAL (Peso en Cocido)</h2>
+                <p class="text-sm text-brand-mutedText">Cálculos ajustados para pesar tus porciones en la báscula después de cocinar.</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-brand-card border border-brand-border rounded-xl p-4 text-center">
+                    <span class="block text-xs text-brand-mutedText uppercase font-bold">Calorías Totales</span>
+                    <span class="text-2xl font-extrabold text-white">2,900 kcal</span>
+                </div>
+                <div class="bg-brand-card border border-brand-border rounded-xl p-4 text-center">
+                    <span class="block text-xs text-brand-mutedText uppercase font-bold">Proteínas (Magras)</span>
+                    <span class="text-2xl font-extrabold text-brand-lightAccent">165 g</span>
+                </div>
+                <div class="bg-brand-card border border-brand-border rounded-xl p-4 text-center">
+                    <span class="block text-xs text-brand-mutedText uppercase font-bold">Carbohidratos</span>
+                    <span class="text-2xl font-extrabold text-white">380 g</span>
+                </div>
+                <div class="bg-brand-card border border-brand-border rounded-xl p-4 text-center">
+                    <span class="block text-xs text-brand-mutedText uppercase font-bold">Grasas Saludables</span>
+                    <span class="text-2xl font-extrabold text-white">80 g</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white">Estructura del Menú Diario Alternativo</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <div class="bg-brand-card border border-brand-border rounded-2xl p-5 space-y-4">
+                        <h4 class="font-bold text-brand-lightAccent border-b border-brand-border pb-2">Menú 1: Fuerza de Res &amp; Pasta</h4>
+                        <div class="space-y-3 text-sm text-brand-mutedText">
+                            <p><strong>Pre-Gimnasio:</strong> 1 Arepa de Promasa (100g cocida) + Café negro cargado.</p>
+                            <p><strong>Post-Entreno:</strong> 4 Huevos completos asados + 250g de Avena cocida en agua.</p>
+                            <p><strong>Almuerzo:</strong> 110g de Carne de Res (cocida) + 300g de Pasta (cocida) + Ensalada de zanahoria rallada.</p>
+                            <p><strong>Merienda:</strong> 200g de Yogur Griego entero + 30g de Maní natural tostado.</p>
+                            <p><strong>Cena (Carga):</strong> 110g de Pechuga de Pollo + 350g de Papa cocida + 1/2 Aguacate mediano.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-card border border-brand-border rounded-2xl p-5 space-y-4">
+                        <h4 class="font-bold text-brand-lightAccent border-b border-brand-border pb-2">Menú 2: Óptimo Recuperación</h4>
+                        <div class="space-y-3 text-sm text-brand-mutedText">
+                            <p><strong>Pre-Gimnasio:</strong> 1 Arepa de Promasa (100g) + Café negro sin azúcar.</p>
+                            <p><strong>Post-Entreno:</strong> Tortilla de 4 huevos con espinaca + 250g de Avena cocida con canela.</p>
+                            <p><strong>Almuerzo:</strong> 110g de Pechuga de Pollo (cocida) + 200g de Arroz (cocido) + 150g de Lentejas (cocidas).</p>
+                            <p><strong>Merienda:</strong> 1 Manzana mediana + 40g de Queso campesino bajo en grasa.</p>
+                            <p><strong>Cena (Carga):</strong> 130g de Tilapia o Atún en agua + 300g de Arroz (cocido) + Ensalada verde.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-card border border-brand-border rounded-2xl p-5 space-y-4">
+                        <h4 class="font-bold text-brand-lightAccent border-b border-brand-border pb-2">Menú 3: Inteligente Presupuesto</h4>
+                        <div class="space-y-3 text-sm text-brand-mutedText">
+                            <p><strong>Pre-Gimnasio:</strong> 1 Rebanada de pan blanco con mermelada + Café negro.</p>
+                            <p><strong>Post-Entreno:</strong> 4 Huevos fritos (con spray de aceite) + 150g de Arepas de Promasa (asadas).</p>
+                            <p><strong>Almuerzo:</strong> 3 Huevos enteros fritos + 350g de Arroz (cocido) + 100g de Fríjoles (cocidos).</p>
+                            <p><strong>Merienda:</strong> 200g de Yogur Griego + 10 Almendras o Nueces.</p>
+                            <p><strong>Cena (Carga):</strong> 110g de Pechuga de Pollo (cocida) + 350g de Yuca cocida + Ensalada verde con aguacate.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-brand-card border border-brand-border rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-brand-accent"></span> Recomendaciones Clave del Coach Élite
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-brand-mutedText">
+                <div class="space-y-3">
+                    <h3 class="text-white font-bold">1. Optimización del Glicinato de Magnesio</h3>
+                    <p class="leading-relaxed">
+                        Compra exclusivamente <strong>Glicinato o Bisglicinato de Magnesio Quelado</strong>. Consume entre <strong>300mg y 400mg de Magnesio elemental</strong> antes de dormir.
+                    </p>
+                    <h3 class="text-white font-bold">2. El Secreto del "Carb-Loading"</h3>
+                    <p class="leading-relaxed">
+                        Tus entrenamientos de madrugada dependen al 100% de la <strong>cena rica en carbohidratos complejos (papa, arroz o yuca) de la noche anterior</strong>. Nunca la reduzcas.
+                    </p>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-white font-bold">3. Hidratación Sistemática</h3>
+                    <p class="leading-relaxed">
+                        Dado tu alto consumo de fibra debes consumir un mínimo de <strong>3.5 a 4 litros de agua diarios</strong> para asegurar el volumen celular muscular.
+                    </p>
+                    <h3 class="text-white font-bold">4. Sobrecarga Progresiva</h3>
+                    <p class="leading-relaxed">
+                        Anota cada repetición y peso levantado. Si esta semana levantaste un peso en el Peso Muerto Rumano por 8 repeticiones, la meta de la siguiente semana es lograr 9 repeticiones o subir la carga.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>
