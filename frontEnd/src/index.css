@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Roboto', sans-serif;
+  --font-display: 'Montserrat', sans-serif;
+  --color-brand-dark: #0f120f;
+  --color-brand-card: #161d17;
+  --color-brand-accent: #2d874e;
+  --color-brand-lightAccent: #81d997;
+  --color-brand-mutedText: #a5ada4;
+  --color-brand-border: #2b322b;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #0f120f;
+  color: #ffffff;
+}
+
+h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f120f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2b322b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2d874e;
+}
