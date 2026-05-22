@@ -37,6 +37,6 @@ describe('Layout', () => {
 
     await user.click(screen.getByLabelText('Rutinas'))
 
-    expect(screen.getByText('Gestiona tus bloques de entrenamiento')).toBeInTheDocument()
+    expect(screen.getByText('Catálogo de ejercicios')).toBeInTheDocument()
   })
 })

@@ -42,3 +42,40 @@ export interface ProgressPhoto {
   url: string // data URL or public URL
   fecha: string // ISO date YYYY-MM-DD
 }
+
+export type MuscleGroup =
+  | 'Pecho'
+  | 'Espalda'
+  | 'Hombros'
+  | 'Bíceps/Antebrazos'
+  | 'Tríceps'
+  | 'Cuádriceps'
+  | 'Isquiosurales'
+  | 'Glúteos'
+  | 'Pantorrillas'
+  | 'Abdomen/Core'
+  | 'Cuerpo Completo'
+
+export const MUSCLE_GROUPS: MuscleGroup[] = [
+  'Pecho',
+  'Espalda',
+  'Hombros',
+  'Bíceps/Antebrazos',
+  'Tríceps',
+  'Cuádriceps',
+  'Isquiosurales',
+  'Glúteos',
+  'Pantorrillas',
+  'Abdomen/Core',
+  'Cuerpo Completo',
+]
+
+export interface Exercise {
+  id: string
+  nombre: string
+  grupoMuscular: MuscleGroup
+  equipo: string
+  variaciones: string | null
+  isCustom: boolean
+  parentId?: string // optional reference to a base exercise
+}

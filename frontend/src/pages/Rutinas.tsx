@@ -1,8 +1,12 @@
+import { CatalogBrowser } from '../components/exercise/CatalogBrowser'
+
 export function Rutinas() {
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold text-white">Rutinas</h2>
-      <p className="text-brand-mutedText mt-2">Gestiona tus bloques de entrenamiento</p>
+    <div className="p-4 pb-20">
+      <h2 className="text-2xl font-bold text-white mb-1 font-[Montserrat]">Rutinas</h2>
+      <p className="text-brand-mutedText mb-4">Catálogo de ejercicios</p>
+
+      <CatalogBrowser />
     </div>
   )
 }
