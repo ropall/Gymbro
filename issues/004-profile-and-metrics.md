@@ -10,6 +10,16 @@ AFK
 
 Implementar la página de perfil con dos secciones: (a) métricas básicas y (b) historiales. La sección de métricas básicas muestra edad, sexo, altura, peso actual y calcula automáticamente IMC y TMB. La sección de historiales permite al usuario registrar peso semanalmente, medidas corporales con cinta quincenalmente (pecho, cintura, cadera, bíceps, muslo), y fotos de progreso mensualmente. Cada tipo de métrica muestra su historial cronológico. La recolección de métricas post-registro debe permitir skip por campo (si un dato no se tiene a mano, se omite y se completa después). Escribir tests que validen: (a) CRUD de peso con verificación de fecha y visualización de historial, (b) cálculo correcto de IMC y TMB, (c) registro de medidas con selección de tipo, (d) upload de foto con visualización en galería.
 
+### Almacenamiento de fotos (Supabase Storage)
+
+Las fotos de progreso **no se guardan como datos binarios ni base64 en PostgreSQL**. En su lugar:
+- Se crea un bucket `progress-photos` en Supabase Storage.
+- Al subir una foto, el archivo se almacena en el bucket bajo la ruta `{user_id}/{filename}`.
+- La tabla `profile_photos` en PostgreSQL guarda únicamente: id, user_id, fecha, URL pública del archivo (o path del bucket + el storage key), thumbnail opcional y timestamps.
+- Para mostrar la galería se renderizan las imágenes usando sus URLs públicas firmadas (o públicas dependiendo de la política de acceso definida).
+- Para eliminar una foto se borra tanto el archivo del bucket como la fila en la tabla.
+- Los mocks en tests deben simular el cliente de Supabase Storage (`supabase.storage`).
+
 ## Criterios de aceptacion
 
 - [ ] Página de perfil accesible desde el tab "Perfil"
