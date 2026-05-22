@@ -55,6 +55,7 @@ Gymbro es una aplicación web full-stack (React + Vite + Supabase) con soporte P
 ### Modelo de datos
 
 - **Perfil de usuario**: tabla separada con métricas corporales (edad, sexo, altura) e histórico de peso (semanal), medidas corporales (quincenal) y fotos (mensual). Totalmente aislado de la gestión de rutinas.
+- **Fotos de progreso (Supabase Storage)**: Las imágenes se almacenan en un bucket de Supabase Storage (`progress-photos`). La tabla de fotos en PostgreSQL guarda únicamente la URL pública del archivo, un thumbnail (si aplica), la fecha y metadatos. No se almacenan datos binarios ni base64 en la base de datos para evitar consumo excesivo de espacio y degradación de rendimiento en consultas.
 - **Catálogo de ejercicios**: tabla global con la semilla de ~100 ejercicios organizados por grupo muscular y jerarquía padre/hijo para variaciones. Cada usuario tiene su catálogo privado adicional.
 - **Bloques de entrenamiento**: plantillas que definen ejercicios con series y repeticiones objetivo. Un ciclo consta de 7 posiciones (5 bloques + 2 descansos).
 - **Sesiones de entrenamiento**: snapshots inmutables generados al completar un bloque. Cada sesión contiene ejercicios ejecutados con registros por serie (peso, repeticiones reales, RPE real).
