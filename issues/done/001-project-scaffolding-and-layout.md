@@ -29,3 +29,30 @@ Ninguno - puede comenzar inmediatamente.
 ## Historias de usuario abordadas
 
 - Historia de usuario 30
+
+## QA - Pruebas manuales
+
+### Navegación UI
+
+1. Ejecutar `cd frontend && npm run dev` y abrir `http://localhost:5173`
+2. Verificar 5 tabs inferiores: Inicio, Rutinas, Historial, Nutrición, Perfil — "Inicio" resaltado por defecto
+3. Hacer clic en cada tab: Rutinas → "Gestiona tus bloques de entrenamiento", Historial → "Revisa tus sesiones anteriores", Nutrición → "Referencias de menus y macros", Perfil → "Tus metricas y progreso"
+4. Verificar tema oscuro: fondo `#0f120f`, tab activo verde `#81d997`, tab inactivo gris `#a5ada4`, boton CTA verde `#2d874e`
+
+### Responsive
+
+1. DevTools → modo responsive (ej. iPhone 12)
+2. Verificar 5 tabs visibles y usables sin desborde horizontal
+
+### Build y Typecheck
+
+```bash
+cd frontend && npm run build   # debe completar sin errores
+cd frontend && npm run typecheck   # debe completar sin errores
+```
+
+### Tests automáticos
+
+```bash
+cd frontend && npm run test   # 3 tests pasan: render 5 tabs, highlight active, switch on click
+```
