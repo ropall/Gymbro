@@ -41,7 +41,14 @@ Haz un git commit. El mensaje del commit debe contener obligatoriamente:
 3. Blockers o notas para la siguiente iteración.
 
 ## Reglas Finales y Restricciones
+
 - ONLY WORK ON A SINGLE TASK. No mezcles múltiples issues en una sola corrida.
 - No elimines ni sobrescribas trabajo previo del usuario sin justificación técnica válida.
 - Si una integración con Supabase requiere credenciales, utiliza mocks para las pruebas y documenta claramente las variables de entorno necesarias (ej. `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+
+### Continuidad entre issues
+
+**Si no se está ejecutando `@ralph/afk.sh`:** Al completar una issue (después de moverla a `issues/done/` y hacer commit), **debes preguntar al usuario** si puede continuar con la siguiente issue AFK. No avances a la siguiente tarea sin confirmación explícita del usuario.
+
+**Si se está ejecutando `@ralph/afk.sh`:** Puedes trabajar de forma autónoma en todas las issues AFK disponibles, iterando automáticamente sin preguntar al usuario entre tareas. En este modo, si detectas que no hay más tareas AFK desbloqueadas, emite `<promise>NO MORE TASKS</promise>` y detente.
 
