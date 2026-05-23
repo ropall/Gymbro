@@ -1,0 +1,76 @@
+import { Routes, Route } from 'react-router-dom'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { Layout } from './components/Layout'
+import { Login } from './pages/Login'
+import { AuthCallback } from './pages/AuthCallback'
+import { Inicio } from './pages/Inicio'
+import { Rutinas } from './pages/Rutinas'
+import { Historial } from './pages/Historial'
+import { Nutricion } from './pages/Nutricion'
+import { Perfil } from './pages/Perfil'
+import { Onboarding } from './pages/Onboarding'
+
+function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ProtectedRoute>
+      <Layout>{children}</Layout>
+    </ProtectedRoute>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route
+        path="/"
+        element={
+          <AppLayout>
+            <Inicio />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/rutinas"
+        element={
+          <AppLayout>
+            <Rutinas />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/historial"
+        element={
+          <AppLayout>
+            <Historial />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/nutricion"
+        element={
+          <AppLayout>
+            <Nutricion />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/perfil"
+        element={
+          <AppLayout>
+            <Perfil />
+          </AppLayout>
+        }
+      />
+      <Route
+        path="/onboarding"
+        element={
+          <ProtectedRoute>
+            <Onboarding />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  )
+}

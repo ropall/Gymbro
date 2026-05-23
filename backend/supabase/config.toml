@@ -1,0 +1,19 @@
+# Backend - Supabase Configuration
+# ==================================
+# Este directorio contiene toda la configuración del backend (Supabase).
+# Nada de backend vive dentro de frontend/.
+
+# Supabase local development
+[db]
+port = 54322
+
+[api]
+port = 54321
+
+[auth]
+enable_signup = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/**"]
+
+[storage]
+file_size_limit = "50MiB"
