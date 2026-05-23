@@ -8,6 +8,7 @@ import { Rutinas } from './pages/Rutinas'
 import { Historial } from './pages/Historial'
 import { Nutricion } from './pages/Nutricion'
 import { Perfil } from './pages/Perfil'
+import { Onboarding } from './pages/Onboarding'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -60,6 +61,14 @@ export default function App() {
           <AppLayout>
             <Perfil />
           </AppLayout>
+        }
+      />
+      <Route
+        path="/onboarding"
+        element={
+          <ProtectedRoute>
+            <Onboarding />
+          </ProtectedRoute>
         }
       />
     </Routes>

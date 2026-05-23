@@ -79,3 +79,37 @@ export interface Exercise {
   isCustom: boolean
   parentId?: string // optional reference to a base exercise
 }
+
+export interface WizardExercise {
+  id: string
+  nombre: string
+  grupoMuscular: MuscleGroup
+  isCustom: boolean
+  series: number
+  repsMin: number
+  repsMax: number
+  rpe: number
+  descanso: number
+}
+
+export interface WizardDay {
+  isRest: boolean
+  muscleGroups: MuscleGroup[]
+  exercises: WizardExercise[]
+}
+
+export const ONBOARDING_MUSCLE_GROUP_LABELS: Record<string, MuscleGroup> = {
+  Pecho: 'Pecho',
+  Espalda: 'Espalda',
+  Hombros: 'Hombros',
+  'Bíceps': 'Bíceps/Antebrazos',
+  Tríceps: 'Tríceps',
+  Cuádriceps: 'Cuádriceps',
+  Isquios: 'Isquiosurales',
+  Glúteos: 'Glúteos',
+  Pantorrillas: 'Pantorrillas',
+  Abdomen: 'Abdomen/Core',
+  'Full Body': 'Cuerpo Completo',
+}
+
+export const ONBOARDING_MUSCLE_GROUPS = Object.keys(ONBOARDING_MUSCLE_GROUP_LABELS)
