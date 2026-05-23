@@ -33,3 +33,26 @@ Configurar la PWA (Progressive Web App) con vite-plugin-pwa para que la app sea 
 ## Historias de usuario abordadas
 
 - Historia de usuario 28
+
+## Guía de QA
+
+### Prerrequisitos
+- Tener sesión iniciada
+- Tener un bloque de entrenamiento creado
+- Build de producción para probar Service Worker: `npm run build && npm run preview`
+
+### Pasos de prueba manual
+
+1. **PWA manifest:** Abrir Chrome DevTools → Application → Manifest → verificar nombre "Gymbro", theme_color #0f120f, icons SVG
+2. **Service Worker:** En build producción, abrir DevTools → Application → Service Workers → verificar SW registrado y cacheando assets
+3. **Instalabilidad:** En Android, debería aparecer el banner "Add to Home Screen". En iOS, usar "Share → Add to Home Screen"
+4. **Persistencia del workout:** Iniciar un entrenamiento activo → registrar una serie → refrescar la página (F5) → verificar que el estado del workout se mantiene (ejercicio actual, sets completados)
+5. **Offline durante workout:** Iniciar entrenamiento → desconectar internet (DevTools → Network → Offline) → completar series, registrar pesos/RPE → verificar que todo funciona sin conexión
+6. **Finalizar offline:** Con internet desconectado, llegar al final del entrenamiento → completar checklist de recuperación → finalizar → verificar badge "Pendiente" en el header
+7. **Sincronización automática:** Reconectar internet → verificar que el badge "Pendiente" desaparece y la sesión aparece en Historial
+8. **Badge de conexión:** Al desconectar, ver badge "Sin conexión" en el header. Al reconectar, el badge desaparece
+
+### Notas técnicas
+- Los tests de PWA corren en modo vitest (jsdom) — no requieren Service Worker real
+- El Service Worker solo se registra en build producción (`vite build`), no en dev
+- `navigator.onLine` se mockea via `vi.stubGlobal` para tests offline
