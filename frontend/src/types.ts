@@ -113,3 +113,60 @@ export const ONBOARDING_MUSCLE_GROUP_LABELS: Record<string, MuscleGroup> = {
 }
 
 export const ONBOARDING_MUSCLE_GROUPS = Object.keys(ONBOARDING_MUSCLE_GROUP_LABELS)
+
+export interface Block {
+  id: string
+  profile_id: string
+  nombre: string
+  posicion: number
+  es_descanso: boolean
+  created_at?: string
+}
+
+export interface BlockExercise {
+  id: string
+  block_id: string
+  global_exercise_id: string | null
+  user_exercise_id: string | null
+  exercise?: Exercise // populated after join
+  series_objetivo: number
+  reps_objetivo_min: number | null
+  reps_objetivo_max: number | null
+  rpe_objetivo: number | null
+  descanso_segundos: number | null
+}
+
+export interface Cycle {
+  id: string
+  profile_id: string
+  fecha_inicio: string
+  posicion_actual: number
+  activo: boolean
+  created_at?: string
+}
+
+export interface WorkoutSession {
+  id: string
+  cycle_id: string
+  block_id: string | null
+  fecha_completado: string
+  created_at?: string
+}
+
+export interface SessionSet {
+  id: string
+  session_id: string
+  block_exercise_id: string
+  peso: number | null
+  reps_reales: number | null
+  rpe_real: number | null
+  orden_serie: number
+  // Immutable snapshot of exercise data at session time
+  snapshot_nombre?: string | null
+  snapshot_grupo_muscular?: string | null
+  snapshot_series_objetivo?: number | null
+  snapshot_reps_objetivo_min?: number | null
+  snapshot_reps_objetivo_max?: number | null
+  snapshot_rpe_objetivo?: number | null
+  snapshot_descanso_segundos?: number | null
+}
