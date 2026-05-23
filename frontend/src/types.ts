@@ -183,3 +183,33 @@ export interface RecoveryChecklist {
 }
 
 export type WorkoutPhase = 'exercising' | 'celebrating' | 'recovery'
+
+export interface NutritionMenu {
+  id: string
+  profile_id: string
+  nombre: string
+  calorias: number | null
+  proteinas: number | null
+  carbohidratos: number | null
+  grasas: number | null
+  presupuesto: string | null
+  created_at?: string
+  meals: NutritionMeal[]
+}
+
+export interface NutritionMeal {
+  id: string
+  menu_id: string
+  nombre_comida: string
+  descripcion: string | null
+  orden: number
+  created_at?: string
+}
+
+export const DEFAULT_MEAL_NAMES = [
+  'Pre-Gimnasio',
+  'Post-Entreno',
+  'Almuerzo',
+  'Merienda',
+  'Cena',
+]

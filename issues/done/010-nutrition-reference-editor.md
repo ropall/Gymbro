@@ -34,3 +34,27 @@ Implementar la sección de nutrición como referencia editable. El usuario puede
 
 - Historia de usuario 26
 - Historia de usuario 27
+
+## Guía de QA
+
+### Prerrequisitos
+- Tener sesión iniciada (Google OAuth)
+- Tener un perfil creado
+
+### Pasos de prueba manual
+
+1. **Navegación:** Ir al tab "Nutrición" en el bottom nav → debe mostrar "Nutrición" como título y "Referencias de menús y macros" como subtítulo
+2. **Crear menú:** Hacer clic en "+ Nuevo menú" → escribir "Menú de prueba" → clic en "Crear" → debe aparecer la card del nuevo menú
+3. **Editar nombre del menú:** Hacer clic en el nombre del menú → se vuelve editable → cambiar nombre → Enter o blur para guardar
+4. **Macros editables:** En la card expandida, ver las 4 cards de macros (Calorías Totales, Proteínas, Carbohidratos, Grasas) → hacer clic en cualquier valor → se vuelve un input numérico → cambiar valor → Enter o blur para guardar
+5. **Presupuesto:** Ver el campo "Presupuesto mensual" → hacer clic en "Agregar presupuesto..." → escribir "400,000 COP/mes" → Enter o blur para guardar
+6. **Agregar comida:** Hacer clic en "+ Agregar comida" → se abre formulario con nombre y descripción → seleccionar un nombre predefinido (ej. "Pre-Gimnasio") o escribir manualmente → escribir descripción → clic en "Agregar"
+7. **Editar comida:** Hacer clic en el nombre de una comida para editarlo → hacer clic en la descripción para editarla
+8. **Reordenar comida:** Hacer clic en el menú (⋮) de una comida → seleccionar "Subir" o "Bajar" → la posición cambia
+9. **Eliminar comida:** Hacer clic en (⋮) → "Eliminar" → confirmar con "Sí"
+10. **Eliminar menú:** Hacer clic en el ícono de eliminar (🗑️) en el header de la card → confirmar con "Sí"
+11. **Colapsar/Expandir:** Hacer clic en el header de la card para colapsar o expandir el contenido de la card
+
+### Validaciones backend (RLS)
+- Los menús y comidas creados por un usuario NO deben ser visibles para otros usuarios
+- Verificar en la tabla `nutrition_menus` que `profile_id` corresponde al `auth.uid()` del usuario autenticado
