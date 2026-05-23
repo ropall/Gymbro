@@ -16,6 +16,7 @@ async function isSupabaseReachable(): Promise<boolean> {
     const timeout = setTimeout(() => controller.abort(), 3000)
     const res = await fetch(`${url}/rest/v1/`, {
       method: 'HEAD',
+      headers: { apikey: key },
       signal: controller.signal,
     })
     clearTimeout(timeout)
