@@ -15,7 +15,7 @@ export function MeasurementsSection() {
   const [filter, setFilter] = useState<MeasurementType | 'todos'>('todos')
   const [error, setError] = useState('')
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
@@ -25,7 +25,7 @@ export function MeasurementsSection() {
       return
     }
 
-    addMeasurement(tipo, valorNum, fecha || undefined)
+    await addMeasurement(tipo, valorNum, fecha || undefined)
     setValor('')
     setFecha('')
   }

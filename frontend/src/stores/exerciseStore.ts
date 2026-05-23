@@ -1,8 +1,34 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { supabase } from '../lib/supabase'
 import type { Exercise, MuscleGroup } from '../types'
-import { SEED_EXERCISES } from '../data/seed-exercises'
-import { generateId } from '../utils/calculations'
+
+interface ExerciseCatalogState {
+  globalExercises: Exercise[]
+  customExercises: Exercise[]
+  searchQuery: string
+  activeGroup: MuscleGroup | 'todos'
+  isLoading: boolean
+  error: string | null
+
+  setSearchQuery: (query: string) => void
+  setActiveGroup: (group: MuscleGroup | 'todos') => void
+  loadData: () => Promise<void>
+  addCustomExercise: (exercise: Omit<Exercise, 'id' | 'isCustom'>) => Promise<void>
+  updateCustomExercise: (id: string, updates: Partial<Exercise>) => Promise<void>
+  removeCustomExercise: (id: string) => Promise<void>
+  getFilteredExercises: () => Exercise[]
+  getExerciseById: (id: string) => Exercise | undefined
+  reset: () => void
+}
+
+const initialState = {
+  globalExercises: [],
+  customExercises: [],
+  searchQuery: '',
+  activeGroup: 'todos' as MuscleGroup | 'todos',
+  isLoading: false,
+  error: null,
+}
 
 function mapSeedGroupToMuscleGroup(seedGroup: string): MuscleGroup {
   if (seedGroup.includes('Pecho')) return 'Pecho'
@@ -18,92 +44,169 @@ function mapSeedGroupToMuscleGroup(seedGroup: string): MuscleGroup {
   return 'Cuerpo Completo'
 }
 
-const globalExercises: Exercise[] = SEED_EXERCISES.map((seed) => ({
-  id: seed.id,
-  nombre: seed.nombre,
-  grupoMuscular: mapSeedGroupToMuscleGroup(seed.grupoMuscular),
-  equipo: seed.equipo,
-  variaciones: seed.variaciones,
-  isCustom: false,
-}))
-
-interface ExerciseCatalogState {
-  globalExercises: Exercise[]
-  customExercises: Exercise[]
-  searchQuery: string
-  activeGroup: MuscleGroup | 'todos'
-  setSearchQuery: (query: string) => void
-  setActiveGroup: (group: MuscleGroup | 'todos') => void
-  addCustomExercise: (exercise: Omit<Exercise, 'id' | 'isCustom'>) => void
-  updateCustomExercise: (id: string, updates: Partial<Exercise>) => void
-  removeCustomExercise: (id: string) => void
-  getFilteredExercises: () => Exercise[]
-  getExerciseById: (id: string) => Exercise | undefined
-  reset: () => void
+function mapGlobalExerciseFromDB(row: any): Exercise {
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    grupoMuscular: mapSeedGroupToMuscleGroup(row.grupo_muscular),
+    equipo: row.equipo ?? 'Sin equipo',
+    variaciones: row.variaciones ?? null,
+    isCustom: false,
+    parentId: row.parent_id ?? undefined,
+  }
 }
 
-const initialState = {
-  globalExercises,
-  customExercises: [],
-  searchQuery: '',
-  activeGroup: 'todos' as MuscleGroup | 'todos',
+function mapUserExerciseFromDB(row: any): Exercise {
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    grupoMuscular: mapSeedGroupToMuscleGroup(row.grupo_muscular),
+    equipo: row.equipo ?? 'Sin equipo',
+    variaciones: null,
+    isCustom: true,
+    parentId: row.parent_id ?? undefined,
+  }
 }
 
-export const useExerciseStore = create<ExerciseCatalogState>()(
-  persist(
-    (set, get) => ({
-      ...initialState,
+export const useExerciseStore = create<ExerciseCatalogState>()((set, get) => ({
+  ...initialState,
 
-      setSearchQuery: (query) => set({ searchQuery: query }),
-      setActiveGroup: (group) => set({ activeGroup: group }),
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  setActiveGroup: (group) => set({ activeGroup: group }),
 
-      addCustomExercise: (exercise) =>
-        set((state) => ({
-          customExercises: [
-            ...state.customExercises,
-            { ...exercise, id: generateId(), isCustom: true },
-          ],
-        })),
+  loadData: async () => {
+    set({ isLoading: true, error: null })
 
-      updateCustomExercise: (id, updates) =>
-        set((state) => ({
-          customExercises: state.customExercises.map((ex) =>
-            ex.id === id ? { ...ex, ...updates } : ex
-          ),
-        })),
+    try {
+      // Load global exercises
+      const { data: globalData, error: globalError } = await supabase
+        .from('global_exercises')
+        .select('id, nombre, grupo_muscular, equipo, variaciones, parent_id')
+        .order('nombre', { ascending: true })
 
-      removeCustomExercise: (id) =>
-        set((state) => ({
-          customExercises: state.customExercises.filter((ex) => ex.id !== id),
-        })),
+      if (globalError) throw globalError
 
-      getFilteredExercises: () => {
-        const state = get()
-        const all = [...state.globalExercises, ...state.customExercises]
-        const query = state.searchQuery.toLowerCase().trim()
+      // Load user exercises
+      const { data: userData, error: userError } = await supabase
+        .from('user_exercises')
+        .select('id, nombre, grupo_muscular, equipo, parent_id')
+        .order('nombre', { ascending: true })
 
-        return all.filter((ex) => {
-          const matchesGroup =
-            state.activeGroup === 'todos' || ex.grupoMuscular === state.activeGroup
-          const matchesSearch =
-            !query ||
-            ex.nombre.toLowerCase().includes(query) ||
-            ex.equipo.toLowerCase().includes(query) ||
-            ex.grupoMuscular.toLowerCase().includes(query)
-          return matchesGroup && matchesSearch
+      if (userError) throw userError
+
+      set({
+        globalExercises: globalData?.map(mapGlobalExerciseFromDB) ?? [],
+        customExercises: userData?.map(mapUserExerciseFromDB) ?? [],
+        isLoading: false,
+      })
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error cargando catálogo', isLoading: false })
+    }
+  },
+
+  addCustomExercise: async (exercise) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const userId = userData.user?.id
+      if (!userId) throw new Error('No hay usuario autenticado')
+
+      const { data, error } = await supabase
+        .from('user_exercises')
+        .insert({
+          profile_id: userId,
+          nombre: exercise.nombre,
+          grupo_muscular: exercise.grupoMuscular,
+          equipo: exercise.equipo,
+          parent_id: exercise.parentId ?? null,
         })
-      },
+        .select('id, nombre, grupo_muscular, equipo, parent_id')
+        .single()
 
-      getExerciseById: (id) => {
-        const state = get()
-        return (
-          state.globalExercises.find((ex) => ex.id === id) ||
-          state.customExercises.find((ex) => ex.id === id)
-        )
-      },
+      if (error) throw error
 
-      reset: () => set({ ...initialState, customExercises: [] }),
-    }),
-    { name: 'gymbro-exercise-catalog' }
-  )
-)
+      const newExercise = mapUserExerciseFromDB(data)
+      set((state) => ({
+        customExercises: [...state.customExercises, newExercise],
+        isLoading: false,
+      }))
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error agregando ejercicio', isLoading: false })
+    }
+  },
+
+  updateCustomExercise: async (id, updates) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const { error } = await supabase
+        .from('user_exercises')
+        .update({
+          nombre: updates.nombre,
+          grupo_muscular: updates.grupoMuscular,
+          equipo: updates.equipo,
+          parent_id: updates.parentId ?? null,
+        })
+        .eq('id', id)
+
+      if (error) throw error
+
+      set((state) => ({
+        customExercises: state.customExercises.map((ex) =>
+          ex.id === id ? { ...ex, ...updates } : ex
+        ),
+        isLoading: false,
+      }))
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error actualizando ejercicio', isLoading: false })
+    }
+  },
+
+  removeCustomExercise: async (id) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const { error } = await supabase
+        .from('user_exercises')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      set((state) => ({
+        customExercises: state.customExercises.filter((ex) => ex.id !== id),
+        isLoading: false,
+      }))
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error eliminando ejercicio', isLoading: false })
+    }
+  },
+
+  getFilteredExercises: () => {
+    const state = get()
+    const all = [...state.globalExercises, ...state.customExercises]
+    const query = state.searchQuery.toLowerCase().trim()
+
+    return all.filter((ex) => {
+      const matchesGroup =
+        state.activeGroup === 'todos' || ex.grupoMuscular === state.activeGroup
+      const matchesSearch =
+        !query ||
+        ex.nombre.toLowerCase().includes(query) ||
+        ex.equipo.toLowerCase().includes(query) ||
+        ex.grupoMuscular.toLowerCase().includes(query)
+      return matchesGroup && matchesSearch
+    })
+  },
+
+  getExerciseById: (id) => {
+    const state = get()
+    return (
+      state.globalExercises.find((ex) => ex.id === id) ||
+      state.customExercises.find((ex) => ex.id === id)
+    )
+  },
+
+  reset: () => set(initialState),
+}))

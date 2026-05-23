@@ -11,7 +11,7 @@ export function WeightSection() {
   const [fecha, setFecha] = useState('')
   const [error, setError] = useState('')
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
@@ -32,7 +32,7 @@ export function WeightSection() {
       return
     }
 
-    addWeight(pesoNum, targetDate)
+    await addWeight(pesoNum, targetDate)
     setPeso('')
     setFecha('')
   }

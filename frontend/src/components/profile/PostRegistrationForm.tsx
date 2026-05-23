@@ -19,7 +19,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
     peso: peso === '',
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
     const profileData = {
@@ -30,7 +30,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
 
     // Only set profile if at least one field is filled
     if (profileData.sexo || profileData.altura || profileData.fechaNacimiento) {
-      setProfile({
+      await setProfile({
         sexo: profileData.sexo ?? 'masculino',
         altura: profileData.altura ?? 170,
         fechaNacimiento: profileData.fechaNacimiento ?? todayISO(),
@@ -38,7 +38,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
     }
 
     if (!skipped.peso) {
-      addWeight(parseFloat(peso), todayISO())
+      await addWeight(parseFloat(peso), todayISO())
     }
 
     onComplete()
