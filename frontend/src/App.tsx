@@ -9,6 +9,7 @@ import { Historial } from './pages/Historial'
 import { Nutricion } from './pages/Nutricion'
 import { Perfil } from './pages/Perfil'
 import { Onboarding } from './pages/Onboarding'
+import { ActiveWorkout } from './pages/ActiveWorkout'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -68,6 +69,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Onboarding />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/workout/:blockId"
+        element={
+          <ProtectedRoute>
+            <ActiveWorkout />
           </ProtectedRoute>
         }
       />
