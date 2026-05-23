@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-dark: #0f120f;
+  --color-brand-card: #161d17;
+  --color-brand-accent: #2d874e;
+  --color-brand-lightAccent: #81d997;
+  --color-brand-mutedText: #a5ada4;
+  --color-brand-border: #2b322b;
+}
+
+@layer base {
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--color-brand-dark);
+    color: #ffffff;
+  }
+  h1, h2, h3 {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
