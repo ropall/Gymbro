@@ -10,6 +10,7 @@ import { Nutricion } from './pages/Nutricion'
 import { Perfil } from './pages/Perfil'
 import { Onboarding } from './pages/Onboarding'
 import { ActiveWorkout } from './pages/ActiveWorkout'
+import { SessionDetail } from './components/history/SessionDetail'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -77,6 +78,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <ActiveWorkout />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/historial/:sessionId"
+        element={
+          <ProtectedRoute>
+            <SessionDetail />
           </ProtectedRoute>
         }
       />
