@@ -170,3 +170,16 @@ export interface SessionSet {
   snapshot_rpe_objetivo?: number | null
   snapshot_descanso_segundos?: number | null
 }
+
+export interface RecoveryChecklist {
+  id?: string
+  session_id: string
+  nivel_energia: number // 1-10
+  suplementos: {
+    creatina?: boolean
+    proteina?: boolean
+    glicinato_magnesio?: boolean
+  }
+}
+
+export type WorkoutPhase = 'exercising' | 'celebrating' | 'recovery'

@@ -12,24 +12,24 @@ Implementar el Modo de Entrenamiento Activo: la pantalla fullscreen sin tabs que
 
 ## Criterios de aceptacion
 
-- [ ] Pantalla fullscreen sin tabs inferiores, fondo oscuro con colores brand
-- [ ] Encabezado: nombre del bloque actual y progreso general (ej. "Ejercicio 2 de 5")
-- [ ] Ejercicio actual visible de forma prominente: nombre del ejercicio, series objetivo, reps objetivo, RPE objetivo, descanso sugerido
-- [ ] Lista de series del ejercicio actual con indicador de completadas/pendientes
-- [ ] Input de peso (kg) habilitado solo después de marcar una serie como completada
-- [ ] Input de RPE real habilitado junto con el peso (selector o stepper 1-10)
-- [ ] Botón "Iniciar descanso" visible tras registrar peso+RPE, que inicia un cronómetro regresivo con el tiempo sugerido
-- [ ] Cronómetro de descanso: muestra segundos restantes, botón para pausar/reanudar
-- [ ] Si el usuario intenta registrar la siguiente serie antes de que el cronómetro llegue a 0: toast/modal de advertencia "Aún faltan X segundos de descanso. ¿Continuar?" con botón para continuar o esperar
-- [ ] Al completar todas las series de un ejercicio: animación de completado + transición automática al siguiente ejercicio (scroll o fade)
-- [ ] Progreso visual: indicador de cuántos ejercicios completados del total del bloque
-- [ ] Al completar el último ejercicio: pantalla de celebración fullscreen con mensaje motivacional aleatorio (mínimo 5 mensajes distintos)
-- [ ] La pantalla de celebración tiene un botón "Continuar" que lleva al checklist de recuperación
-- [ ] Checklist de recuperación: selector de nivel de energía 1-10 (obligatorio, no se puede avanzar sin seleccionar)
-- [ ] Checklist de recuperación: checkboxes para suplementos (creatina, proteína, glicinato de magnesio) — opcionales
-- [ ] Botón "Finalizar entrenamiento" guarda la sesión completa + checklist en Supabase
-- [ ] Diseño mobile-first: inputs grandes (min 48px touch target), texto legible, scroll vertical cómodo
-- [ ] `npm run test` pasa con tests del flujo de entrenamiento activo
+- [x] Pantalla fullscreen sin tabs inferiores, fondo oscuro con colores brand
+- [x] Encabezado: nombre del bloque actual y progreso general (ej. "Ejercicio 2 de 5")
+- [x] Ejercicio actual visible de forma prominente: nombre del ejercicio, series objetivo, reps objetivo, RPE objetivo, descanso sugerido
+- [x] Lista de series del ejercicio actual con indicador de completadas/pendientes
+- [x] Input de peso (kg) habilitado solo después de marcar una serie como completada
+- [x] Input de RPE real habilitado junto con el peso (selector o stepper 1-10)
+- [x] Botón "Iniciar descanso" visible tras registrar peso+RPE, que inicia un cronómetro regresivo con el tiempo sugerido
+- [x] Cronómetro de descanso: muestra segundos restantes, botón para pausar/reanudar
+- [x] Si el usuario intenta registrar la siguiente serie antes de que el cronómetro llegue a 0: toast/modal de advertencia "Aún faltan X segundos de descanso. ¿Continuar?" con botón para continuar o esperar
+- [x] Al completar todas las series de un ejercicio: animación de completado + transición automática al siguiente ejercicio (scroll o fade)
+- [x] Progreso visual: indicador de cuántos ejercicios completados del total del bloque
+- [x] Al completar el último ejercicio: pantalla de celebración fullscreen con mensaje motivacional aleatorio (mínimo 5 mensajes distintos)
+- [x] La pantalla de celebración tiene un botón "Continuar" que lleva al checklist de recuperación
+- [x] Checklist de recuperación: selector de nivel de energía 1-10 (obligatorio, no se puede avanzar sin seleccionar)
+- [x] Checklist de recuperación: checkboxes para suplementos (creatina, proteína, glicinato de magnesio) — opcionales
+- [x] Botón "Finalizar entrenamiento" guarda la sesión completa + checklist en Supabase
+- [x] Diseño mobile-first: inputs grandes (min 48px touch target), texto legible, scroll vertical cómodo
+- [x] `npm run test` pasa con tests del flujo de entrenamiento activo
 
 ## Bloqueado por
 
