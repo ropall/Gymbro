@@ -14,17 +14,17 @@ Nota HITL: Requiere configurar el proyecto en Google Cloud Console (OAuth consen
 
 ## Criterios de aceptacion
 
-- [ ] Página de login con botón "Iniciar sesión con Google" usando el theme brand (fondo oscuro, colores brand)
-- [ ] Flujo OAuth completo: click en botón → ventana Google → redirect → sesión iniciada
-- [ ] Zustand auth store con estado: `user`, `session`, `isLoading`, `isNewUser`
-- [ ] Componente `ProtectedRoute` que redirige a `/login` si no hay sesión
-- [ ] Detección de usuario nuevo (first login) para mostrar flujo de onboarding post-registro
-- [ ] Verificación de email obligatoria configurada en Supabase Auth
-- [ ] Botón de logout funcional que limpia sesión y redirige a login
-- [ ] Variables de entorno `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` documentadas
-- [ ] Test: login exitoso llama al store de auth y redirige a dashboard
-- [ ] Test: ruta protegida sin sesión redirige a /login
-- [ ] Test: logout limpia el store de auth
+- [x] Página de login con botón "Iniciar sesión con Google" usando el theme brand (fondo oscuro, colores brand)
+- [x] Flujo OAuth completo: click en botón → ventana Google → redirect → sesión iniciada
+- [x] Zustand auth store con estado: `user`, `session`, `isLoading`, `isNewUser`
+- [x] Componente `ProtectedRoute` que redirige a `/login` si no hay sesión
+- [x] Detección de usuario nuevo (first login) para mostrar flujo de onboarding post-registro
+- [ ] Verificación de email obligatoria configurada en Supabase Auth (HITL: requiere configuración manual en Dashboard)
+- [x] Botón de logout funcional que limpia sesión y redirige a login
+- [x] Variables de entorno `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` documentadas
+- [x] Test: login exitoso llama al store de auth y redirige a dashboard
+- [x] Test: ruta protegida sin sesión redirige a /login
+- [x] Test: logout limpia el store de auth
 
 ## Bloqueado por
 

@@ -1,16 +1,20 @@
-import { useAppStore } from '../stores/appStore'
-import type { Tab } from '../stores/appStore'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useAuthStore } from '../stores/authStore'
 
-const tabs: { key: Tab; label: string; icon: string }[] = [
-  { key: 'inicio', label: 'Inicio', icon: '🏠' },
-  { key: 'rutinas', label: 'Rutinas', icon: '📋' },
-  { key: 'historial', label: 'Historial', icon: '📊' },
-  { key: 'nutricion', label: 'Nutrición', icon: '🍎' },
-  { key: 'perfil', label: 'Perfil', icon: '👤' },
+const tabs: { path: string; label: string; icon: string }[] = [
+  { path: '/', label: 'Inicio', icon: '🏠' },
+  { path: '/rutinas', label: 'Rutinas', icon: '📋' },
+  { path: '/historial', label: 'Historial', icon: '📊' },
+  { path: '/nutricion', label: 'Nutrición', icon: '🍎' },
+  { path: '/perfil', label: 'Perfil', icon: '👤' },
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const { activeTab, setActiveTab } = useAppStore()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { signOut } = useAuthStore()
+
+  const isActive = (path: string) => location.pathname === path
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -19,20 +23,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div className="flex justify-around">
           {tabs.map((tab) => (
             <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              key={tab.path}
+              onClick={() => navigate(tab.path)}
               className={`flex flex-col items-center py-2 px-4 text-xs transition-colors ${
-                activeTab === tab.key
+                isActive(tab.path)
                   ? 'text-brand-lightAccent'
                   : 'text-brand-mutedText hover:text-white'
               }`}
               aria-label={tab.label}
-              aria-current={activeTab === tab.key ? 'page' : undefined}
+              aria-current={isActive(tab.path) ? 'page' : undefined}
             >
               <span className="text-lg">{tab.icon}</span>
               <span>{tab.label}</span>
             </button>
           ))}
+          <button
+            onClick={() => signOut()}
+            className="flex flex-col items-center py-2 px-4 text-xs transition-colors text-brand-mutedText hover:text-red-400"
+            aria-label="Cerrar sesión"
+            title="Cerrar sesión"
+          >
+            <span className="text-lg">🚪</span>
+            <span>Salir</span>
+          </button>
         </div>
       </nav>
     </div>
