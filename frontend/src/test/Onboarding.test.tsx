@@ -132,7 +132,7 @@ describe('Onboarding Wizard', () => {
     })
 
     expect(screen.queryByRole('button', { name: /Crear mi primera rutina/i })).not.toBeInTheDocument()
-    expect(screen.getByText(/Aquí podrás ver el resumen de tu rutina actual/i)).toBeInTheDocument()
+    expect(screen.getByText(/Hoy toca/i)).toBeInTheDocument()
   })
 
   it('navigates through wizard steps and preserves data', async () => {
@@ -147,10 +147,12 @@ describe('Onboarding Wizard', () => {
       </MemoryRouter>
     )
 
-    // Step 1
+    // Step 1: leave only 1 training day (Day 1), set Day 2 and Day 3 to rest
     expect(screen.getByText(/Paso 1 de 5/)).toBeInTheDocument()
-    const slider = screen.getByLabelText(/Días de entrenamiento/i)
-    fireEvent.change(slider, { target: { value: '1' } })
+    const day2Button = screen.getByLabelText(/Día 2: Entrenamiento/i)
+    const day3Button = screen.getByLabelText(/Día 3: Entrenamiento/i)
+    await user.click(day2Button)
+    await user.click(day3Button)
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
     // Step 2
@@ -202,9 +204,11 @@ describe('Onboarding Wizard', () => {
       </MemoryRouter>
     )
 
-    // Step 1: change to 1 training day for simplicity
-    const slider = screen.getByLabelText(/Días de entrenamiento/i)
-    fireEvent.change(slider, { target: { value: '1' } })
+    // Step 1: leave only 1 training day (Day 1), set Day 2 and Day 3 to rest
+    const day2Btn = screen.getByLabelText(/Día 2: Entrenamiento/i)
+    const day3Btn = screen.getByLabelText(/Día 3: Entrenamiento/i)
+    await user.click(day2Btn)
+    await user.click(day3Btn)
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
     // Step 2 - Select 'Pecho' for Day 1

@@ -26,7 +26,7 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-white text-2xl font-bold font-[Montserrat] mb-1">
+        <h2 className="text-brand-primaryText text-2xl font-bold font-heading mb-1">
           Recuperación
         </h2>
         <p className="text-brand-mutedText text-sm">
@@ -37,7 +37,7 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
       {/* Energy level */}
       <div className="bg-brand-card border border-brand-border rounded-xl p-4">
         <label className="text-brand-mutedText text-xs font-bold uppercase tracking-wide block mb-3">
-          Nivel de energía <span className="text-red-400">*</span>
+          Nivel de energía <span className="text-brand-danger">*</span>
         </label>
         <div className="flex gap-2 flex-wrap justify-center">
           {Array.from({ length: 10 }, (_, i) => i + 1).map((level) => (
@@ -46,8 +46,8 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
               onClick={() => setEnergyLevel(level)}
               className={`w-12 h-12 rounded-lg text-sm font-bold transition-colors min-w-[48px] ${
                 energyLevel === level
-                  ? 'bg-brand-lightAccent text-brand-dark'
-                  : 'bg-brand-dark border border-brand-border text-white active:bg-brand-card'
+                  ? 'bg-brand-lightAccent text-brand-inverseText'
+                  : 'bg-brand-dark border border-brand-border text-brand-primaryText active:bg-brand-card'
               }`}
             >
               {level}
@@ -86,10 +86,10 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
                 }`}
               >
                 {supplements[key] && (
-                  <span className="text-white text-sm">✓</span>
+                  <span className="text-brand-primaryText text-sm">✓</span>
                 )}
               </div>
-              <span className="text-white text-sm font-medium">{label}</span>
+              <span className="text-brand-primaryText text-sm font-medium">{label}</span>
             </button>
           ))}
         </div>

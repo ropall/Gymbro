@@ -4,13 +4,12 @@ import type { MuscleGroup, WizardDay, WizardExercise } from '../types'
 
 interface OnboardingState {
   step: number
-  trainingDays: number
   days: WizardDay[]
   isSubmitting: boolean
   error: string | null
 
   setStep: (step: number) => void
-  setTrainingDays: (count: number) => void
+  toggleDayRest: (dayIndex: number) => void
   toggleMuscleGroup: (dayIndex: number, group: MuscleGroup) => void
   toggleExercise: (dayIndex: number, exercise: WizardExercise) => void
   updateExerciseParams: (
@@ -22,17 +21,16 @@ interface OnboardingState {
   reset: () => void
 }
 
-const createInitialDays = (trainingDays: number = 3): WizardDay[] =>
+const createInitialDays = (): WizardDay[] =>
   Array.from({ length: 7 }, (_, i) => ({
-    isRest: i >= trainingDays,
+    isRest: i >= 3,
     muscleGroups: [],
     exercises: [],
   }))
 
 const initialState = {
   step: 1,
-  trainingDays: 3,
-  days: createInitialDays(3),
+  days: createInitialDays(),
   isSubmitting: false,
   error: null,
 }
@@ -42,19 +40,13 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
 
   setStep: (step) => set({ step }),
 
-  setTrainingDays: (count) => {
-    const currentDays = get().days
-    const newDays = currentDays.map((day, i) => {
-      const isRest = i >= count
-      if (isRest) {
-        return { isRest: true, muscleGroups: [], exercises: [] }
-      }
-      // Preserve existing data for remaining training days
-      return day.isRest
-        ? { isRest: false, muscleGroups: [], exercises: [] }
-        : { ...day, isRest: false }
-    })
-    set({ trainingDays: count, days: newDays })
+  toggleDayRest: (dayIndex) => {
+    const days = [...get().days]
+    const day = days[dayIndex]
+    days[dayIndex] = day.isRest
+      ? { isRest: false, muscleGroups: [], exercises: [] }
+      : { isRest: true, muscleGroups: [], exercises: [] }
+    set({ days })
   },
 
   toggleMuscleGroup: (dayIndex, group) => {

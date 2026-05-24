@@ -59,12 +59,12 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-start mb-4">
-          <h3 className="text-xl font-bold text-white font-[Montserrat]">
+          <h3 className="text-xl font-bold text-brand-primaryText font-heading">
             Editor de Bloque
           </h3>
           <button
             onClick={onClose}
-            className="text-brand-mutedText hover:text-white text-2xl px-2"
+            className="text-brand-mutedText hover:text-brand-primaryText text-2xl px-2"
           >
             ×
           </button>
@@ -76,7 +76,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
 
         {/* Current exercises */}
         <div className="space-y-3 mb-4">
-          <h4 className="text-white font-medium text-sm">Ejercicios</h4>
+          <h4 className="text-brand-primaryText font-medium text-sm">Ejercicios</h4>
           {blockExercises.length === 0 && (
             <p className="text-brand-mutedText text-xs">Sin ejercicios</p>
           )}
@@ -86,7 +86,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
               className="bg-brand-dark border border-brand-border rounded-lg p-3 flex justify-between items-center"
             >
               <div>
-                <p className="text-white text-sm font-medium">
+                <p className="text-brand-primaryText text-sm font-medium">
                   {be.exercise?.nombre ?? 'Ejercicio'}
                 </p>
                 <p className="text-brand-mutedText text-xs">
@@ -96,7 +96,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
               </div>
               <button
                 onClick={() => removeBlockExercise(be.id)}
-                className="text-red-400 text-xs font-medium px-2 py-1"
+                className="text-brand-danger text-xs font-medium px-2 py-1"
               >
                 Eliminar
               </button>
@@ -117,7 +117,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
             <select
               value={selectedExerciseId}
               onChange={(e) => setSelectedExerciseId(e.target.value)}
-              className="w-full bg-brand-card border border-brand-border rounded px-3 py-2 text-white text-sm"
+              className="w-full bg-brand-card border border-brand-border rounded px-3 py-2 text-brand-primaryText text-sm"
             >
               <option value="">Seleccionar ejercicio</option>
               {allExercises.map((ex) => (
@@ -136,7 +136,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, series: Number(e.target.value) }))
                   }
-                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-white text-sm"
+                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-brand-primaryText text-sm"
                 />
               </div>
               <div>
@@ -147,7 +147,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, repsMin: Number(e.target.value) }))
                   }
-                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-white text-sm"
+                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-brand-primaryText text-sm"
                 />
               </div>
               <div>
@@ -158,7 +158,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, repsMax: Number(e.target.value) }))
                   }
-                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-white text-sm"
+                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-brand-primaryText text-sm"
                 />
               </div>
             </div>
@@ -174,7 +174,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, rpe: Number(e.target.value) }))
                   }
-                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-white text-sm"
+                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-brand-primaryText text-sm"
                 />
               </div>
               <div>
@@ -185,7 +185,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, descanso: Number(e.target.value) }))
                   }
-                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-white text-sm"
+                  className="w-full bg-brand-card border border-brand-border rounded px-2 py-1 text-brand-primaryText text-sm"
                 />
               </div>
             </div>
@@ -200,7 +200,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="bg-brand-card text-white border border-brand-border rounded px-3 py-2 text-sm"
+                className="bg-brand-card text-brand-primaryText border border-brand-border rounded px-3 py-2 text-sm"
               >
                 Cancelar
               </button>

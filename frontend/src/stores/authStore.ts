@@ -13,7 +13,11 @@ interface AuthState {
   setIsLoading: (isLoading: boolean) => void
   setIsNewUser: (isNewUser: boolean) => void
   signInWithGoogle: () => Promise<void>
+  signInWithEmail: (email: string, password: string) => Promise<void>
+  signUpWithEmail: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  resetPasswordForEmail: (email: string) => Promise<void>
+  updatePassword: (password: string) => Promise<void>
   initialize: () => Promise<void>
 }
 
@@ -40,10 +44,38 @@ export const useAuthStore = create<AuthState>()(
         if (error) throw error
       },
 
+      signInWithEmail: async (email, password) => {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
+        if (error) throw error
+      },
+
+      signUpWithEmail: async (email, password) => {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        })
+        if (error) throw error
+      },
+
       signOut: async () => {
         const { error } = await supabase.auth.signOut()
         if (error) throw error
         set({ user: null, session: null, isNewUser: false })
+      },
+
+      resetPasswordForEmail: async (email) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        })
+        if (error) throw error
+      },
+
+      updatePassword: async (password) => {
+        const { error } = await supabase.auth.updateUser({ password })
+        if (error) throw error
       },
 
       initialize: async () => {
@@ -54,16 +86,18 @@ export const useAuthStore = create<AuthState>()(
         } = await supabase.auth.getSession()
 
         if (session) {
-          const { data: existingProfile } = await supabase
+          const { data: profileData } = await supabase
             .from('profiles')
-            .select('id')
+            .select('id, onboarding_completado')
             .eq('id', session.user.id)
             .single()
+
+          const isNew = !profileData || profileData.onboarding_completado !== true
 
           set({
             session,
             user: session.user,
-            isNewUser: !existingProfile,
+            isNewUser: isNew,
             isLoading: false,
           })
         } else {

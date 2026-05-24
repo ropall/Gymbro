@@ -20,7 +20,7 @@ export function CelebrationScreen({ onContinue }: CelebrationScreenProps) {
     <div className="fixed inset-0 bg-brand-dark flex flex-col items-center justify-center p-6 z-40">
       <div className="text-center space-y-6">
         <div className="text-6xl animate-bounce">🎉</div>
-        <h1 className="text-white text-3xl font-bold font-[Montserrat]">
+        <h1 className="text-brand-primaryText text-3xl font-bold font-heading">
           ¡Entrenamiento Completado!
         </h1>
         <p className="text-brand-lightAccent text-lg max-w-sm mx-auto">

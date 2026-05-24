@@ -6,7 +6,7 @@ export function StepSummary() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-white mb-2 font-[Montserrat]">
+        <h3 className="text-lg font-bold text-brand-primaryText mb-2 font-heading">
           Resumen de tu rutina
         </h3>
         <p className="text-brand-mutedText text-sm mb-4">
@@ -25,7 +25,7 @@ export function StepSummary() {
             }`}
           >
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-white font-bold font-[Montserrat]">
+              <h4 className="text-brand-primaryText font-bold font-heading">
                 Día {i + 1}
               </h4>
               <span
@@ -55,7 +55,7 @@ export function StepSummary() {
                       key={ex.id}
                       className="bg-brand-dark border border-brand-border rounded-lg p-2 text-sm"
                     >
-                      <p className="text-white font-medium">{ex.nombre}</p>
+                      <p className="text-brand-primaryText font-medium">{ex.nombre}</p>
                       <p className="text-brand-mutedText text-xs">
                         {ex.series} series · {ex.repsMin}-{ex.repsMax} reps · RPE {ex.rpe} ·{' '}
                         {ex.descanso}s descanso

@@ -24,3 +24,7 @@ Thumbs.db
 
 # Supabase
 .supabase/
+
+# Design files
+interface-design/
+.interface-design/

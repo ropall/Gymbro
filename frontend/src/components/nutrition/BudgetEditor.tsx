@@ -21,7 +21,7 @@ export function BudgetEditor({ presupuesto, onSave }: BudgetEditorProps) {
     return (
       <input
         type="text"
-        className="w-full bg-brand-dark border border-brand-accent rounded px-3 py-2 text-sm text-white outline-none"
+        className="w-full bg-brand-dark border border-brand-accent rounded px-3 py-2 text-sm text-brand-primaryText outline-none"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onBlur={handleBlur}
@@ -40,7 +40,7 @@ export function BudgetEditor({ presupuesto, onSave }: BudgetEditorProps) {
         setValue(presupuesto ?? '')
         setEditing(true)
       }}
-      className="text-sm text-brand-mutedText hover:text-white transition-colors text-left"
+      className="text-sm text-brand-mutedText hover:text-brand-primaryText transition-colors text-left"
     >
       {presupuesto || 'Agregar presupuesto...'}
     </button>

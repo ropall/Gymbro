@@ -122,7 +122,7 @@ export function ActiveWorkout() {
           <div className="flex justify-end">
             <button
               onClick={handleCancel}
-              className="text-brand-mutedText text-sm font-medium min-h-[48px] px-3 active:text-white transition-colors"
+              className="text-brand-mutedText text-sm font-medium min-h-[48px] px-3 active:text-brand-primaryText transition-colors"
             >
               Cancelar
             </button>
@@ -154,7 +154,7 @@ export function ActiveWorkout() {
           {restTimerRunning && restSecondsRemaining > 0 && !restWarningDismissed && currentSet?.completed && (
             <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
               <div className="bg-brand-card border border-brand-border rounded-xl p-6 max-w-sm w-full">
-                <h3 className="text-white font-bold text-lg mb-2">
+                <h3 className="text-brand-primaryText font-bold text-lg mb-2">
                   ¡Descanso en progreso!
                 </h3>
                 <p className="text-brand-mutedText text-sm mb-4">
@@ -165,7 +165,7 @@ export function ActiveWorkout() {
                     onClick={() => {
                       useWorkoutStore.getState().dismissRestWarning()
                     }}
-                    className="flex-1 bg-brand-dark border border-brand-border text-white py-3 rounded-lg font-bold min-h-[48px] active:bg-brand-card transition-colors"
+                    className="flex-1 bg-brand-dark border border-brand-border text-brand-primaryText py-3 rounded-lg font-bold min-h-[48px] active:bg-brand-card transition-colors"
                   >
                     Esperar
                   </button>

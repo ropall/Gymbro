@@ -24,7 +24,7 @@ export function SessionList() {
 
   if (error) {
     return (
-      <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+      <div className="p-4 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
         {error}
       </div>
     )
@@ -59,7 +59,7 @@ export function SessionList() {
           >
             <div className="flex items-center justify-between mb-2">
               <div>
-                <h3 className="text-white font-bold">
+                <h3 className="text-brand-primaryText font-bold">
                   {session.block_name ?? 'Entrenamiento'}
                 </h3>
                 <p className="text-brand-mutedText text-xs capitalize">

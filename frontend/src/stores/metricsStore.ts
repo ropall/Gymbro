@@ -13,6 +13,8 @@ interface MetricsState {
   // Actions
   loadData: () => Promise<void>
   setProfile: (profile: Profile) => Promise<void>
+  updateProfile: (updates: Partial<Profile>) => Promise<void>
+  completeOnboarding: (profile: Partial<Profile>, pesoInicial?: number) => Promise<void>
   addWeight: (peso: number, fecha?: string) => Promise<void>
   removeWeight: (id: string) => Promise<void>
   addMeasurement: (tipo: MeasurementEntry['tipo'], valor: number, fecha?: string) => Promise<void>
@@ -24,6 +26,48 @@ interface MetricsState {
   reset: () => void
 }
 
+function mapProfileFromDB(row: any): Profile {
+  return {
+    fullName: row.full_name ?? null,
+    sexo: row.sexo as Sexo,
+    altura: row.altura,
+    fechaNacimiento: row.fecha_nacimiento,
+    pesoObjetivo: row.peso_objetivo ?? null,
+    nivelActividad: row.nivel_actividad ?? null,
+    objetivoPrincipal: row.objetivo_principal ?? null,
+    nivelExperiencia: row.nivel_experiencia ?? null,
+    cronotipo: row.cronotipo ?? null,
+    splitPreferido: row.split_preferido ?? null,
+    diasDisponibles: row.dias_disponibles ?? null,
+    nivelEnergia: row.nivel_energia ?? null,
+    somatotipo: row.somatotipo ?? null,
+    horarioSueno: row.horario_sueno ?? null,
+    fotoPerfil: row.foto_perfil ?? null,
+    onboardingCompletado: row.onboarding_completado ?? false,
+  }
+}
+
+function mapProfileToDB(profile: Partial<Profile>): any {
+  const db: any = {}
+  if (profile.fullName !== undefined) db.full_name = profile.fullName
+  if (profile.sexo !== undefined) db.sexo = profile.sexo
+  if (profile.altura !== undefined) db.altura = profile.altura
+  if (profile.fechaNacimiento !== undefined) db.fecha_nacimiento = profile.fechaNacimiento
+  if (profile.pesoObjetivo !== undefined) db.peso_objetivo = profile.pesoObjetivo
+  if (profile.nivelActividad !== undefined) db.nivel_actividad = profile.nivelActividad
+  if (profile.objetivoPrincipal !== undefined) db.objetivo_principal = profile.objetivoPrincipal
+  if (profile.nivelExperiencia !== undefined) db.nivel_experiencia = profile.nivelExperiencia
+  if (profile.cronotipo !== undefined) db.cronotipo = profile.cronotipo
+  if (profile.splitPreferido !== undefined) db.split_preferido = profile.splitPreferido
+  if (profile.diasDisponibles !== undefined) db.dias_disponibles = profile.diasDisponibles
+  if (profile.nivelEnergia !== undefined) db.nivel_energia = profile.nivelEnergia
+  if (profile.somatotipo !== undefined) db.somatotipo = profile.somatotipo
+  if (profile.horarioSueno !== undefined) db.horario_sueno = profile.horarioSueno
+  if (profile.fotoPerfil !== undefined) db.foto_perfil = profile.fotoPerfil
+  if (profile.onboardingCompletado !== undefined) db.onboarding_completado = profile.onboardingCompletado
+  return db
+}
+
 const initialState = {
   profile: null,
   weightEntries: [],
@@ -31,22 +75,6 @@ const initialState = {
   photoEntries: [],
   isLoading: false,
   error: null,
-}
-
-function mapProfileFromDB(row: any): Profile {
-  return {
-    sexo: row.sexo as Sexo,
-    altura: row.altura,
-    fechaNacimiento: row.fecha_nacimiento,
-  }
-}
-
-function mapProfileToDB(profile: Profile): any {
-  return {
-    sexo: profile.sexo,
-    altura: profile.altura,
-    fecha_nacimiento: profile.fechaNacimiento,
-  }
 }
 
 function mapWeightFromDB(row: any): WeightEntry {
@@ -83,7 +111,7 @@ export const useMetricsStore = create<MetricsState>()((set, get) => ({
       // Load profile
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('sexo, altura, fecha_nacimiento')
+        .select('*')
         .eq('id', userId)
         .single()
 
@@ -147,6 +175,67 @@ export const useMetricsStore = create<MetricsState>()((set, get) => ({
       set({ profile, isLoading: false })
     } catch (err: any) {
       set({ error: err.message ?? 'Error actualizando perfil', isLoading: false })
+    }
+  },
+
+  updateProfile: async (updates) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const userId = userData.user?.id
+      if (!userId) throw new Error('No hay usuario autenticado')
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(mapProfileToDB(updates))
+        .eq('id', userId)
+
+      if (error) throw error
+
+      set((state) => ({
+        profile: state.profile ? { ...state.profile, ...updates } : null,
+        isLoading: false,
+      }))
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error actualizando perfil', isLoading: false })
+    }
+  },
+
+  completeOnboarding: async (profileData, pesoInicial) => {
+    set({ isLoading: true, error: null })
+
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const userId = userData.user?.id
+      if (!userId) throw new Error('No hay usuario autenticado')
+
+      const updates = mapProfileToDB({ ...profileData, onboardingCompletado: true })
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', userId)
+
+      if (profileError) throw profileError
+
+      if (pesoInicial !== undefined && pesoInicial > 0) {
+        const today = new Date().toISOString().split('T')[0]
+        const { error: weightError } = await supabase
+          .from('weight_history')
+          .insert({
+            profile_id: userId,
+            peso: pesoInicial,
+            fecha: today,
+          })
+
+        if (weightError) throw weightError
+      }
+
+      const profile = profileData as Profile
+      set({ profile: { ...profile, onboardingCompletado: true }, isLoading: false })
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error completando onboarding', isLoading: false })
+      throw err
     }
   },
 
