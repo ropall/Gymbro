@@ -12,8 +12,8 @@ function mockSupabaseEmpty() {
     Promise.resolve({ data: { user: { id: 'test-user', email: 'test@example.com' } } } as any)
   )
   vi.spyOn(supabase, 'from').mockImplementation(() => ({
-    select: vi.fn(function () { return this }),
-    eq: vi.fn(function () { return this }),
+    select: vi.fn(() => ({} as any)),
+    eq: vi.fn(() => ({} as any)),
     order: vi.fn(() => Promise.resolve({ data: [], error: null })),
     single: vi.fn(() => Promise.resolve({ data: null, error: { code: 'PGRST116' } })),
     insert: vi.fn((data: any) => ({

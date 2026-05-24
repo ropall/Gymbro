@@ -48,9 +48,7 @@ export function createMockSupabase() {
     }
 
     // Override for select chains
-    let selectCalled = false
-    result.select = (...cols: string[]) => {
-      selectCalled = true
+    result.select = (..._cols: string[]) => {
       return result
     }
 
@@ -58,8 +56,6 @@ export function createMockSupabase() {
     result.eq = () => result
     result.single = () => Promise.resolve({ data: tableData(), error: null })
 
-    // Return data on final execution
-    const originalThen = Promise.resolve({ data: tableData(), error: null })
     return result
   }
 
