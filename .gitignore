@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+*.log
+
+# Build outputs
+dist/
+build/
+*.local
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Supabase
+.supabase/

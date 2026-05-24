@@ -65,6 +65,8 @@ describe('Layout', () => {
 
     await user.click(screen.getByLabelText('Rutinas'))
 
-    expect(screen.getByText('Catálogo de ejercicios')).toBeInTheDocument()
+    // Rutinas page now shows cycle view by default with tabs
+    expect(screen.getByRole('button', { name: 'Mi Rutina' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Catálogo' })).toBeInTheDocument()
   })
 })

@@ -12,18 +12,18 @@ Implementar la vista de gestión de rutinas y el motor del ciclo de entrenamient
 
 ## Criterios de aceptacion
 
-- [ ] Vista "Rutinas" accesible desde el tab "Rutinas"
-- [ ] Visualización de los 7 días del ciclo actual: posición, nombre del bloque, estado (pendiente, completado, descanso, actual)
-- [ ] Indicador visual de la posición actual del ciclo
-- [ ] Botón "Empezar Rutina" visible en el día de entrenamiento actual (redirige al Modo Activo — implementado en issue 008)
-- [ ] Días de descanso: botón "Hoy descanso" para avanzar manualmente a la siguiente posición
-- [ ] Edición de bloques: solo posiciones futuras (no la actual ni las ya completadas) son editables
-- [ ] Editor de bloque: agregar/quitar ejercicios, modificar series/reps/RPE/descanso
-- [ ] Al completar un bloque (vía Modo Activo), la sesión se guarda como snapshot inmutable
-- [ ] Al llegar a posición 7 y completar: pantalla de resumen del ciclo con estadísticas (sesiones completadas, ejercicios, pesos)
-- [ ] En la pausa entre ciclos: opción de editar cualquier bloque antes de reiniciar
-- [ ] Botón "Iniciar nuevo ciclo" reinicia a posición 1 con los bloques (editados o no)
-- [ ] `npm run test` pasa con tests de ciclo y bloques
+- [x] Vista "Rutinas" accesible desde el tab "Rutinas"
+- [x] Visualización de los 7 días del ciclo actual: posición, nombre del bloque, estado (pendiente, completado, descanso, actual)
+- [x] Indicador visual de la posición actual del ciclo
+- [x] Botón "Empezar Rutina" visible en el día de entrenamiento actual (redirige al Modo Activo — implementado en issue 008)
+- [x] Días de descanso: botón "Hoy descanso" para avanzar manualmente a la siguiente posición
+- [x] Edición de bloques: solo posiciones futuras (no la actual ni las ya completadas) son editables
+- [x] Editor de bloque: agregar/quitar ejercicios, modificar series/reps/RPE/descanso
+- [x] Al completar un bloque (vía Modo Activo), la sesión se guarda como snapshot inmutable
+- [x] Al llegar a posición 7 y completar: pantalla de resumen del ciclo con estadísticas (sesiones completadas, ejercicios, pesos)
+- [x] En la pausa entre ciclos: opción de editar cualquier bloque antes de reiniciar
+- [x] Botón "Iniciar nuevo ciclo" reinicia a posición 1 con los bloques (editados o no)
+- [x] `npm run test` pasa con tests de ciclo y bloques
 
 ## Bloqueado por
 

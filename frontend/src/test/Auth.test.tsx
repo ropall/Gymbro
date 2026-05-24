@@ -5,7 +5,6 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { Login } from '../pages/Login'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { useAuthStore } from '../stores/authStore'
-import { Inicio } from '../pages/Inicio'
 
 // Mock supabase
 vi.mock('../lib/supabase', () => ({

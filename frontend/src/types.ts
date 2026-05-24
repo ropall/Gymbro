@@ -113,3 +113,103 @@ export const ONBOARDING_MUSCLE_GROUP_LABELS: Record<string, MuscleGroup> = {
 }
 
 export const ONBOARDING_MUSCLE_GROUPS = Object.keys(ONBOARDING_MUSCLE_GROUP_LABELS)
+
+export interface Block {
+  id: string
+  profile_id: string
+  nombre: string
+  posicion: number
+  es_descanso: boolean
+  created_at?: string
+}
+
+export interface BlockExercise {
+  id: string
+  block_id: string
+  global_exercise_id: string | null
+  user_exercise_id: string | null
+  exercise?: Exercise // populated after join
+  series_objetivo: number
+  reps_objetivo_min: number | null
+  reps_objetivo_max: number | null
+  rpe_objetivo: number | null
+  descanso_segundos: number | null
+}
+
+export interface Cycle {
+  id: string
+  profile_id: string
+  fecha_inicio: string
+  posicion_actual: number
+  activo: boolean
+  created_at?: string
+}
+
+export interface WorkoutSession {
+  id: string
+  cycle_id: string
+  block_id: string | null
+  fecha_completado: string
+  created_at?: string
+}
+
+export interface SessionSet {
+  id: string
+  session_id: string
+  block_exercise_id: string
+  peso: number | null
+  reps_reales: number | null
+  rpe_real: number | null
+  orden_serie: number
+  // Immutable snapshot of exercise data at session time
+  snapshot_nombre?: string | null
+  snapshot_grupo_muscular?: string | null
+  snapshot_series_objetivo?: number | null
+  snapshot_reps_objetivo_min?: number | null
+  snapshot_reps_objetivo_max?: number | null
+  snapshot_rpe_objetivo?: number | null
+  snapshot_descanso_segundos?: number | null
+}
+
+export interface RecoveryChecklist {
+  id?: string
+  session_id: string
+  nivel_energia: number // 1-10
+  suplementos: {
+    creatina?: boolean
+    proteina?: boolean
+    glicinato_magnesio?: boolean
+  }
+}
+
+export type WorkoutPhase = 'exercising' | 'celebrating' | 'recovery'
+
+export interface NutritionMenu {
+  id: string
+  profile_id: string
+  nombre: string
+  calorias: number | null
+  proteinas: number | null
+  carbohidratos: number | null
+  grasas: number | null
+  presupuesto: string | null
+  created_at?: string
+  meals: NutritionMeal[]
+}
+
+export interface NutritionMeal {
+  id: string
+  menu_id: string
+  nombre_comida: string
+  descripcion: string | null
+  orden: number
+  created_at?: string
+}
+
+export const DEFAULT_MEAL_NAMES = [
+  'Pre-Gimnasio',
+  'Post-Entreno',
+  'Almuerzo',
+  'Merienda',
+  'Cena',
+]
