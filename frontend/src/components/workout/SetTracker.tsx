@@ -14,59 +14,69 @@ export function SetTracker({ onSetComplete }: SetTrackerProps) {
   if (!currentExercise) return null
 
   return (
-    <div className="space-y-2">
-      <h3 className="text-brand-mutedText text-sm font-bold uppercase tracking-wide">Series</h3>
-      {currentExercise.sets.map((set, idx) => {
-        const isCurrent = idx === currentSetIndex
-        const isCompleted = set.completed
-        const isPast = idx < currentSetIndex
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-brand-mutedText text-xs font-bold uppercase tracking-wider">
+          Series
+        </h3>
+        <span className="text-xs text-brand-mutedText">
+          {currentExercise.sets.filter((s) => s.completed).length} / {currentExercise.sets.length}
+        </span>
+      </div>
 
-        return (
-          <div
-            key={idx}
-            className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-              isCurrent
-                ? 'bg-brand-lightAccent/10 border-brand-lightAccent'
-                : isCompleted || isPast
-                  ? 'bg-brand-accent/20 border-brand-accent/50'
-                  : 'bg-brand-card border-brand-border'
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                  isCompleted
-                    ? 'bg-brand-accent text-white'
-                    : isCurrent
-                      ? 'bg-brand-lightAccent text-brand-dark'
-                      : 'bg-brand-dark text-brand-mutedText'
-                }`}
-              >
-                {isCompleted ? '✓' : set.orden}
+      <div className="space-y-2">
+        {currentExercise.sets.map((set, idx) => {
+          const isCurrent = idx === currentSetIndex
+          const isCompleted = set.completed
+          const isPast = idx < currentSetIndex
+
+          return (
+            <div
+              key={idx}
+              className={`flex items-center justify-between p-3 rounded-[10px] border transition-all ${
+                isCurrent
+                  ? 'bg-brand-lightAccent/10 border-brand-lightAccent'
+                  : isCompleted || isPast
+                    ? 'bg-brand-accent/15 border-brand-accent/40'
+                    : 'bg-brand-card border-brand-border'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
+                    isCompleted
+                      ? 'bg-brand-accent text-white'
+                      : isCurrent
+                        ? 'bg-brand-lightAccent text-brand-inverseText'
+                        : 'bg-brand-dark text-brand-mutedText'
+                  }`}
+                >
+                  {isCompleted ? '✓' : set.orden}
+                </div>
+                <span className={`text-sm font-medium ${isCompleted ? 'text-brand-lightAccent' : 'text-brand-primaryText'}`}>
+                  Serie {set.orden}
+                </span>
               </div>
-              <span className={`text-sm font-medium ${isCompleted ? 'text-brand-lightAccent' : 'text-white'}`}>
-                Serie {set.orden}
-              </span>
+
+              {isCurrent && !restTimerStarted && (
+                <button
+                  onClick={onSetComplete}
+                  className="btn-primary h-9 px-4 text-[13px]"
+                >
+                  Completar
+                </button>
+              )}
+
+              {isCompleted && (
+                <span className="text-brand-lightAccent text-xs font-medium tabular-nums">
+                  {set.peso ? `${set.peso}kg` : '—'}
+                  {set.rpe_real ? ` · RPE ${set.rpe_real}` : ''}
+                </span>
+              )}
             </div>
-
-            {isCurrent && !restTimerStarted && (
-              <button
-                onClick={onSetComplete}
-                className="bg-brand-accent text-white px-4 py-2 rounded-lg text-sm font-bold min-h-[48px] active:bg-brand-lightAccent transition-colors"
-              >
-                Completar
-              </button>
-            )}
-
-            {isCompleted && (
-              <span className="text-brand-lightAccent text-xs font-medium">
-                {set.peso ? `${set.peso}kg` : '—'}
-                {set.rpe_real ? ` · RPE ${set.rpe_real}` : ''}
-              </span>
-            )}
-          </div>
-        )
-      })}
+          )
+        })}
+      </div>
     </div>
   )
 }

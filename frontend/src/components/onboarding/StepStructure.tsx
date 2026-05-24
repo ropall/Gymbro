@@ -1,67 +1,71 @@
 import { useOnboardingStore } from '../../stores/onboardingStore'
+import { Dumbbell, Moon } from 'lucide-react'
+
+const DAY_NAMES = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
 export function StepStructure() {
-  const trainingDays = useOnboardingStore((s) => s.trainingDays)
   const days = useOnboardingStore((s) => s.days)
-  const setTrainingDays = useOnboardingStore((s) => s.setTrainingDays)
+  const toggleDayRest = useOnboardingStore((s) => s.toggleDayRest)
+
+  const trainingCount = days.filter((d) => !d.isRest).length
+  const restCount = 7 - trainingCount
 
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-white mb-2 font-[Montserrat]">
-          ¿Cuántos días entrenas a la semana?
+        <h3 className="text-lg font-bold text-brand-primaryText mb-2 font-heading tracking-tight">
+          ¿Qué días entrenas?
         </h3>
-        <p className="text-brand-mutedText text-sm mb-4">
-          Elige cuántos días quieres entrenar. El resto serán días de descanso (total 7 días).
+        <p className="text-brand-mutedText text-sm mb-4 leading-relaxed">
+          Toca los días que vas a entrenar. Los que dejes sin marcar serán descanso.
         </p>
       </div>
 
-      <div className="space-y-3">
-        <label className="flex items-center justify-between text-white font-medium">
-          <span>Días de entrenamiento</span>
-          <span className="text-brand-lightAccent text-xl font-black">{trainingDays}</span>
-        </label>
-        <input
-          type="range"
-          min={1}
-          max={7}
-          value={trainingDays}
-          onChange={(e) => setTrainingDays(Number(e.target.value))}
-          className="w-full accent-brand-accent h-2 bg-brand-border rounded-lg appearance-none cursor-pointer"
-          aria-label="Días de entrenamiento"
-        />
-        <div className="flex justify-between text-xs text-brand-mutedText">
-          <span>1</span>
-          <span>2</span>
-          <span>3</span>
-          <span>4</span>
-          <span>5</span>
-          <span>6</span>
-          <span>7</span>
+      <div className="grid grid-cols-7 gap-2">
+        {days.map((day, i) => {
+          const isTraining = !day.isRest
+          return (
+            <button
+              key={i}
+              onClick={() => toggleDayRest(i)}
+              className={`flex flex-col items-center justify-center rounded-[10px] p-2 border text-xs font-medium transition-all active:scale-95 ${
+                isTraining
+                  ? 'bg-brand-accent/20 border-brand-lightAccent/40 text-brand-lightAccent shadow-sm'
+                  : 'bg-brand-card border-brand-border text-brand-mutedText'
+              }`}
+              aria-pressed={isTraining}
+              aria-label={`Día ${i + 1}: ${isTraining ? 'Entrenamiento' : 'Descanso'}`}
+            >
+              <span className="text-[10px] uppercase tracking-wider opacity-80 mb-0.5">
+                {DAY_NAMES[i]}
+              </span>
+              <span className="text-lg font-black">{i + 1}</span>
+              <span className="mt-1">
+                {isTraining ? (
+                  <Dumbbell className="w-3.5 h-3.5" />
+                ) : (
+                  <Moon className="w-3.5 h-3.5" />
+                )}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-brand-accent" />
+          <span className="text-xs text-brand-secondaryText">
+            {trainingCount} entrenamiento{trainingCount !== 1 ? 's' : ''}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-brand-border border border-brand-borderStrong" />
+          <span className="text-xs text-brand-secondaryText">
+            {restCount} descanso{restCount !== 1 ? 's' : ''}
+          </span>
         </div>
       </div>
-
-      <div className="grid grid-cols-7 gap-2">
-        {days.map((day, i) => (
-          <div
-            key={i}
-            className={`flex flex-col items-center justify-center rounded-lg p-2 border text-xs font-medium transition-colors ${
-              day.isRest
-                ? 'bg-brand-card border-brand-border text-brand-mutedText'
-                : 'bg-brand-accent/20 border-brand-lightAccent/30 text-brand-lightAccent'
-            }`}
-          >
-            <span className="text-[10px] uppercase tracking-wider opacity-80">Día</span>
-            <span className="text-lg font-black">{i + 1}</span>
-            <span className="text-[10px]">{day.isRest ? 'Descanso' : 'Entreno'}</span>
-          </div>
-        ))}
-      </div>
-
-      <p className="text-brand-mutedText text-sm text-center">
-        {trainingDays} entrenamiento{trainingDays !== 1 ? 's' : ''} ·{' '}
-        {7 - trainingDays} descanso{7 - trainingDays !== 1 ? 's' : ''}
-      </p>
     </div>
   )
 }

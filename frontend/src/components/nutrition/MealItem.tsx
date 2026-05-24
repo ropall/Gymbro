@@ -45,7 +45,7 @@ export function MealItem({ meal, isFirst, isLast, onMoveUp, onMoveDown, onUpdate
           {editingName ? (
             <input
               type="text"
-              className="w-full bg-brand-dark border border-brand-accent rounded px-2 py-1 text-sm font-semibold text-white outline-none"
+              className="w-full bg-brand-dark border border-brand-accent rounded px-2 py-1 text-sm font-semibold text-brand-primaryText outline-none"
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
               onBlur={handleSaveName}
@@ -60,7 +60,7 @@ export function MealItem({ meal, isFirst, isLast, onMoveUp, onMoveDown, onUpdate
             />
           ) : (
             <h5
-              className="text-sm font-semibold text-white cursor-pointer hover:text-brand-lightAccent transition-colors"
+              className="text-sm font-semibold text-brand-primaryText cursor-pointer hover:text-brand-lightAccent transition-colors"
               onClick={() => {
                 setNameValue(meal.nombre_comida)
                 setEditingName(true)
@@ -87,7 +87,7 @@ export function MealItem({ meal, isFirst, isLast, onMoveUp, onMoveDown, onUpdate
             />
           ) : (
             <p
-              className="text-xs text-brand-mutedText mt-1 cursor-pointer hover:text-white transition-colors"
+              className="text-xs text-brand-mutedText mt-1 cursor-pointer hover:text-brand-primaryText transition-colors"
               onClick={() => {
                 setDescValue(meal.descripcion ?? '')
                 setEditingDesc(true)
@@ -101,7 +101,7 @@ export function MealItem({ meal, isFirst, isLast, onMoveUp, onMoveDown, onUpdate
         <div className="relative flex-shrink-0">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="p-1 text-brand-mutedText hover:text-white transition-colors"
+            className="p-1 text-brand-mutedText hover:text-brand-primaryText transition-colors"
             aria-label={`Opciones de ${meal.nombre_comida}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -117,25 +117,25 @@ export function MealItem({ meal, isFirst, isLast, onMoveUp, onMoveDown, onUpdate
                 <button
                   onClick={() => { onMoveUp(); setMenuOpen(false) }}
                   disabled={isFirst}
-                  className="w-full text-left px-3 py-2 text-xs text-white hover:bg-brand-accent/20 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-full text-left px-3 py-2 text-xs text-brand-primaryText hover:bg-brand-accent/20 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
                   Subir
                 </button>
                 <button
                   onClick={() => { onMoveDown(); setMenuOpen(false) }}
                   disabled={isLast}
-                  className="w-full text-left px-3 py-2 text-xs text-white hover:bg-brand-accent/20 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="w-full text-left px-3 py-2 text-xs text-brand-primaryText hover:bg-brand-accent/20 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                 >
                   Bajar
                 </button>
                 <hr className="border-brand-border my-1" />
                 {showConfirm ? (
                   <div className="px-3 py-2 space-y-1">
-                    <p className="text-xs text-red-400">¿Eliminar?</p>
+                    <p className="text-xs text-brand-danger">¿Eliminar?</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => { onDelete(); setMenuOpen(false); setShowConfirm(false) }}
-                        className="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded"
+                        className="text-xs px-2 py-1 bg-brand-dangerBg text-brand-danger rounded"
                       >
                         Sí
                       </button>
@@ -150,7 +150,7 @@ export function MealItem({ meal, isFirst, isLast, onMoveUp, onMoveDown, onUpdate
                 ) : (
                   <button
                     onClick={() => setShowConfirm(true)}
-                    className="w-full text-left px-3 py-2 text-xs text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2 text-xs text-brand-danger hover:bg-brand-dangerBg rounded-lg transition-colors"
                   >
                     Eliminar
                   </button>

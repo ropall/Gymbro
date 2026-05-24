@@ -9,7 +9,7 @@ export function Historial() {
     <div className="p-4 pb-20">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-xl font-bold text-white font-[Montserrat]">Historial</h2>
+        <h2 className="text-xl font-bold text-brand-primaryText font-heading">Historial</h2>
         <p className="text-brand-mutedText text-sm">Revisa tus sesiones y progreso</p>
       </div>
 

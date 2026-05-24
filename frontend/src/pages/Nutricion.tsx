@@ -46,16 +46,18 @@ export function Nutricion() {
   }
 
   return (
-    <div className="p-4 pb-20 space-y-6">
+    <div className="p-4 md:p-6 pb-24 md:pb-6 max-w-3xl mx-auto space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white font-[Montserrat]">Nutrición</h2>
-          <p className="text-brand-mutedText text-sm">Referencias de menús y macros</p>
+          <h2 className="text-xl md:text-2xl font-bold text-brand-primaryText font-heading tracking-tight">
+            Nutrición
+          </h2>
+          <p className="text-brand-mutedText text-sm mt-1">Referencias de menús y macros</p>
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="card bg-brand-dangerBg border-brand-dangerBorder text-brand-danger text-sm">
           {error}
         </div>
       )}
@@ -64,7 +66,7 @@ export function Nutricion() {
         <div className="flex gap-2">
           <input
             type="text"
-            className="flex-1 bg-brand-dark border border-brand-accent rounded-lg px-3 py-2 text-sm text-white outline-none"
+            className="input flex-1"
             placeholder="Nombre del menú"
             value={newMenuName}
             onChange={(e) => setNewMenuName(e.target.value)}
@@ -74,15 +76,12 @@ export function Nutricion() {
             }}
             autoFocus
           />
-          <button
-            onClick={handleCreateMenu}
-            className="bg-brand-accent text-white rounded-lg px-4 py-2 text-sm font-medium hover:bg-brand-lightAccent transition-colors"
-          >
+          <button onClick={handleCreateMenu} className="btn-primary px-4">
             Crear
           </button>
           <button
             onClick={() => { setShowNewMenuInput(false); setNewMenuName('') }}
-            className="px-4 py-2 text-sm text-brand-mutedText hover:text-white transition-colors"
+            className="btn-ghost"
           >
             Cancelar
           </button>
@@ -90,15 +89,17 @@ export function Nutricion() {
       ) : (
         <button
           onClick={() => setShowNewMenuInput(true)}
-          className="w-full border-2 border-dashed border-brand-border rounded-2xl py-4 text-sm text-brand-mutedText hover:border-brand-accent hover:text-brand-accent transition-colors"
+          className="w-full border-2 border-dashed border-brand-border rounded-[10px] py-4 text-sm text-brand-mutedText hover:border-brand-accent hover:text-brand-accent transition-colors"
         >
           + Nuevo menú
         </button>
       )}
 
       {menus.length === 0 && !showNewMenuInput && (
-        <div className="text-center py-12">
-          <p className="text-brand-mutedText text-sm">No hay menús aún. Crea tu primer menú diario.</p>
+        <div className="card text-center py-10">
+          <p className="text-brand-mutedText text-sm">
+            No hay menús aún. Crea tu primer menú diario.
+          </p>
         </div>
       )}
 

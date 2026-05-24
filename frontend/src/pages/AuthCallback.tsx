@@ -19,14 +19,13 @@ export function AuthCallback() {
       setSession(session)
       setUser(session.user)
 
-      // Detect new user: check if profile was just created (trigger) or not
-      const { data: existingProfile } = await supabase
+      const { data: profileData } = await supabase
         .from('profiles')
-        .select('id, sexo, altura, fecha_nacimiento')
+        .select('id, onboarding_completado')
         .eq('id', session.user.id)
         .single()
 
-      const isNew = !existingProfile || (!existingProfile.sexo && !existingProfile.altura && !existingProfile.fecha_nacimiento)
+      const isNew = !profileData || profileData.onboarding_completado !== true
       setIsNewUser(isNew)
 
       navigate(isNew ? '/' : '/', { replace: true })

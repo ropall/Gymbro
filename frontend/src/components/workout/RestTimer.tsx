@@ -41,13 +41,13 @@ export function RestTimer({ onTimerComplete }: RestTimerProps) {
         <p className="text-brand-mutedText text-xs font-bold uppercase tracking-wide mb-2">
           Descanso
         </p>
-        <div className={`text-4xl font-bold font-[Montserrat] ${isComplete ? 'text-brand-lightAccent' : 'text-white'}`}>
+        <div className={`text-4xl font-bold font-heading ${isComplete ? 'text-brand-lightAccent' : 'text-brand-primaryText'}`}>
           {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
         </div>
         {!isComplete && (
           <button
             onClick={restTimerRunning ? pauseRestTimer : resumeRestTimer}
-            className="mt-3 bg-brand-dark border border-brand-border text-white px-6 py-2 rounded-lg text-sm font-bold min-h-[48px] active:bg-brand-card transition-colors"
+            className="mt-3 bg-brand-dark border border-brand-border text-brand-primaryText px-6 py-2 rounded-lg text-sm font-bold min-h-[48px] active:bg-brand-card transition-colors"
           >
             {restTimerRunning ? 'Pausar' : 'Reanudar'}
           </button>

@@ -21,7 +21,7 @@ export function CycleSummary({ onStartNewCycle, onEditBlocks }: CycleSummaryProp
   return (
     <div className="space-y-6">
       <div className="bg-brand-card border border-brand-lightAccent/30 rounded-xl p-6 text-center">
-        <h2 className="text-2xl font-bold text-brand-lightAccent mb-2 font-[Montserrat]">
+        <h2 className="text-2xl font-bold text-brand-lightAccent mb-2 font-heading">
           ¡Ciclo Completado!
         </h2>
         <p className="text-brand-mutedText text-sm mb-4">
@@ -52,7 +52,7 @@ export function CycleSummary({ onStartNewCycle, onEditBlocks }: CycleSummaryProp
                 key={block.id}
                 className="bg-brand-dark border border-brand-border rounded-lg p-3"
               >
-                <p className="text-white font-medium text-sm">{block.nombre}</p>
+                <p className="text-brand-primaryText font-medium text-sm">{block.nombre}</p>
                 <p className="text-brand-mutedText text-xs">
                   {exercises.length} ejercicios ·{' '}
                   {exercises.reduce((s, e) => s + e.series_objetivo, 0)} series totales
@@ -65,7 +65,7 @@ export function CycleSummary({ onStartNewCycle, onEditBlocks }: CycleSummaryProp
         <div className="space-y-2">
           <button
             onClick={onEditBlocks}
-            className="w-full bg-brand-card border border-brand-border text-white px-4 py-3 rounded-xl font-bold active:bg-brand-dark transition-colors"
+            className="w-full bg-brand-card border border-brand-border text-brand-primaryText px-4 py-3 rounded-xl font-bold active:bg-brand-dark transition-colors"
           >
             Editar bloques antes de reiniciar
           </button>

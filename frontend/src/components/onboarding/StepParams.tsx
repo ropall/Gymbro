@@ -11,7 +11,7 @@ export function StepParams() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-white mb-2 font-[Montserrat]">
+        <h3 className="text-lg font-bold text-brand-primaryText mb-2 font-heading">
           Parámetros de entrenamiento
         </h3>
         <p className="text-brand-mutedText text-sm mb-4">
@@ -29,7 +29,7 @@ export function StepParams() {
             key={day.index}
             className="bg-brand-card border border-brand-border rounded-xl p-4 space-y-3"
           >
-            <h4 className="text-white font-bold font-[Montserrat]">
+            <h4 className="text-brand-primaryText font-bold font-heading">
               Día {day.index + 1}
             </h4>
 
@@ -39,7 +39,7 @@ export function StepParams() {
                   key={ex.id}
                   className="bg-brand-dark border border-brand-border rounded-lg p-3 space-y-2"
                 >
-                  <p className="text-white text-sm font-medium">{ex.nombre}</p>
+                  <p className="text-brand-primaryText text-sm font-medium">{ex.nombre}</p>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
@@ -56,7 +56,7 @@ export function StepParams() {
                             series: Number(e.target.value),
                           })
                         }
-                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-white text-sm min-h-[40px]"
+                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm min-h-[40px]"
                       />
                     </div>
                     <div>
@@ -73,7 +73,7 @@ export function StepParams() {
                             descanso: Number(e.target.value),
                           })
                         }
-                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-white text-sm min-h-[40px]"
+                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm min-h-[40px]"
                       />
                     </div>
                     <div>
@@ -89,7 +89,7 @@ export function StepParams() {
                             repsMin: Number(e.target.value),
                           })
                         }
-                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-white text-sm min-h-[40px]"
+                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm min-h-[40px]"
                       />
                     </div>
                     <div>
@@ -105,7 +105,7 @@ export function StepParams() {
                             repsMax: Number(e.target.value),
                           })
                         }
-                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-white text-sm min-h-[40px]"
+                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm min-h-[40px]"
                       />
                     </div>
                     <div className="col-span-2">
@@ -122,7 +122,7 @@ export function StepParams() {
                             rpe: Number(e.target.value),
                           })
                         }
-                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-white text-sm min-h-[40px]"
+                        className="w-full bg-brand-card border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm min-h-[40px]"
                       />
                     </div>
                   </div>

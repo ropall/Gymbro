@@ -42,7 +42,7 @@ export function MenuCard({ menu, onUpdateMenu, onDeleteMenu, onAddMeal, onUpdate
           {editingName ? (
             <input
               type="text"
-              className="bg-brand-dark border border-brand-accent rounded px-2 py-1 text-base font-bold text-white font-[Montserrat] outline-none"
+              className="bg-brand-dark border border-brand-accent rounded px-2 py-1 text-base font-bold text-brand-primaryText font-heading outline-none"
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
               onBlur={handleSaveName}
@@ -57,7 +57,7 @@ export function MenuCard({ menu, onUpdateMenu, onDeleteMenu, onAddMeal, onUpdate
             />
           ) : (
             <h4
-              className="text-base font-bold text-brand-lightAccent font-[Montserrat] hover:text-white transition-colors"
+              className="text-base font-bold text-brand-lightAccent font-heading hover:text-brand-primaryText transition-colors"
               onClick={() => { setNameValue(menu.nombre); setEditingName(true) }}
             >
               {menu.nombre}
@@ -69,10 +69,10 @@ export function MenuCard({ menu, onUpdateMenu, onDeleteMenu, onAddMeal, onUpdate
           <div className="relative">
             {showDeleteConfirm ? (
               <div className="flex items-center gap-1">
-                <span className="text-xs text-red-400">¿Eliminar?</span>
+                <span className="text-xs text-brand-danger">¿Eliminar?</span>
                 <button
                   onClick={() => { onDeleteMenu(menu.id); setShowDeleteConfirm(false) }}
-                  className="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded"
+                  className="text-xs px-2 py-1 bg-brand-dangerBg text-brand-danger rounded"
                 >
                   Sí
                 </button>
@@ -86,7 +86,7 @@ export function MenuCard({ menu, onUpdateMenu, onDeleteMenu, onAddMeal, onUpdate
             ) : (
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="p-1 text-brand-mutedText hover:text-red-400 transition-colors"
+                className="p-1 text-brand-mutedText hover:text-brand-danger transition-colors"
                 aria-label={`Eliminar ${menu.nombre}`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">

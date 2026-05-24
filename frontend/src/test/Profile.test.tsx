@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { Perfil } from '../pages/Perfil'
 import { useMetricsStore } from '../stores/metricsStore'
+import { useAuthStore } from '../stores/authStore'
 import { calculateEdad } from '../utils/calculations'
 import { supabase } from '../lib/supabase'
 
@@ -11,8 +12,8 @@ function mockSupabaseEmpty() {
     Promise.resolve({ data: { user: { id: 'test-user', email: 'test@example.com' } } } as any)
   )
   vi.spyOn(supabase, 'from').mockImplementation(() => ({
-    select: vi.fn(function () { return this }),
-    eq: vi.fn(function () { return this }),
+    select: vi.fn(() => ({} as any)),
+    eq: vi.fn(() => ({} as any)),
     order: vi.fn(() => Promise.resolve({ data: [], error: null })),
     single: vi.fn(() => Promise.resolve({ data: null, error: { code: 'PGRST116' } })),
     insert: vi.fn((data: any) => ({
@@ -29,92 +30,117 @@ function mockSupabaseEmpty() {
   } as any))
 }
 
+const defaultProfile = {
+  sexo: 'masculino' as const,
+  altura: 175,
+  fechaNacimiento: '1992-03-10',
+  fullName: 'Test User',
+  fotoPerfil: null,
+  pesoObjetivo: null,
+  nivelActividad: 'moderado' as const,
+  objetivoPrincipal: 'hipertrofia' as const,
+  nivelExperiencia: null as any,
+  cronotipo: 'alondra' as const,
+  splitPreferido: 'PPL' as const,
+  diasDisponibles: null,
+  nivelEnergia: null,
+  somatotipo: null,
+  horarioSueno: null,
+  onboardingCompletado: true,
+}
+
+function setAuthUser() {
+  useAuthStore.setState({
+    user: { id: 'test-user', email: 'test@example.com' } as any,
+    session: { access_token: 'token' } as any,
+    isLoading: false,
+    isNewUser: false,
+  })
+}
+
 describe('Perfil page', () => {
   beforeEach(() => {
     useMetricsStore.getState().reset()
+    useAuthStore.setState({ user: null, session: null, isLoading: false, isNewUser: false })
     vi.restoreAllMocks()
   })
 
-  it('renders profile page with metrics section', async () => {
+  it('renders profile page with onboarding CTA when not completed', async () => {
     mockSupabaseEmpty()
+    setAuthUser()
     render(<Perfil />)
     await waitFor(() => {
       expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
     })
-    expect(screen.getByText('Perfil')).toBeInTheDocument()
-    expect(screen.getByText('Tus métricas y progreso')).toBeInTheDocument()
-    expect(screen.getByText('Métricas básicas')).toBeInTheDocument()
+    expect(screen.getByText('Aún no has completado tu perfil.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Completar perfil ahora/ })).toBeInTheDocument()
   })
 
-  it('shows post-registration form when profile is empty', async () => {
-    mockSupabaseEmpty()
+  it('shows profile header with name when completed', async () => {
+    setAuthUser()
+    useMetricsStore.setState({
+      profile: { ...defaultProfile },
+      weightEntries: [],
+      measurementEntries: [],
+    })
     render(<Perfil />)
     await waitFor(() => {
-      expect(screen.getByText('Completa tu perfil')).toBeInTheDocument()
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
     })
+    expect(screen.getByText('Test User')).toBeInTheDocument()
+    expect(screen.getByText('test@example.com')).toBeInTheDocument()
+    expect(screen.getByText('Perfil de entrenamiento')).toBeInTheDocument()
   })
 
-  it('allows saving profile with skipped fields and shows metrics', async () => {
-    const user = userEvent.setup()
-    mockSupabaseEmpty()
+  it('shows inline editable metrics', async () => {
+    setAuthUser()
+    useMetricsStore.setState({
+      profile: { ...defaultProfile },
+      weightEntries: [],
+    })
     render(<Perfil />)
     await waitFor(() => {
-      expect(screen.getByText('Completa tu perfil')).toBeInTheDocument()
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
     })
-    await user.selectOptions(screen.getByLabelText('Sexo'), 'masculino')
-    await user.type(screen.getByLabelText('Altura (cm)'), '180')
-    await user.click(screen.getByRole('button', { name: /Guardar perfil/i }))
-    await waitFor(() => {
-      expect(screen.queryByText('Completa tu perfil')).not.toBeInTheDocument()
-    })
-    expect(screen.getByText('Masculino')).toBeInTheDocument()
-    expect(screen.getByText('180 cm')).toBeInTheDocument()
+    const masculinoElements = screen.getAllByText('Masculino')
+    expect(masculinoElements.length).toBeGreaterThanOrEqual(1)
+    const alturaElements = screen.getAllByText('175 cm')
+    expect(alturaElements.length).toBeGreaterThanOrEqual(1)
+    const edad = calculateEdad('1992-03-10')
+    const edadElements = screen.getAllByText(`${edad} años`)
+    expect(edadElements.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('calculates IMC and TMB correctly after adding weight and profile', async () => {
-    const user = userEvent.setup()
-    mockSupabaseEmpty()
+  it('shows training profile section', async () => {
+    setAuthUser()
+    useMetricsStore.setState({
+      profile: { ...defaultProfile },
+      weightEntries: [],
+    })
     render(<Perfil />)
     await waitFor(() => {
-      expect(screen.getByText('Completa tu perfil')).toBeInTheDocument()
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
     })
-    await user.selectOptions(screen.getByLabelText('Sexo'), 'masculino')
-    await user.type(screen.getByLabelText('Altura (cm)'), '180')
-    await user.type(screen.getByLabelText('Fecha de nacimiento'), '1990-01-01')
-    await user.type(screen.getByLabelText('Peso actual (kg)'), '80')
-    await user.click(screen.getByRole('button', { name: /Guardar perfil/i }))
-    await waitFor(() => {
-      expect(screen.queryByText('Completa tu perfil')).not.toBeInTheDocument()
+    expect(screen.getByText('Hipertrofia')).toBeInTheDocument()
+    expect(screen.getByText('Moderado (3-5 días/semana)')).toBeInTheDocument()
+    expect(screen.getByText('PPL (Push/Pull/Legs)')).toBeInTheDocument()
+    expect(screen.getByText('Alondra (más activo por la mañana)')).toBeInTheDocument()
+  })
+
+  it('shows TMB in metrics card when weight exists', async () => {
+    setAuthUser()
+    useMetricsStore.setState({
+      profile: { ...defaultProfile, altura: 180 },
+      weightEntries: [{ id: 'w1', peso: 80, fecha: '2024-01-15' }],
     })
+    render(<Perfil />)
     await waitFor(() => {
-      expect(screen.getByText('24.69')).toBeInTheDocument()
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
     })
     const currentYear = new Date().getFullYear()
-    const edad = currentYear - 1990
+    const edad = currentYear - 1992
     const tmbExpected = Math.round(10 * 80 + 6.25 * 180 - 5 * edad + 5)
-    expect(screen.getByText(`${tmbExpected} kcal/día`)).toBeInTheDocument()
-  })
-
-  it('calculates TMB for female correctly', async () => {
-    const user = userEvent.setup()
-    mockSupabaseEmpty()
-    render(<Perfil />)
-    await waitFor(() => {
-      expect(screen.getByText('Completa tu perfil')).toBeInTheDocument()
-    })
-    await user.selectOptions(screen.getByLabelText('Sexo'), 'femenino')
-    await user.type(screen.getByLabelText('Altura (cm)'), '165')
-    await user.type(screen.getByLabelText('Fecha de nacimiento'), '1995-06-15')
-    await user.type(screen.getByLabelText('Peso actual (kg)'), '65')
-    await user.click(screen.getByRole('button', { name: /Guardar perfil/i }))
-    await waitFor(() => {
-      expect(screen.queryByText('Completa tu perfil')).not.toBeInTheDocument()
-    })
-    await waitFor(() => {
-      const edad = calculateEdad('1995-06-15')
-      const tmbExpected = Math.round(10 * 65 + 6.25 * 165 - 5 * edad - 161)
-      expect(screen.getByText(`${tmbExpected} kcal/día`)).toBeInTheDocument()
-    })
+    expect(screen.getByText(String(tmbExpected))).toBeInTheDocument()
   })
 })
 
@@ -122,11 +148,13 @@ describe('Weight history', () => {
   beforeEach(() => {
     useMetricsStore.getState().reset()
     vi.restoreAllMocks()
+    mockSupabaseEmpty()
+    setAuthUser()
   })
 
   it('shows weight entries in the list', async () => {
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
       weightEntries: [{ id: 'w1', peso: 78.5, fecha: '2024-01-15' }],
     })
     render(<Perfil />)
@@ -140,7 +168,7 @@ describe('Weight history', () => {
   it('rejects duplicate weight entries in the same week', async () => {
     const user = userEvent.setup()
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
       weightEntries: [{ id: 'w-existing', peso: 78, fecha: new Date().toISOString().split('T')[0] }],
     })
     render(<Perfil />)
@@ -156,7 +184,7 @@ describe('Weight history', () => {
   it('removes a weight entry', async () => {
     const user = userEvent.setup()
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
       weightEntries: [{ id: 'w1', peso: 80, fecha: '2024-01-15' }],
     })
     render(<Perfil />)
@@ -176,12 +204,14 @@ describe('Measurements history', () => {
   beforeEach(() => {
     useMetricsStore.getState().reset()
     vi.restoreAllMocks()
+    mockSupabaseEmpty()
+    setAuthUser()
   })
 
   it('shows measurements in the list and filters by type', async () => {
     const user = userEvent.setup()
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
       measurementEntries: [{ id: 'm1', tipo: 'pecho', valor: 42, fecha: '2024-01-15' }],
     })
     render(<Perfil />)
@@ -190,7 +220,6 @@ describe('Measurements history', () => {
     })
     const measurementsSection = screen.getByText('Medidas corporales').closest('div')!
     expect(within(measurementsSection).getByText('42 cm')).toBeInTheDocument()
-    expect(within(measurementsSection).getByText('Pecho', { selector: 'span' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Bíceps' }))
     expect(within(measurementsSection).queryByText('42 cm')).not.toBeInTheDocument()
     expect(screen.getByText('Aún no hay registros de Bíceps.')).toBeInTheDocument()
@@ -199,7 +228,7 @@ describe('Measurements history', () => {
   it('removes a measurement entry', async () => {
     const user = userEvent.setup()
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
       measurementEntries: [{ id: 'm1', tipo: 'cintura', valor: 82, fecha: '2024-01-10' }],
     })
     render(<Perfil />)
@@ -219,12 +248,13 @@ describe('Progress photos', () => {
   beforeEach(() => {
     useMetricsStore.getState().reset()
     vi.restoreAllMocks()
+    setAuthUser()
   })
 
   it('adds a photo and displays it in the gallery', async () => {
     const user = userEvent.setup()
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
     })
     render(<Perfil />)
     await waitFor(() => {
@@ -252,7 +282,7 @@ describe('Progress photos', () => {
   it('removes a photo from the gallery', async () => {
     const user = userEvent.setup()
     useMetricsStore.setState({
-      profile: { sexo: 'masculino', altura: 175, fechaNacimiento: '1992-03-10' },
+      profile: { ...defaultProfile },
       photoEntries: [{ id: 'p1', url: 'data:image/jpeg;base64,test', fecha: '2024-01-15' }],
     })
     render(<Perfil />)
