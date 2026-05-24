@@ -2,13 +2,14 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
 import { useOnlineStatus } from '../utils/useOnlineStatus'
 import { useWorkoutStore } from '../stores/workoutStore'
+import { Home, Dumbbell, ChartNoAxesColumn, Apple, User, LogOut } from 'lucide-react'
 
-const tabs: { path: string; label: string; icon: string }[] = [
-  { path: '/', label: 'Inicio', icon: '🏠' },
-  { path: '/rutinas', label: 'Rutinas', icon: '📋' },
-  { path: '/historial', label: 'Historial', icon: '📊' },
-  { path: '/nutricion', label: 'Nutrición', icon: '🍎' },
-  { path: '/perfil', label: 'Perfil', icon: '👤' },
+const tabs: { path: string; label: string; Icon: React.ComponentType<{ className?: string }> }[] = [
+  { path: '/', label: 'Inicio', Icon: Home },
+  { path: '/rutinas', label: 'Rutinas', Icon: Dumbbell },
+  { path: '/historial', label: 'Historial', Icon: ChartNoAxesColumn },
+  { path: '/nutricion', label: 'Nutrición', Icon: Apple },
+  { path: '/perfil', label: 'Perfil', Icon: User },
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -25,8 +26,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 bg-brand-dark/90 backdrop-blur-md border-b border-brand-border">
         <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-accent to-brand-lightAccent flex items-center justify-center font-bold text-black text-xs shadow-lg shadow-brand-accent/20">
-              G
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-accent to-brand-lightAccent flex items-center justify-center shadow-lg shadow-brand-accent/20">
+              <Dumbbell className="w-4 h-4 text-black" />
             </div>
             <span className="text-sm font-bold text-white font-[Montserrat]">Gymbro</span>
           </div>
@@ -59,7 +60,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               aria-label={tab.label}
               aria-current={isActive(tab.path) ? 'page' : undefined}
             >
-              <span className="text-lg">{tab.icon}</span>
+              <tab.Icon className="w-5 h-5" />
               <span>{tab.label}</span>
             </button>
           ))}
@@ -69,7 +70,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             aria-label="Cerrar sesión"
             title="Cerrar sesión"
           >
-            <span className="text-lg">🚪</span>
+            <LogOut className="w-5 h-5" />
             <span>Salir</span>
           </button>
         </div>
