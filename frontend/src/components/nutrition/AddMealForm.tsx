@@ -28,7 +28,7 @@ export function AddMealForm({ onAdd, usedMealNames, onCancel }: AddMealFormProps
         <label className="text-xs text-brand-mutedText block mb-1">Nombre de la comida</label>
         <input
           type="text"
-          className="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-sm text-white outline-none focus:border-brand-accent"
+          className="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-sm text-brand-primaryText outline-none focus:border-brand-accent"
           placeholder="Ej: Pre-Gimnasio"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
@@ -41,7 +41,7 @@ export function AddMealForm({ onAdd, usedMealNames, onCancel }: AddMealFormProps
                 key={name}
                 type="button"
                 onClick={() => setNombre(name)}
-                className="text-[11px] px-2 py-1 rounded-full border border-brand-border text-brand-mutedText hover:border-brand-accent hover:text-white transition-colors"
+                className="text-[11px] px-2 py-1 rounded-full border border-brand-border text-brand-mutedText hover:border-brand-accent hover:text-brand-primaryText transition-colors"
               >
                 {name}
               </button>
@@ -52,7 +52,7 @@ export function AddMealForm({ onAdd, usedMealNames, onCancel }: AddMealFormProps
       <div>
         <label className="text-xs text-brand-mutedText block mb-1">Descripción (ingredientes y cantidades)</label>
         <textarea
-          className="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-sm text-white outline-none resize-none focus:border-brand-accent"
+          className="w-full bg-brand-dark border border-brand-border rounded-lg px-3 py-2 text-sm text-brand-primaryText outline-none resize-none focus:border-brand-accent"
           rows={3}
           placeholder="Ej: 1 Arepa de Promasa (100g cocida) + Café negro"
           value={descripcion}
@@ -69,7 +69,7 @@ export function AddMealForm({ onAdd, usedMealNames, onCancel }: AddMealFormProps
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm text-brand-mutedText hover:text-white transition-colors"
+          className="px-4 py-2 text-sm text-brand-mutedText hover:text-brand-primaryText transition-colors"
         >
           Cancelar
         </button>

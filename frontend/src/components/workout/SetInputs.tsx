@@ -71,7 +71,7 @@ export function SetInputs({ onNextSet, onSkipRestWarning }: SetInputsProps) {
           placeholder="0"
           value={currentSet.peso ?? ''}
           onChange={(e) => updateSetWeight(e.target.value ? parseFloat(e.target.value) : null, lastCompletedIdx)}
-          className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-3 text-white text-lg font-bold min-h-[48px] focus:border-brand-lightAccent focus:outline-none"
+          className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-3 text-brand-primaryText text-lg font-bold min-h-[48px] focus:border-brand-lightAccent focus:outline-none"
         />
       </div>
 
@@ -87,8 +87,8 @@ export function SetInputs({ onNextSet, onSkipRestWarning }: SetInputsProps) {
               onClick={() => updateSetRpe(rpe, lastCompletedIdx)}
               className={`w-12 h-12 rounded-lg text-sm font-bold transition-colors min-w-[48px] ${
                 currentSet.rpe_real === rpe
-                  ? 'bg-brand-lightAccent text-brand-dark'
-                  : 'bg-brand-dark border border-brand-border text-white active:bg-brand-card'
+                  ? 'bg-brand-lightAccent text-brand-inverseText'
+                  : 'bg-brand-dark border border-brand-border text-brand-primaryText active:bg-brand-card'
               }`}
             >
               {rpe}
@@ -111,7 +111,7 @@ export function SetInputs({ onNextSet, onSkipRestWarning }: SetInputsProps) {
           {restTimerRunning && restSecondsRemaining > 0 && !restWarningDismissed && (
             <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
               <div className="bg-brand-card border border-brand-border rounded-xl p-6 max-w-sm w-full">
-                <h3 className="text-white font-bold text-lg mb-2">
+                <h3 className="text-brand-primaryText font-bold text-lg mb-2">
                   ¡Descanso en progreso!
                 </h3>
                 <p className="text-brand-mutedText text-sm mb-4">
@@ -123,7 +123,7 @@ export function SetInputs({ onNextSet, onSkipRestWarning }: SetInputsProps) {
                       dismissRestWarning()
                       onSkipRestWarning()
                     }}
-                    className="flex-1 bg-brand-dark border border-brand-border text-white py-3 rounded-lg font-bold min-h-[48px] active:bg-brand-card transition-colors"
+                    className="flex-1 bg-brand-dark border border-brand-border text-brand-primaryText py-3 rounded-lg font-bold min-h-[48px] active:bg-brand-card transition-colors"
                   >
                     Esperar
                   </button>

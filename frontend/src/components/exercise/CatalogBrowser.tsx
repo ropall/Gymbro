@@ -25,7 +25,7 @@ export function CatalogBrowser() {
           placeholder="Buscar ejercicio..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText min-h-[48px]"
+          className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText min-h-[48px]"
         />
       </div>
 
@@ -75,7 +75,7 @@ export function CatalogBrowser() {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-white font-medium">{exercise.nombre}</h4>
+                    <h4 className="text-brand-primaryText font-medium">{exercise.nombre}</h4>
                     {exercise.isCustom && (
                       <span className="text-[10px] bg-brand-accent/20 text-brand-lightAccent px-1.5 py-0.5 rounded">
                         Personalizado
@@ -143,7 +143,7 @@ function ExerciseDetailModal({
       >
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="text-xl font-bold text-white font-[Montserrat]">
+            <h3 className="text-xl font-bold text-brand-primaryText font-heading">
               {exercise.nombre}
             </h3>
             {exercise.isCustom && (
@@ -154,7 +154,7 @@ function ExerciseDetailModal({
           </div>
           <button
             onClick={onClose}
-            className="text-brand-mutedText hover:text-white text-2xl px-2"
+            className="text-brand-mutedText hover:text-brand-primaryText text-2xl px-2"
           >
             ×
           </button>
@@ -163,22 +163,22 @@ function ExerciseDetailModal({
         <div className="space-y-3 text-sm">
           <div>
             <span className="text-brand-mutedText">Grupo muscular</span>
-            <p className="text-white">{exercise.grupoMuscular}</p>
+            <p className="text-brand-primaryText">{exercise.grupoMuscular}</p>
           </div>
           <div>
             <span className="text-brand-mutedText">Equipo</span>
-            <p className="text-white">{exercise.equipo}</p>
+            <p className="text-brand-primaryText">{exercise.equipo}</p>
           </div>
           {exercise.variaciones && (
             <div>
               <span className="text-brand-mutedText">Variaciones</span>
-              <p className="text-white mt-1">{exercise.variaciones}</p>
+              <p className="text-brand-primaryText mt-1">{exercise.variaciones}</p>
             </div>
           )}
           {exercise.parentId && (
             <div>
               <span className="text-brand-mutedText">Basado en</span>
-              <p className="text-white">{exercise.parentId}</p>
+              <p className="text-brand-primaryText">{exercise.parentId}</p>
             </div>
           )}
         </div>
@@ -186,7 +186,7 @@ function ExerciseDetailModal({
         {exercise.isCustom && (
           <button
             onClick={onDelete}
-            className="mt-5 w-full bg-red-500/20 text-red-400 border border-red-500/30 rounded px-4 py-2 font-medium min-h-[48px]"
+            className="mt-5 w-full bg-brand-dangerBg text-brand-danger border border-brand-dangerBorder rounded px-4 py-2 font-medium min-h-[48px]"
           >
             Eliminar ejercicio personalizado
           </button>
@@ -242,12 +242,12 @@ function CustomExerciseModal({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-white font-[Montserrat]">
+          <h3 className="text-xl font-bold text-brand-primaryText font-heading">
             Nuevo ejercicio personalizado
           </h3>
           <button
             onClick={onClose}
-            className="text-brand-mutedText hover:text-white text-2xl px-2"
+            className="text-brand-mutedText hover:text-brand-primaryText text-2xl px-2"
           >
             ×
           </button>
@@ -261,7 +261,7 @@ function CustomExerciseModal({ onClose }: { onClose: () => void }) {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               placeholder="Ej. Curl de Bíceps Inclinado"
-              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText min-h-[48px]"
+              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText min-h-[48px]"
               required
             />
           </div>
@@ -271,7 +271,7 @@ function CustomExerciseModal({ onClose }: { onClose: () => void }) {
             <select
               value={grupo}
               onChange={(e) => setGrupo(e.target.value as MuscleGroup)}
-              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-white min-h-[48px]"
+              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText min-h-[48px]"
             >
               {MUSCLE_GROUPS.map((g) => (
                 <option key={g} value={g}>
@@ -288,7 +288,7 @@ function CustomExerciseModal({ onClose }: { onClose: () => void }) {
               value={equipo}
               onChange={(e) => setEquipo(e.target.value)}
               placeholder="Ej. Mancuernas / Banco inclinado"
-              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText min-h-[48px]"
+              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText min-h-[48px]"
             />
           </div>
 
@@ -299,7 +299,7 @@ function CustomExerciseModal({ onClose }: { onClose: () => void }) {
             <select
               value={parentId}
               onChange={(e) => setParentId(e.target.value)}
-              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-white min-h-[48px]"
+              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText min-h-[48px]"
             >
               <option value="">Ninguno</option>
               {globalExercises.map((ex) => (
@@ -310,7 +310,7 @@ function CustomExerciseModal({ onClose }: { onClose: () => void }) {
             </select>
           </div>
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+          {error && <p className="text-brand-danger text-sm">{error}</p>}
 
           <button
             type="submit"

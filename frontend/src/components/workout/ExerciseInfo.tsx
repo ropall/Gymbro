@@ -23,14 +23,14 @@ export function ExerciseInfo({ blockName, totalExercises }: ExerciseInfoProps) {
         <h2 className="text-brand-lightAccent text-sm font-bold uppercase tracking-wide">
           {blockName}
         </h2>
-        <p className="text-white text-lg font-bold font-[Montserrat]">
+        <p className="text-brand-primaryText text-lg font-bold font-heading">
           Ejercicio {currentExerciseIndex + 1} de {totalExercises}
         </p>
       </div>
 
       {/* Exercise name */}
       <div className="bg-brand-card border border-brand-border rounded-xl p-4">
-        <h1 className="text-white text-2xl font-bold font-[Montserrat] text-center mb-3">
+        <h1 className="text-brand-primaryText text-2xl font-bold font-heading text-center mb-3">
           {exerciseName}
         </h1>
 
@@ -38,21 +38,21 @@ export function ExerciseInfo({ blockName, totalExercises }: ExerciseInfoProps) {
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-brand-dark rounded-lg p-3 text-center">
             <p className="text-brand-mutedText text-xs">Series</p>
-            <p className="text-white text-lg font-bold">{be.series_objetivo}</p>
+            <p className="text-brand-primaryText text-lg font-bold">{be.series_objetivo}</p>
           </div>
           <div className="bg-brand-dark rounded-lg p-3 text-center">
             <p className="text-brand-mutedText text-xs">Reps</p>
-            <p className="text-white text-lg font-bold">
+            <p className="text-brand-primaryText text-lg font-bold">
               {be.reps_objetivo_min}-{be.reps_objetivo_max ?? '?'}
             </p>
           </div>
           <div className="bg-brand-dark rounded-lg p-3 text-center">
             <p className="text-brand-mutedText text-xs">RPE</p>
-            <p className="text-white text-lg font-bold">{be.rpe_objetivo ?? '—'}</p>
+            <p className="text-brand-primaryText text-lg font-bold">{be.rpe_objetivo ?? '—'}</p>
           </div>
           <div className="bg-brand-dark rounded-lg p-3 text-center">
             <p className="text-brand-mutedText text-xs">Descanso</p>
-            <p className="text-white text-lg font-bold">{be.descanso_segundos ?? '—'}s</p>
+            <p className="text-brand-primaryText text-lg font-bold">{be.descanso_segundos ?? '—'}s</p>
           </div>
         </div>
       </div>

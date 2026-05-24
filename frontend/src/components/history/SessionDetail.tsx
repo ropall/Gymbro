@@ -42,7 +42,7 @@ export function SessionDetail() {
         >
           ← Volver al historial
         </Link>
-        <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="p-4 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
           {error ?? 'Sesión no encontrada'}
         </div>
       </div>
@@ -70,7 +70,7 @@ export function SessionDetail() {
 
       {/* Session header */}
       <div className="bg-brand-card border border-brand-border rounded-xl p-4">
-        <h2 className="text-white text-xl font-bold font-[Montserrat] mb-1">
+        <h2 className="text-brand-primaryText text-xl font-bold font-heading mb-1">
           {detail.session.block_name ?? 'Entrenamiento'}
         </h2>
         <p className="text-brand-mutedText text-sm capitalize">
@@ -89,7 +89,7 @@ export function SessionDetail() {
             className="bg-brand-card border border-brand-border rounded-xl p-4"
           >
             <div className="mb-3">
-              <h3 className="text-white font-bold text-lg">
+              <h3 className="text-brand-primaryText font-bold text-lg">
                 {exercise.exercise_name}
               </h3>
               {exercise.snapshot_grupo_muscular && (
@@ -125,7 +125,7 @@ export function SessionDetail() {
                         key={set.orden_serie}
                         className="border-b border-brand-border/50 last:border-0"
                       >
-                        <td className="py-3 pr-4 text-white font-medium">
+                        <td className="py-3 pr-4 text-brand-primaryText font-medium">
                           {set.orden_serie}
                         </td>
                         <td className="py-3 pr-4 text-right text-brand-lightAccent">

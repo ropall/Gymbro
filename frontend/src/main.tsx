@@ -4,6 +4,17 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App'
 import { useAuthStore } from './stores/authStore'
+import { useThemeStore } from './stores/themeStore'
+
+function ThemeInitializer({ children }: { children: React.ReactNode }) {
+  const init = useThemeStore((state) => state.init)
+
+  useEffect(() => {
+    init()
+  }, [init])
+
+  return <>{children}</>
+}
 
 function AuthInitializer({ children }: { children: React.ReactNode }) {
   const initialize = useAuthStore((state) => state.initialize)
@@ -18,9 +29,11 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthInitializer>
-        <App />
-      </AuthInitializer>
+      <ThemeInitializer>
+        <AuthInitializer>
+          <App />
+        </AuthInitializer>
+      </ThemeInitializer>
     </BrowserRouter>
   </StrictMode>,
 )

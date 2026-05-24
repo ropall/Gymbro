@@ -80,7 +80,7 @@ export function Onboarding() {
         <div className="flex items-center justify-between mb-3">
           <button
             onClick={handlePrev}
-            className="text-brand-mutedText hover:text-white text-sm font-medium"
+            className="text-brand-mutedText hover:text-brand-primaryText text-sm font-medium"
           >
             ← {step === 1 ? 'Volver' : 'Anterior'}
           </button>
@@ -110,7 +110,7 @@ export function Onboarding() {
         {step === 5 && <StepSummary />}
 
         {(error || submitError) && (
-          <div className="mt-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+          <div className="mt-4 p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
             {error || submitError}
           </div>
         )}

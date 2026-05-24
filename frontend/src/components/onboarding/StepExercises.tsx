@@ -90,7 +90,7 @@ export function StepExercises() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-white mb-2 font-[Montserrat]">
+        <h3 className="text-lg font-bold text-brand-primaryText mb-2 font-heading">
           Selecciona ejercicios
         </h3>
         <p className="text-brand-mutedText text-sm mb-4">
@@ -104,7 +104,7 @@ export function StepExercises() {
           className="bg-brand-card border border-brand-border rounded-xl p-4 space-y-3"
         >
           <div className="flex items-center justify-between">
-            <h4 className="text-white font-bold font-[Montserrat]">
+            <h4 className="text-brand-primaryText font-bold font-heading">
               Día {day.index + 1}
               {day.muscleGroups.length > 0 && (
                 <span className="text-brand-mutedText text-sm font-normal ml-2">
@@ -136,7 +136,7 @@ export function StepExercises() {
                       className="w-5 h-5 accent-brand-accent rounded"
                     />
                     <div className="flex-1">
-                      <p className="text-white text-sm font-medium">{ex.nombre}</p>
+                      <p className="text-brand-primaryText text-sm font-medium">{ex.nombre}</p>
                       <p className="text-brand-mutedText text-xs">{ex.grupoMuscular}</p>
                     </div>
                   </label>
@@ -155,7 +155,7 @@ export function StepExercises() {
               onChange={(e) =>
                 setSearchQueries((prev) => ({ ...prev, [day.index]: e.target.value }))
               }
-              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText text-sm min-h-[44px]"
+              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText text-sm min-h-[44px]"
             />
             {searchQueries[day.index]?.trim() && (
               <div className="mt-2 space-y-2 max-h-48 overflow-y-auto">
@@ -174,7 +174,7 @@ export function StepExercises() {
                         className="w-5 h-5 accent-brand-accent rounded"
                       />
                       <div className="flex-1">
-                        <p className="text-white text-sm">{ex.nombre}</p>
+                        <p className="text-brand-primaryText text-sm">{ex.nombre}</p>
                         <p className="text-brand-mutedText text-xs">{ex.grupoMuscular}</p>
                       </div>
                     </label>
@@ -204,7 +204,7 @@ export function StepExercises() {
                   onChange={(e) =>
                     setCustomNames((prev) => ({ ...prev, [day.index]: e.target.value }))
                   }
-                  className="flex-1 bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText text-sm min-h-[44px]"
+                  className="flex-1 bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText text-sm min-h-[44px]"
                 />
                 <button
                   onClick={() => handleAddCustom(day.index)}

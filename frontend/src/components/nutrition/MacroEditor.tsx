@@ -64,7 +64,7 @@ export function MacroEditor({ calorias, proteinas, carbohidratos, grasas, onSave
             <div className="flex items-center justify-center gap-1 mt-1">
               <input
                 type="number"
-                className="w-20 text-center bg-brand-dark border border-brand-accent rounded px-2 py-1 text-xl font-extrabold text-white outline-none"
+                className="w-20 text-center bg-brand-dark border border-brand-accent rounded px-2 py-1 text-xl font-extrabold text-brand-primaryText outline-none"
                 value={currentValues[key] ?? ''}
                 onChange={(e) => handleChange(key, e.target.value)}
                 onBlur={handleBlur}
@@ -74,7 +74,7 @@ export function MacroEditor({ calorias, proteinas, carbohidratos, grasas, onSave
               <span className="text-sm text-brand-mutedText">{suffix}</span>
             </div>
           ) : (
-            <span className="text-xl font-extrabold text-white mt-1 block">
+            <span className="text-xl font-extrabold text-brand-primaryText mt-1 block">
               {currentValues[key] ?? '—'} <span className="text-sm font-normal text-brand-mutedText">{suffix}</span>
             </span>
           )}

@@ -21,41 +21,31 @@ export function MetricsCard() {
       : null
 
   return (
-    <div className="bg-brand-card rounded-lg p-4 border border-brand-border">
-      <h3 className="text-brand-lightAccent font-semibold mb-3 font-[Montserrat]">
-        Métricas básicas
+    <div className="card">
+      <h3 className="text-brand-lightAccent font-semibold mb-4 font-heading text-sm uppercase tracking-wide">
+        Resumen calculado
       </h3>
 
-      <div className="grid grid-cols-2 gap-3 text-sm">
-        <div>
-          <span className="text-brand-mutedText">Sexo</span>
-          <p className="text-white font-medium">
-            {hasProfile ? (profile.sexo === 'masculino' ? 'Masculino' : 'Femenino') : '—'}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <div className="p-3 rounded-lg bg-brand-dark/40">
+          <span className="text-brand-mutedText text-xs">IMC</span>
+          <p className="text-brand-primaryText font-bold text-lg mt-1">
+            {imc !== null ? imc : '—'}
           </p>
         </div>
-        <div>
-          <span className="text-brand-mutedText">Edad</span>
-          <p className="text-white font-medium">{edad !== null ? `${edad} años` : '—'}</p>
-        </div>
-        <div>
-          <span className="text-brand-mutedText">Altura</span>
-          <p className="text-white font-medium">
-            {hasProfile ? `${profile.altura} cm` : '—'}
+        <div className="p-3 rounded-lg bg-brand-dark/40">
+          <span className="text-brand-mutedText text-xs">TMB</span>
+          <p className="text-brand-primaryText font-bold text-lg mt-1">
+            {tmb !== null ? `${tmb}` : '—'}
           </p>
+          <p className="text-[10px] text-brand-mutedText">kcal/día</p>
         </div>
-        <div>
-          <span className="text-brand-mutedText">Peso actual</span>
-          <p className="text-white font-medium">
-            {hasWeight ? `${latestWeight.peso} kg` : '—'}
+        <div className="p-3 rounded-lg bg-brand-dark/40 col-span-2 md:col-span-1">
+          <span className="text-brand-mutedText text-xs">Edad</span>
+          <p className="text-brand-primaryText font-bold text-lg mt-1">
+            {edad !== null ? `${edad}` : '—'}
           </p>
-        </div>
-        <div>
-          <span className="text-brand-mutedText">IMC</span>
-          <p className="text-white font-medium">{imc !== null ? imc : '—'}</p>
-        </div>
-        <div>
-          <span className="text-brand-mutedText">TMB (Mifflin-St Jeor)</span>
-          <p className="text-white font-medium">{tmb !== null ? `${tmb} kcal/día` : '—'}</p>
+          <p className="text-[10px] text-brand-mutedText">años</p>
         </div>
       </div>
     </div>

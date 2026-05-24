@@ -71,23 +71,23 @@ export function Rutinas() {
   return (
     <div className="p-4 pb-20">
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-5">
         <button
           onClick={() => setActiveTab('rutina')}
-          className={`flex-1 py-2 rounded-lg text-sm font-bold transition-colors ${
+          className={`flex-1 h-10 rounded-[10px] text-sm font-bold transition-colors ${
             activeTab === 'rutina'
               ? 'bg-brand-accent text-white'
-              : 'bg-brand-card text-brand-mutedText border border-brand-border'
+              : 'bg-brand-card text-brand-mutedText border border-brand-border hover:text-brand-primaryText'
           }`}
         >
           Mi Rutina
         </button>
         <button
           onClick={() => setActiveTab('catalogo')}
-          className={`flex-1 py-2 rounded-lg text-sm font-bold transition-colors ${
+          className={`flex-1 h-10 rounded-[10px] text-sm font-bold transition-colors ${
             activeTab === 'catalogo'
               ? 'bg-brand-accent text-white'
-              : 'bg-brand-card text-brand-mutedText border border-brand-border'
+              : 'bg-brand-card text-brand-mutedText border border-brand-border hover:text-brand-primaryText'
           }`}
         >
           Catálogo
@@ -95,7 +95,7 @@ export function Rutinas() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="mb-4 p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
           {error}
         </div>
       )}
