@@ -22,6 +22,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
     e.preventDefault()
 
     await setProfile({
+      fullName: null,
       sexo: skipped.sexo ? 'masculino' : (sexo as Sexo),
       altura: skipped.altura ? 170 : parseInt(altura, 10),
       fechaNacimiento: skipped.fechaNacimiento ? todayISO() : fechaNacimiento,
