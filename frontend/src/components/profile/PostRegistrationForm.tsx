@@ -4,8 +4,7 @@ import { todayISO } from '../../utils/calculations'
 import type { Sexo } from '../../types'
 
 export function PostRegistrationForm({ onComplete }: { onComplete: () => void }) {
-  const setProfile = useMetricsStore((state) => state.setProfile)
-  const addWeight = useMetricsStore((state) => state.addWeight)
+  const { setProfile, addWeight } = useMetricsStore()
 
   const [sexo, setSexo] = useState<Sexo | ''>('')
   const [altura, setAltura] = useState('')
@@ -22,20 +21,23 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    const profileData = {
-      sexo: skipped.sexo ? undefined : (sexo as Sexo),
-      altura: skipped.altura ? undefined : parseInt(altura, 10),
-      fechaNacimiento: skipped.fechaNacimiento ? undefined : fechaNacimiento,
-    }
-
-    // Only set profile if at least one field is filled
-    if (profileData.sexo || profileData.altura || profileData.fechaNacimiento) {
-      await setProfile({
-        sexo: profileData.sexo ?? 'masculino',
-        altura: profileData.altura ?? 170,
-        fechaNacimiento: profileData.fechaNacimiento ?? todayISO(),
-      })
-    }
+    await setProfile({
+      sexo: skipped.sexo ? 'masculino' : (sexo as Sexo),
+      altura: skipped.altura ? 170 : parseInt(altura, 10),
+      fechaNacimiento: skipped.fechaNacimiento ? todayISO() : fechaNacimiento,
+      pesoObjetivo: null,
+      nivelActividad: 'moderado',
+      objetivoPrincipal: 'hipertrofia',
+      nivelExperiencia: null,
+      cronotipo: 'alondra',
+      splitPreferido: 'PPL',
+      diasDisponibles: null,
+      nivelEnergia: null,
+      somatotipo: null,
+      horarioSueno: null,
+      fotoPerfil: null,
+      onboardingCompletado: true,
+    })
 
     if (!skipped.peso) {
       await addWeight(parseFloat(peso), todayISO())
@@ -47,7 +49,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
   return (
     <div className="fixed inset-0 bg-brand-dark/95 z-40 flex items-center justify-center p-4">
       <div className="bg-brand-card rounded-lg p-6 w-full max-w-sm border border-brand-border">
-        <h2 className="text-xl font-bold text-white mb-4 font-[Montserrat]">
+        <h2 className="text-xl font-bold text-brand-primaryText mb-4 font-heading">
           Completa tu perfil
         </h2>
         <p className="text-brand-mutedText text-sm mb-4">
@@ -61,7 +63,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
               id="post-sexo"
               value={sexo}
               onChange={(e) => setSexo(e.target.value as Sexo)}
-              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-white min-h-[48px]"
+              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText min-h-[48px]"
             >
               <option value="">Omitir</option>
               <option value="masculino">Masculino</option>
@@ -77,7 +79,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
               value={altura}
               onChange={(e) => setAltura(e.target.value)}
               placeholder="Omitir"
-              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText min-h-[48px]"
+              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText min-h-[48px]"
             />
           </div>
 
@@ -88,7 +90,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
               type="date"
               value={fechaNacimiento}
               onChange={(e) => setFechaNacimiento(e.target.value)}
-              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-white min-h-[48px]"
+              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText min-h-[48px]"
             />
           </div>
 
@@ -101,7 +103,7 @@ export function PostRegistrationForm({ onComplete }: { onComplete: () => void })
               value={peso}
               onChange={(e) => setPeso(e.target.value)}
               placeholder="Omitir"
-              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText min-h-[48px]"
+              className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText min-h-[48px]"
             />
           </div>
 

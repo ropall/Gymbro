@@ -43,7 +43,7 @@ export function ExerciseProgress() {
           placeholder="Buscar ejercicio..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-3 text-white text-sm min-h-[48px] focus:border-brand-lightAccent focus:outline-none mb-3"
+          className="w-full bg-brand-dark border border-brand-border rounded-lg px-4 py-3 text-brand-primaryText text-sm min-h-[48px] focus:border-brand-lightAccent focus:outline-none mb-3"
         />
         <div className="max-h-48 overflow-y-auto space-y-1">
           {filteredExercises.slice(0, 10).map((exercise) => (
@@ -53,7 +53,7 @@ export function ExerciseProgress() {
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                 selectedExerciseId === exercise.id
                   ? 'bg-brand-lightAccent/20 text-brand-lightAccent'
-                  : 'bg-brand-dark text-white hover:bg-brand-dark/80'
+                  : 'bg-brand-dark text-brand-primaryText hover:bg-brand-dark/80'
               }`}
             >
               {exercise.nombre}
@@ -103,7 +103,7 @@ export function ExerciseProgress() {
       )}
 
       {error && (
-        <div className="p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm">
+        <div className="p-4 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
           {error}
         </div>
       )}
@@ -118,7 +118,7 @@ export function ExerciseProgress() {
 
       {!isLoading && !error && progress && progress.sessions.length > 0 && (
         <div className="bg-brand-card border border-brand-border rounded-xl p-4">
-          <h3 className="text-white font-bold text-lg mb-1">
+          <h3 className="text-brand-primaryText font-bold text-lg mb-1">
             {progress.exercise_name}
           </h3>
           {progress.snapshot_grupo_muscular && (
@@ -144,7 +144,7 @@ export function ExerciseProgress() {
                     key={session.session_id}
                     className="border-b border-brand-border/50 last:border-0"
                   >
-                    <td className="py-3 pr-4 text-white">
+                    <td className="py-3 pr-4 text-brand-primaryText">
                       {new Date(session.fecha_completado).toLocaleDateString('es-ES')}
                     </td>
                     <td className="py-3 text-right text-brand-lightAccent font-bold">

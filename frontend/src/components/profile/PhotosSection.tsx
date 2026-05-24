@@ -28,7 +28,7 @@ export function PhotosSection() {
 
   return (
     <div className="bg-brand-card rounded-lg p-4 border border-brand-border mt-4">
-      <h3 className="text-brand-lightAccent font-semibold mb-3 font-[Montserrat]">
+      <h3 className="text-brand-lightAccent font-semibold mb-3 font-heading">
         Fotos de progreso
       </h3>
 
@@ -46,7 +46,7 @@ export function PhotosSection() {
             type="date"
             value={fecha}
             onChange={(e) => setFecha(e.target.value)}
-            className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-white min-h-[48px]"
+            className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText min-h-[48px]"
           />
           <label
             htmlFor="photo-upload"
@@ -78,7 +78,7 @@ export function PhotosSection() {
               </span>
               <button
                 onClick={() => removePhoto(photo.id)}
-                className="absolute top-1 right-1 bg-red-500/80 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 bg-brand-dangerBg text-white text-xs rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                 aria-label="Eliminar foto"
               >
                 ×

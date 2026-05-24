@@ -1,9 +1,71 @@
 export type Sexo = 'masculino' | 'femenino'
 
+export type NivelActividad = 'sedentario' | 'ligero' | 'moderado' | 'intenso'
+
+export type ObjetivoPrincipal = 'hipertrofia' | 'perdida_grasa' | 'fuerza_maxima' | 'resistencia'
+
+export type NivelExperiencia = 'principiante' | 'intermedio' | 'avanzado'
+
+export type Cronotipo = 'alondra' | 'buho'
+
+export type SplitPreferido = 'PPL' | 'upper_lower' | 'fullbody'
+
+export type Somatotipo = 'ectomorfo' | 'mesomorfo' | 'endomorfo'
+
+export const NIVEL_ACTIVIDAD_LABELS: Record<NivelActividad, string> = {
+  sedentario: 'Sedentario',
+  ligero: 'Ligero (1-2 días/semana)',
+  moderado: 'Moderado (3-5 días/semana)',
+  intenso: 'Intenso (6-7 días/semana)',
+}
+
+export const OBJETIVO_LABELS: Record<ObjetivoPrincipal, string> = {
+  hipertrofia: 'Hipertrofia',
+  perdida_grasa: 'Pérdida de grasa',
+  fuerza_maxima: 'Fuerza máxima',
+  resistencia: 'Resistencia',
+}
+
+export const CRONOTIPO_LABELS: Record<Cronotipo, string> = {
+  alondra: 'Alondra (más activo por la mañana)',
+  buho: 'Búho (más activo por la noche)',
+}
+
+export const SPLIT_LABELS: Record<SplitPreferido, string> = {
+  PPL: 'PPL (Push/Pull/Legs)',
+  upper_lower: 'Upper/Lower',
+  fullbody: 'Fullbody',
+}
+
+export const NIVEL_EXPERIENCIA_LABELS: Record<NivelExperiencia, string> = {
+  principiante: 'Principiante',
+  intermedio: 'Intermedio',
+  avanzado: 'Avanzado',
+}
+
+export const SOMATOTIPO_LABELS: Record<Somatotipo, string> = {
+  ectomorfo: 'Ectomorfo (delgado, dificultad para ganar peso)',
+  mesomorfo: 'Mesomorfo (atlético, gana músculo con facilidad)',
+  endomorfo: 'Endomorfo (tiende a acumular grasa)',
+}
+
 export interface Profile {
+  fullName: string | null
   sexo: Sexo
   altura: number // cm
   fechaNacimiento: string // ISO date YYYY-MM-DD
+  pesoObjetivo: number | null
+  nivelActividad: NivelActividad | null
+  objetivoPrincipal: ObjetivoPrincipal | null
+  nivelExperiencia: NivelExperiencia | null
+  cronotipo: Cronotipo | null
+  splitPreferido: SplitPreferido | null
+  diasDisponibles: string | null
+  nivelEnergia: number | null
+  somatotipo: Somatotipo | null
+  horarioSueno: string | null
+  fotoPerfil: string | null
+  onboardingCompletado: boolean
 }
 
 export interface WeightEntry {

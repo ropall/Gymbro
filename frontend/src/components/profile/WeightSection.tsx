@@ -39,7 +39,7 @@ export function WeightSection() {
 
   return (
     <div className="bg-brand-card rounded-lg p-4 border border-brand-border mt-4">
-      <h3 className="text-brand-lightAccent font-semibold mb-3 font-[Montserrat]">
+      <h3 className="text-brand-lightAccent font-semibold mb-3 font-heading">
         Historial de peso
       </h3>
 
@@ -51,17 +51,17 @@ export function WeightSection() {
             placeholder="Peso (kg)"
             value={peso}
             onChange={(e) => setPeso(e.target.value)}
-            className="flex-1 bg-brand-dark border border-brand-border rounded px-3 py-2 text-white placeholder:text-brand-mutedText min-h-[48px]"
+            className="flex-1 bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText min-h-[48px]"
             required
           />
           <input
             type="date"
             value={fecha}
             onChange={(e) => setFecha(e.target.value)}
-            className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-white min-h-[48px]"
+            className="bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText min-h-[48px]"
           />
         </div>
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && <p className="text-brand-danger text-sm">{error}</p>}
         <button
           type="submit"
           className="bg-brand-accent text-white rounded px-4 py-2 font-medium min-h-[48px] active:bg-brand-lightAccent transition-colors"
@@ -80,14 +80,14 @@ export function WeightSection() {
               className="flex justify-between items-center bg-brand-dark rounded px-3 py-2 border border-brand-border"
             >
               <div>
-                <span className="text-white font-medium">{entry.peso} kg</span>
+                <span className="text-brand-primaryText font-medium">{entry.peso} kg</span>
                 <span className="text-brand-mutedText text-sm ml-2">
                   {formatDate(entry.fecha)}
                 </span>
               </div>
               <button
                 onClick={() => removeWeight(entry.id)}
-                className="text-red-400 text-sm hover:text-red-300 px-2 py-1"
+                className="text-brand-danger text-sm hover:text-brand-danger px-2 py-1"
                 aria-label={`Eliminar peso ${entry.peso} kg`}
               >
                 Eliminar

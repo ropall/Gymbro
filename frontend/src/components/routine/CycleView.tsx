@@ -1,5 +1,7 @@
+import { useNavigate } from 'react-router-dom'
 import { useRoutineStore } from '../../stores/routineStore'
 import type { Block, Cycle } from '../../types'
+import { Play, Pencil, Moon, CheckCircle2, Circle, Clock, Dumbbell, ArrowRight } from 'lucide-react'
 
 interface CycleViewProps {
   onEditBlock: (block: Block) => void
@@ -18,29 +20,36 @@ function getBlockStatus(
   return 'pendiente'
 }
 
-function statusLabel(status: ReturnType<typeof getBlockStatus>) {
+function statusConfig(status: ReturnType<typeof getBlockStatus>) {
   switch (status) {
     case 'completado':
-      return 'Completado'
+      return {
+        label: 'Completado',
+        badgeClass: 'bg-brand-accent/20 text-brand-lightAccent border border-brand-accent/30',
+        cardClass: 'border-brand-accent/30',
+        icon: <CheckCircle2 className="w-4 h-4 text-brand-lightAccent" />,
+      }
     case 'actual':
-      return 'Hoy'
+      return {
+        label: 'Hoy',
+        badgeClass: 'bg-brand-lightAccent/20 text-brand-lightAccent border border-brand-lightAccent/30',
+        cardClass: 'border-brand-lightAccent/40 ring-1 ring-brand-lightAccent/20',
+        icon: <Circle className="w-4 h-4 text-brand-lightAccent" />,
+      }
     case 'pendiente':
-      return 'Pendiente'
+      return {
+        label: 'Pendiente',
+        badgeClass: 'bg-brand-dark text-brand-mutedText border border-brand-border',
+        cardClass: 'border-brand-border',
+        icon: <Clock className="w-4 h-4 text-brand-mutedText" />,
+      }
     case 'descanso':
-      return 'Descanso'
-  }
-}
-
-function statusClasses(status: ReturnType<typeof getBlockStatus>) {
-  switch (status) {
-    case 'completado':
-      return 'bg-brand-accent/20 border-brand-accent text-brand-lightAccent'
-    case 'actual':
-      return 'bg-brand-lightAccent/20 border-brand-lightAccent text-brand-lightAccent'
-    case 'pendiente':
-      return 'bg-brand-card border-brand-border text-white'
-    case 'descanso':
-      return 'bg-brand-dark border-brand-border text-brand-mutedText opacity-70'
+      return {
+        label: 'Descanso',
+        badgeClass: 'bg-brand-dark text-brand-mutedText border border-brand-border',
+        cardClass: 'border-brand-border opacity-70',
+        icon: <Moon className="w-4 h-4 text-brand-mutedText" />,
+      }
   }
 }
 
@@ -52,7 +61,7 @@ export function CycleView({ onEditBlock, onStartWorkout, onRestDay }: CycleViewP
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
+      <div className="flex items-center justify-center py-12">
         <div className="text-brand-lightAccent text-lg font-bold animate-pulse">
           Cargando rutina...
         </div>
@@ -61,11 +70,7 @@ export function CycleView({ onEditBlock, onStartWorkout, onRestDay }: CycleViewP
   }
 
   if (blocks.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-brand-mutedText">No tienes una rutina configurada.</p>
-      </div>
-    )
+    return <EmptyRoutineState />
   }
 
   const currentPos = cycle?.posicion_actual ?? 1
@@ -73,47 +78,54 @@ export function CycleView({ onEditBlock, onStartWorkout, onRestDay }: CycleViewP
   const totalTraining = blocks.filter((b) => !b.es_descanso).length
 
   return (
-    <div className="space-y-4">
-      {/* Cycle header */}
-      <div className="bg-brand-card border border-brand-border rounded-xl p-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-white font-bold font-[Montserrat]">Ciclo Actual</h3>
-          <span className="text-brand-lightAccent text-sm font-medium">
-            Posición actual: {currentPos}
+    <div className="space-y-5">
+      {/* Cycle progress card */}
+      <div className="card">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-brand-primaryText font-bold font-heading text-base">Ciclo actual</h3>
+          <span className="badge bg-brand-accent/20 text-brand-lightAccent border border-brand-accent/30">
+            Posición {currentPos}
           </span>
         </div>
-        <div className="w-full bg-brand-dark rounded-full h-2 overflow-hidden">
+        <div className="progress-track mb-2">
           <div
-            className="bg-brand-accent h-2 rounded-full transition-all"
-            style={{ width: `${(currentPos / 7) * 100}%` }}
+            className="progress-fill"
+            style={{ width: `${totalTraining > 0 ? (currentPos / 7) * 100 : 0}%` }}
           />
         </div>
-        <p className="text-brand-mutedText text-xs mt-2">
+        <p className="text-brand-mutedText text-xs">
           {completedCount} de {totalTraining} entrenamientos completados
         </p>
       </div>
 
       {/* Days list */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         {blocks.map((block) => {
           const status = getBlockStatus(block, cycle)
-          const isEditable = cycle?.activo
-            ? block.posicion > currentPos
-            : true
+          const config = statusConfig(status)
+          const isEditable = cycle?.activo ? block.posicion > currentPos : true
           const isCurrent = block.posicion === currentPos
           const exercises = blockExercises.filter((e) => e.block_id === block.id)
 
           return (
             <div
               key={block.id}
-              className={`rounded-xl border p-4 ${statusClasses(status)}`}
+              data-testid="block-card"
+              className={`card ${config.cardClass} ${isCurrent ? 'bg-brand-elevated' : ''}`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg font-black">{block.posicion}</span>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-brand-dark flex items-center justify-center shrink-0">
+                    {config.icon}
+                  </div>
                   <div>
-                    <h4 className="font-bold">{block.nombre}</h4>
-                    <span className="text-xs opacity-80">{statusLabel(status)}</span>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-bold text-sm text-brand-primaryText">{block.nombre}</h4>
+                      <span className={`badge ${config.badgeClass}`}>{config.label}</span>
+                    </div>
+                    <p className="text-xs text-brand-mutedText mt-0.5">
+                      Día {block.posicion}{block.es_descanso ? ' · Recuperación' : ''}
+                    </p>
                   </div>
                 </div>
 
@@ -121,26 +133,27 @@ export function CycleView({ onEditBlock, onStartWorkout, onRestDay }: CycleViewP
                   {isCurrent && !block.es_descanso && (
                     <button
                       onClick={() => onStartWorkout(block)}
-                      className="bg-brand-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold active:bg-brand-lightAccent transition-colors"
+                      className="btn-primary h-9 px-3 text-[13px] gap-1.5"
                     >
-                      Empezar Rutina
+                      <Play className="w-3.5 h-3.5" />
+                      Entrenar
                     </button>
                   )}
                   {isCurrent && block.es_descanso && (
                     <button
                       onClick={onRestDay}
-                      className="bg-brand-accent text-white px-3 py-1.5 rounded-lg text-sm font-bold active:bg-brand-lightAccent transition-colors"
+                      className="btn-primary h-9 px-3 text-[13px]"
                     >
-                      Hoy descanso
+                      Descansar
                     </button>
                   )}
                   {isEditable && (
                     <button
                       onClick={() => onEditBlock(block)}
                       aria-label="Editar bloque"
-                      className="bg-brand-dark border border-brand-border text-white px-3 py-1.5 rounded-lg text-sm active:bg-brand-card transition-colors"
+                      className="btn-compact w-9 h-9 p-0"
                     >
-                      Editar
+                      <Pencil className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -148,12 +161,16 @@ export function CycleView({ onEditBlock, onStartWorkout, onRestDay }: CycleViewP
 
               {/* Exercises preview */}
               {!block.es_descanso && exercises.length > 0 && (
-                <div className="mt-2 space-y-1">
+                <div className="space-y-1.5 pt-2 border-t border-brand-border">
                   {exercises.map((ex) => (
-                    <p key={ex.id} className="text-xs opacity-80">
-                      {ex.exercise?.nombre ?? 'Ejercicio'} — {ex.series_objetivo} series ·{' '}
-                      {ex.reps_objetivo_min}-{ex.reps_objetivo_max} reps
-                    </p>
+                    <div key={ex.id} className="flex items-center justify-between py-1.5 px-2 rounded-md bg-brand-dark/40">
+                      <span className="text-xs text-brand-primaryText font-medium">
+                        {ex.exercise?.nombre ?? 'Ejercicio'}
+                      </span>
+                      <span className="text-[11px] text-brand-mutedText shrink-0">
+                        {ex.series_objetivo} series · {ex.reps_objetivo_min}-{ex.reps_objetivo_max} reps
+                      </span>
+                    </div>
                   ))}
                 </div>
               )}
@@ -161,6 +178,37 @@ export function CycleView({ onEditBlock, onStartWorkout, onRestDay }: CycleViewP
           )
         })}
       </div>
+    </div>
+  )
+}
+
+function EmptyRoutineState() {
+  const navigate = useNavigate()
+
+  return (
+    <div className="card py-10 px-6 text-center">
+      <div className="w-14 h-14 rounded-[14px] bg-brand-accent/15 flex items-center justify-center mx-auto mb-5">
+        <Dumbbell className="w-7 h-7 text-brand-lightAccent" />
+      </div>
+
+      <h3 className="text-lg font-bold text-brand-primaryText font-heading tracking-tight mb-2">
+        No tienes una rutina
+      </h3>
+      <p className="text-brand-mutedText text-sm max-w-[260px] mx-auto mb-6 leading-relaxed">
+        Configura tu plan semanal para empezar a entrenar con consistencia y seguimiento.
+      </p>
+
+      <button
+        onClick={() => navigate('/onboarding')}
+        className="btn-primary gap-2 mx-auto"
+      >
+        Crear mi rutina
+        <ArrowRight className="w-4 h-4" />
+      </button>
+
+      <p className="text-brand-mutedText text-xs mt-5">
+        El onboarding te guiará paso a paso.
+      </p>
     </div>
   )
 }

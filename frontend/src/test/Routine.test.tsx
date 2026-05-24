@@ -142,7 +142,7 @@ describe('Routine/Block/Cycle Management', () => {
     })
 
     // Position 1 should be marked as current
-    expect(screen.getByText(/Posición actual: 1/i)).toBeInTheDocument()
+    expect(screen.getByText(/Posición 1/i)).toBeInTheDocument()
   })
 
   it('shows "Empezar Rutina" for current training day', async () => {
@@ -157,7 +157,7 @@ describe('Routine/Block/Cycle Management', () => {
       expect(screen.queryByText(/Cargando rutina/i)).not.toBeInTheDocument()
     })
 
-    expect(screen.getByRole('button', { name: /Empezar Rutina/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Entrenar/i })).toBeInTheDocument()
   })
 
   it('shows "Hoy descanso" for rest days', async () => {
@@ -172,7 +172,7 @@ describe('Routine/Block/Cycle Management', () => {
       expect(screen.queryByText(/Cargando rutina/i)).not.toBeInTheDocument()
     })
 
-    expect(screen.getByRole('button', { name: /Hoy descanso/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Descansar/i })).toBeInTheDocument()
   })
 
   it('advances cycle on rest day confirmation', async () => {
@@ -188,10 +188,10 @@ describe('Routine/Block/Cycle Management', () => {
       expect(screen.queryByText(/Cargando rutina/i)).not.toBeInTheDocument()
     })
 
-    await user.click(screen.getByRole('button', { name: /Hoy descanso/i }))
+    await user.click(screen.getByRole('button', { name: /Descansar/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/Posición actual: 4/i)).toBeInTheDocument()
+      expect(screen.getByText(/Posición 4/i)).toBeInTheDocument()
     })
   })
 
@@ -210,11 +210,11 @@ describe('Routine/Block/Cycle Management', () => {
     console.log('CYCLE:', useRoutineStore.getState().cycle)
 
     // Position 1 (current) should not have edit button
-    const day1Card = screen.getByText(/Día 1 - Pecho/i).closest('div.rounded-xl')!
+    const day1Card = screen.getByText(/Día 1 - Pecho/i).closest('[data-testid="block-card"]')!
     expect(day1Card.querySelector('button[aria-label="Editar bloque"]')).not.toBeInTheDocument()
 
     // Position 2+ should have edit button
-    const day2Card = screen.getByText(/Día 2 - Espalda/i).closest('div.rounded-xl')!
+    const day2Card = screen.getByText(/Día 2 - Espalda/i).closest('[data-testid="block-card"]')!
     expect(day2Card.querySelector('button[aria-label="Editar bloque"]')).toBeInTheDocument()
   })
 
@@ -231,7 +231,7 @@ describe('Routine/Block/Cycle Management', () => {
       expect(screen.queryByText(/Cargando rutina/i)).not.toBeInTheDocument()
     })
 
-    const day2Card = screen.getByText(/Día 2 - Espalda/i).closest('div.rounded-xl')!
+    const day2Card = screen.getByText(/Día 2 - Espalda/i).closest('[data-testid="block-card"]')!
     const editBtn = day2Card.querySelector('button[aria-label="Editar bloque"]')!
     await user.click(editBtn)
 
@@ -252,7 +252,7 @@ describe('Routine/Block/Cycle Management', () => {
     })
 
     // Complete the final block
-    await user.click(screen.getByRole('button', { name: /Empezar Rutina/i }))
+    await user.click(screen.getByRole('button', { name: /Entrenar/i }))
     // Simulate completing workout (this would normally be done via Active Workout mode)
     // For this test, we directly call advancePosition
     useRoutineStore.getState().advancePosition()
@@ -286,7 +286,7 @@ describe('Routine/Block/Cycle Management', () => {
     await user.click(screen.getByRole('button', { name: /Iniciar nuevo ciclo/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/Posición actual: 1/i)).toBeInTheDocument()
+      expect(screen.getByText(/Posición 1/i)).toBeInTheDocument()
     })
   })
 
@@ -303,7 +303,7 @@ describe('Routine/Block/Cycle Management', () => {
     })
 
     // Verify initial position
-    expect(screen.getByText(/Posición actual: 1/i)).toBeInTheDocument()
+    expect(screen.getByText(/Posición 1/i)).toBeInTheDocument()
 
     // Complete the current block
     await useRoutineStore.getState().completeBlock({
@@ -320,7 +320,7 @@ describe('Routine/Block/Cycle Management', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByText(/Posición actual: 2/i)).toBeInTheDocument()
+      expect(screen.getByText(/Posición 2/i)).toBeInTheDocument()
     })
   })
 
