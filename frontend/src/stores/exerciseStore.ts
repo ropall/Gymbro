@@ -37,7 +37,7 @@ function mapSeedGroupToMuscleGroup(seedGroup: string): MuscleGroup {
   if (seedGroup.includes('Bíceps')) return 'Bíceps/Antebrazos'
   if (seedGroup.includes('Tríceps')) return 'Tríceps'
   if (seedGroup.includes('Cuádriceps')) return 'Cuádriceps'
-  if (seedGroup.includes('Isquiosurales') || seedGroup.includes('Femorales')) return 'Isquiosurales'
+  if (seedGroup.includes('Isquiotibiales') || seedGroup.includes('Femorales')) return 'Isquiotibiales'
   if (seedGroup.includes('Glúteos')) return 'Glúteos'
   if (seedGroup.includes('Pantorrillas')) return 'Pantorrillas'
   if (seedGroup.includes('Abdomen') || seedGroup.includes('Core')) return 'Abdomen/Core'

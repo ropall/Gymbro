@@ -142,6 +142,87 @@ describe('Perfil page', () => {
     const tmbExpected = Math.round(10 * 80 + 6.25 * 180 - 5 * edad + 5)
     expect(screen.getByText(String(tmbExpected))).toBeInTheDocument()
   })
+
+  it('shows TDEE (kcal/día) in metrics card based on activity level', async () => {
+    setAuthUser()
+    useMetricsStore.setState({
+      profile: { ...defaultProfile, altura: 180, nivelActividad: 'moderado' as const },
+      weightEntries: [{ id: 'w1', peso: 80, fecha: '2024-01-15' }],
+    })
+    render(<Perfil />)
+    await waitFor(() => {
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
+    })
+    const currentYear = new Date().getFullYear()
+    const edad = currentYear - 1992
+    const tmb = Math.round(10 * 80 + 6.25 * 180 - 5 * edad + 5)
+    const tdeeExpected = Math.round(tmb * 1.55)
+    expect(screen.getByText(String(tdeeExpected))).toBeInTheDocument()
+  })
+
+  it('shows save and cancel buttons when editing a field', async () => {
+    const user = userEvent.setup()
+    setAuthUser()
+    useMetricsStore.setState({
+      profile: { ...defaultProfile },
+      weightEntries: [],
+    })
+    render(<Perfil />)
+    await waitFor(() => {
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
+    })
+
+    await user.click(screen.getByTitle('Editar nombre'))
+    expect(screen.getByRole('button', { name: /^Guardar$/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^Cancelar$/i })).toBeInTheDocument()
+  })
+
+  it('saves field value when clicking save button', async () => {
+    const user = userEvent.setup()
+    setAuthUser()
+    const updateProfileSpy = vi.spyOn(useMetricsStore.getState(), 'updateProfile')
+    useMetricsStore.setState({
+      profile: { ...defaultProfile },
+      weightEntries: [],
+    })
+    render(<Perfil />)
+    await waitFor(() => {
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
+    })
+
+    await user.click(screen.getByTitle('Editar altura'))
+    const alturaInput = screen.getByDisplayValue('175')
+    await user.clear(alturaInput)
+    await user.type(alturaInput, '180')
+    await user.click(screen.getByRole('button', { name: /^Guardar$/i }))
+
+    expect(updateProfileSpy).toHaveBeenCalledWith({ altura: 180 })
+    updateProfileSpy.mockRestore()
+  })
+
+  it('cancels editing without saving when clicking cancel', async () => {
+    const user = userEvent.setup()
+    setAuthUser()
+    const updateProfileSpy = vi.spyOn(useMetricsStore.getState(), 'updateProfile')
+    useMetricsStore.setState({
+      profile: { ...defaultProfile },
+      weightEntries: [],
+    })
+    render(<Perfil />)
+    await waitFor(() => {
+      expect(screen.queryByText('Cargando perfil...')).not.toBeInTheDocument()
+    })
+
+    await user.click(screen.getByTitle('Editar altura'))
+    const alturaInput = screen.getByDisplayValue('175')
+    await user.clear(alturaInput)
+    await user.type(alturaInput, '999')
+    await user.click(screen.getByRole('button', { name: /^Cancelar$/i }))
+
+    expect(updateProfileSpy).not.toHaveBeenCalled()
+    expect(screen.getByText('175 cm')).toBeInTheDocument()
+    updateProfileSpy.mockRestore()
+  })
 })
 
 describe('Weight history', () => {
