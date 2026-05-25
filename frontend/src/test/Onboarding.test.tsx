@@ -155,26 +155,38 @@ describe('Onboarding Wizard', () => {
     await user.click(day3Button)
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 2
+    // Step 2 — Cards view
     await waitFor(() => {
-      expect(screen.getByText(/Grupos musculares por día/i)).toBeInTheDocument()
+      expect(screen.getByText(/Construye tu rutina/i)).toBeInTheDocument()
     })
 
-    // Select muscle group for the single training day
-    const dayCard = screen.getByText('Día 1').closest('div')!
-    await user.click(dayCard.querySelector('button')!)
+    // Open picker for the single training day
+    await user.click(screen.getByRole('button', { name: /Crear/i }))
+
+    // Modal opens with exercise list
+    await waitFor(() => {
+      expect(screen.getByText(/Día 1/i)).toBeInTheDocument()
+    })
+
+    // Select first exercise in the modal — auto-selects because only 1 equipment option
+    const exerciseButtons = screen.getAllByRole('button', { name: /Press de Banca Plano/i })
+    expect(exerciseButtons.length).toBeGreaterThan(0)
+    await user.click(exerciseButtons[0])
+
+    // Close modal
+    await user.click(screen.getByRole('button', { name: /Listo/i }))
+
+    // Back to step 2
+    await waitFor(() => {
+      expect(screen.getByText(/Construye tu rutina/i)).toBeInTheDocument()
+    })
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 3
+    // Step 3 — Review exercises
     await waitFor(() => {
-      expect(screen.getByText(/Selecciona ejercicios/i)).toBeInTheDocument()
+      expect(screen.getByText(/Revisa tus ejercicios/i)).toBeInTheDocument()
     })
-
-    // Check first suggested exercise
-    const checkboxes = screen.getAllByRole('checkbox')
-    expect(checkboxes.length).toBeGreaterThan(0)
-    await user.click(checkboxes[0])
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
@@ -193,7 +205,7 @@ describe('Onboarding Wizard', () => {
     expect(screen.getByRole('button', { name: /Finalizar y crear rutina/i })).toBeInTheDocument()
   })
 
-  it('filters exercise suggestions by muscle group', async () => {
+  it('auto-detects muscle groups from selected exercises', async () => {
     const user = userEvent.setup()
     mockSupabaseForOnboarding()
     render(
@@ -211,27 +223,49 @@ describe('Onboarding Wizard', () => {
     await user.click(day3Btn)
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 2 - Select 'Pecho' for Day 1
+    // Step 2 — Open picker for Day 1
     await waitFor(() => {
-      expect(screen.getByText(/Grupos musculares por día/i)).toBeInTheDocument()
+      expect(screen.getByText(/Construye tu rutina/i)).toBeInTheDocument()
     })
 
-    const day1Card = screen.getByText('Día 1').closest('div')!
-    const pechoButton = day1Card.querySelector('button')!
-    await user.click(pechoButton)
+    await user.click(screen.getByRole('button', { name: /Crear/i }))
 
-    await user.click(screen.getByRole('button', { name: /Siguiente/i }))
-
-    // Step 3
+    // Modal opens
     await waitFor(() => {
-      expect(screen.getByText(/Selecciona ejercicios/i)).toBeInTheDocument()
+      expect(screen.getByText(/Día 1/i)).toBeInTheDocument()
     })
 
-    // The global exercise 'Press de Banca Plano' is mapped to MuscleGroup 'Pecho'
-    // So it should appear as a suggestion for Day 1
+    // Search and select 'Press de Banca Plano'
+    const searchInput = screen.getByPlaceholderText(/Buscar ejercicios/i)
+    await user.type(searchInput, 'Press de Banca')
+
     await waitFor(() => {
       expect(screen.getByText('Press de Banca Plano')).toBeInTheDocument()
     })
+
+    const exerciseBtn = screen.getByRole('button', { name: /Press de Banca Plano/i })
+    await user.click(exerciseBtn)
+
+    await user.click(screen.getByRole('button', { name: /Listo/i }))
+
+    // Back to step 2 — muscle group should be auto-detected
+    await waitFor(() => {
+      expect(screen.getByText(/Construye tu rutina/i)).toBeInTheDocument()
+    })
+
+    // The card should show the auto-detected muscle group
+    await waitFor(() => {
+      expect(screen.getByText(/Pecho/i)).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole('button', { name: /Siguiente/i }))
+
+    // Step 3 should show the selected exercise
+    await waitFor(() => {
+      expect(screen.getByText(/Revisa tus ejercicios/i)).toBeInTheDocument()
+    })
+
+    expect(screen.getByText('Press de Banca Plano')).toBeInTheDocument()
   })
 
   it('creates blocks and cycle on finish', async () => {
@@ -300,29 +334,41 @@ describe('Onboarding Wizard', () => {
     // Step 1: keep default 3 training days
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 2: select muscle groups for all 3 days
+    // Step 2: open picker for each training day and select first exercise
     await waitFor(() => {
-      expect(screen.getByText(/Grupos musculares por día/i)).toBeInTheDocument()
+      expect(screen.getByText(/Construye tu rutina/i)).toBeInTheDocument()
     })
 
-    const dayCards = screen.getAllByText(/Día \d/)
-    for (const dayCard of dayCards) {
-      const card = dayCard.closest('div')!
-      const btn = card.querySelector('button')!
+    const createButtons = screen.getAllByRole('button', { name: /Crear/i })
+    expect(createButtons.length).toBeGreaterThan(0)
+
+    for (const btn of createButtons) {
       await user.click(btn)
+
+      await waitFor(() => {
+        const exerciseBtns = screen.queryAllByRole('button', { name: /Press de Banca Plano/i })
+        expect(exerciseBtns.length).toBeGreaterThan(0)
+      })
+
+      const exerciseBtns = screen.getAllByRole('button', { name: /Press de Banca Plano/i })
+      if (exerciseBtns.length > 0) {
+        await user.click(exerciseBtns[0])
+      }
+
+      await user.click(screen.getByRole('button', { name: /Listo/i }))
+
+      // Wait for modal to close
+      await waitFor(() => {
+        expect(screen.queryByRole('button', { name: /Listo/i })).not.toBeInTheDocument()
+      })
     }
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 3: check first suggested exercise for each day
+    // Step 3: review (exercises already selected)
     await waitFor(() => {
-      expect(screen.getByText(/Selecciona ejercicios/i)).toBeInTheDocument()
+      expect(screen.getByText(/Revisa tus ejercicios/i)).toBeInTheDocument()
     })
-
-    const checkboxes = screen.getAllByRole('checkbox')
-    for (const cb of checkboxes) {
-      await user.click(cb)
-    }
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 

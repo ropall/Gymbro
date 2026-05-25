@@ -152,6 +152,8 @@ export interface WizardExercise {
   repsMax: number
   rpe: number
   descanso: number
+  equipo?: string
+  variacion?: string
 }
 
 export interface WizardDay {
