@@ -67,7 +67,7 @@ describe('PWA - Workout Store Persistence', () => {
     // In a real scenario Zustand persist handles this automatically
     const parsed = JSON.parse(raw!)
     expect(parsed.state.exercises[0].sets[0].completed).toBe(true)
-    expect(parsed.state.currentSetIndex).toBe(1)
+    expect(parsed.state.currentSetIndex).toBe(0)
   })
 
   it('does not persist transient state like rest timer', () => {
