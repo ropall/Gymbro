@@ -70,6 +70,7 @@ export function SetTracker({ onSetComplete }: SetTrackerProps) {
               {isCompleted && (
                 <span className="text-brand-lightAccent text-xs font-medium tabular-nums">
                   {set.peso ? `${set.peso}kg` : '—'}
+                  {set.reps_reales ? ` × ${set.reps_reales}` : ''}
                   {set.rpe_real ? ` · RPE ${set.rpe_real}` : ''}
                 </span>
               )}

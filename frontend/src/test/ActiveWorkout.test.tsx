@@ -2,12 +2,17 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { SetTracker } from '../components/workout/SetTracker'
-import { RestTimer } from '../components/workout/RestTimer'
-import { SetInputs } from '../components/workout/SetInputs'
+import { RestTimerModal } from '../components/workout/RestTimerModal'
 import { ExerciseInfo } from '../components/workout/ExerciseInfo'
 import { CelebrationScreen } from '../components/workout/CelebrationScreen'
 import { RecoveryChecklist } from '../components/workout/RecoveryChecklist'
 import { useWorkoutStore } from '../stores/workoutStore'
+
+// Mock Web Audio API and sound module to avoid errors in test environment
+vi.mock('../lib/sound', () => ({
+  playStartSound: vi.fn(),
+  playTimerDoneSound: vi.fn(),
+}))
 
 const mockBlockExercises = [
   {
@@ -93,58 +98,63 @@ describe('Active Workout Mode', () => {
     })
   })
 
-  describe('SetInputs', () => {
-    it('shows weight and RPE inputs after set is completed', async () => {
+  describe('RestTimerModal', () => {
+    it('appears automatically after completing a set', async () => {
       const user = userEvent.setup()
       useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
 
       render(
         <>
           <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
-          <SetInputs onNextSet={() => {}} onSkipRestWarning={() => {}} />
+          <RestTimerModal />
+        </>
+      )
+
+      await user.click(screen.getByRole('button', { name: /Completar/i }))
+
+      expect(screen.getByText(/Descanso/i)).toBeInTheDocument()
+      expect(screen.getByText('00:01:30')).toBeInTheDocument()
+    })
+
+    it('shows weight, reps and RPE inputs inside the modal', async () => {
+      const user = userEvent.setup()
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+
+      render(
+        <>
+          <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
+          <RestTimerModal />
         </>
       )
 
       await user.click(screen.getByRole('button', { name: /Completar/i }))
 
       expect(screen.getByLabelText(/Peso \(kg\)/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/Repeticiones/i)).toBeInTheDocument()
       expect(screen.getByText('1')).toBeInTheDocument()
       expect(screen.getByText('10')).toBeInTheDocument()
     })
 
-    it('shows rest timer start button', async () => {
+    it('allows entering weight and reps', async () => {
       const user = userEvent.setup()
       useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
 
       render(
         <>
           <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
-          <SetInputs onNextSet={() => {}} onSkipRestWarning={() => {}} />
+          <RestTimerModal />
         </>
       )
 
       await user.click(screen.getByRole('button', { name: /Completar/i }))
 
-      expect(screen.getByRole('button', { name: /Iniciar descanso/i })).toBeInTheDocument()
-    })
-
-    it('allows entering weight', async () => {
-      const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
-
-      render(
-        <>
-          <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
-          <SetInputs onNextSet={() => {}} onSkipRestWarning={() => {}} />
-        </>
-      )
-
-      await user.click(screen.getByRole('button', { name: /Completar/i }))
-
-      const weightInput = screen.getByPlaceholderText('0')
+      const weightInput = screen.getAllByPlaceholderText('0')[0]
       await user.type(weightInput, '80')
-
       expect(weightInput).toHaveValue(80)
+
+      const repsInput = screen.getAllByPlaceholderText('0')[1]
+      await user.type(repsInput, '10')
+      expect(repsInput).toHaveValue(10)
     })
 
     it('allows selecting RPE', async () => {
@@ -154,7 +164,7 @@ describe('Active Workout Mode', () => {
       render(
         <>
           <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
-          <SetInputs onNextSet={() => {}} onSkipRestWarning={() => {}} />
+          <RestTimerModal />
         </>
       )
 
@@ -162,27 +172,6 @@ describe('Active Workout Mode', () => {
       await user.click(screen.getByText('7'))
 
       expect(useWorkoutStore.getState().exercises[0].sets[0].rpe_real).toBe(7)
-    })
-  })
-
-  describe('RestTimer', () => {
-    it('shows countdown when started', async () => {
-      const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
-
-      render(
-        <>
-          <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
-          <SetInputs onNextSet={() => {}} onSkipRestWarning={() => {}} />
-          <RestTimer onTimerComplete={() => {}} />
-        </>
-      )
-
-      await user.click(screen.getByRole('button', { name: /Completar/i }))
-      await user.click(screen.getByRole('button', { name: /Iniciar descanso/i }))
-
-      expect(screen.getByText('01:30')).toBeInTheDocument()
-      expect(screen.getByRole('button', { name: /Pausar/i })).toBeInTheDocument()
     })
 
     it('shows pause button while running', async () => {
@@ -192,15 +181,30 @@ describe('Active Workout Mode', () => {
       render(
         <>
           <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
-          <SetInputs onNextSet={() => {}} onSkipRestWarning={() => {}} />
-          <RestTimer onTimerComplete={() => {}} />
+          <RestTimerModal />
         </>
       )
 
       await user.click(screen.getByRole('button', { name: /Completar/i }))
-      await user.click(screen.getByRole('button', { name: /Iniciar descanso/i }))
 
       expect(screen.getByRole('button', { name: /Pausar/i })).toBeInTheDocument()
+    })
+
+    it('advances to next set when continuing', async () => {
+      const user = userEvent.setup()
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+
+      render(
+        <>
+          <SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />
+          <RestTimerModal />
+        </>
+      )
+
+      await user.click(screen.getByRole('button', { name: /Completar/i }))
+      await user.click(screen.getByRole('button', { name: /Continuar/i }))
+
+      expect(useWorkoutStore.getState().currentSetIndex).toBe(1)
     })
   })
 
@@ -283,13 +287,27 @@ describe('Active Workout Mode', () => {
       expect(state.currentSetIndex).toBe(0)
     })
 
-    it('completes a set', () => {
+    it('completes a set and starts rest timer automatically', () => {
       useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
       useWorkoutStore.getState().completeSet()
 
       const state = useWorkoutStore.getState()
       expect(state.exercises[0].sets[0].completed).toBe(true)
+      expect(state.currentSetIndex).toBe(0)
+      expect(state.restTimerStarted).toBe(true)
+      expect(state.restTimerRunning).toBe(true)
+      expect(state.restSecondsRemaining).toBe(90)
+      expect(state.restTotalSeconds).toBe(90)
+    })
+
+    it('advances to next set after finishing rest', () => {
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      useWorkoutStore.getState().completeSet()
+      useWorkoutStore.getState().finishSetRest()
+
+      const state = useWorkoutStore.getState()
       expect(state.currentSetIndex).toBe(1)
+      expect(state.restTimerStarted).toBe(false)
     })
 
     it('advances to next exercise when all sets completed', () => {
@@ -317,7 +335,7 @@ describe('Active Workout Mode', () => {
       ])
 
       useWorkoutStore.getState().completeSet()
-      useWorkoutStore.getState().advanceToNextExercise()
+      useWorkoutStore.getState().finishSetRest()
 
       const state = useWorkoutStore.getState()
       expect(state.phase).toBe('exercising')
@@ -330,13 +348,13 @@ describe('Active Workout Mode', () => {
       ])
 
       useWorkoutStore.getState().completeSet()
-      useWorkoutStore.getState().advanceToNextExercise()
+      useWorkoutStore.getState().finishSetRest()
 
       const state = useWorkoutStore.getState()
       expect(state.phase).toBe('celebrating')
     })
 
-    it('starts rest timer', () => {
+    it('starts rest timer manually', () => {
       useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
       useWorkoutStore.getState().startRestTimer(90)
 
