@@ -72,8 +72,7 @@ describe('Layout', () => {
     // Click the first Rutinas tab (desktop sidebar version)
     await user.click(screen.getAllByLabelText('Rutinas')[0])
 
-    // Rutinas page now shows cycle view by default with tabs
-    expect(screen.getByRole('button', { name: 'Mi Rutina' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Catálogo' })).toBeInTheDocument()
+    // Rutinas page now shows cycle view (no routine state in test so empty state shows)
+    expect(screen.getByText('No tienes una rutina')).toBeInTheDocument()
   })
 })

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useOnboardingStore } from '../../stores/onboardingStore'
 import { useExerciseStore } from '../../stores/exerciseStore'
+import { MUSCLE_GROUPS } from '../../types'
 import type { MuscleGroup, WizardExercise } from '../../types'
+import { Search, X, Trash2 } from 'lucide-react'
 
 export function StepExercises() {
   const days = useOnboardingStore((s) => s.days)
@@ -12,6 +14,7 @@ export function StepExercises() {
   const addCustomExercise = useExerciseStore((s) => s.addCustomExercise)
 
   const [searchQueries, setSearchQueries] = useState<Record<number, string>>({})
+  const [activeFilters, setActiveFilters] = useState<Record<number, MuscleGroup | 'todos'>>({})
   const [showCustomForms, setShowCustomForms] = useState<Record<number, boolean>>({})
   const [customNames, setCustomNames] = useState<Record<number, string>>({})
 
@@ -27,20 +30,19 @@ export function StepExercises() {
     .map((d, i) => ({ ...d, index: i }))
     .filter((d) => !d.isRest)
 
-  function getSuggestions(dayIndex: number) {
-    const day = days[dayIndex]
-    if (day.muscleGroups.length === 0) return []
-    return allExercises.filter((ex) => day.muscleGroups.includes(ex.grupoMuscular))
-  }
-
-  function getSearchResults(dayIndex: number) {
+  function getFilteredExercises(dayIndex: number) {
     const query = searchQueries[dayIndex]?.toLowerCase().trim() ?? ''
-    if (!query) return []
-    return allExercises.filter(
-      (ex) =>
-        ex.nombre.toLowerCase().includes(query) &&
-        !days[dayIndex].exercises.find((e) => e.id === ex.id)
-    )
+    const groupFilter = activeFilters[dayIndex] ?? 'todos'
+
+    return allExercises.filter((ex) => {
+      const matchesGroup = groupFilter === 'todos' || ex.grupoMuscular === groupFilter
+      const matchesSearch =
+        !query ||
+        ex.nombre.toLowerCase().includes(query) ||
+        ex.equipo.toLowerCase().includes(query) ||
+        ex.grupoMuscular.toLowerCase().includes(query)
+      return matchesGroup && matchesSearch
+    })
   }
 
   function isSelected(dayIndex: number, id: string) {
@@ -62,6 +64,8 @@ export function StepExercises() {
         repsMax: 12,
         rpe: 7,
         descanso: 90,
+        equipo: (ex as any).equipo,
+        variacion: (ex as any).variacion,
       }
       toggleExercise(dayIndex, wizardEx)
     }
@@ -77,8 +81,6 @@ export function StepExercises() {
       equipo: 'Sin equipo',
       variaciones: null,
     })
-    // The new exercise should now be in customExercises after store update.
-    // We need to find it and add to the day.
     const latestCustom = useExerciseStore.getState().customExercises.at(-1)
     if (latestCustom) {
       handleToggle(dayIndex, latestCustom)
@@ -90,11 +92,11 @@ export function StepExercises() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-bold text-brand-primaryText mb-2 font-heading">
-          Selecciona ejercicios
+        <h3 className="text-lg font-bold text-brand-primaryText mb-2 font-heading tracking-tight">
+          Revisa tus ejercicios
         </h3>
-        <p className="text-brand-mutedText text-sm mb-4">
-          Revisa las sugerencias, agrégales o descártalos para cada día.
+        <p className="text-brand-mutedText text-sm mb-4 leading-relaxed">
+          Confirma los ejercicios seleccionados o agrégale más desde el catálogo.
         </p>
       </div>
 
@@ -117,71 +119,118 @@ export function StepExercises() {
             </span>
           </div>
 
-          {/* Suggestions */}
-          <div>
-            <p className="text-brand-mutedText text-xs mb-2">Sugerencias</p>
-            {day.muscleGroups.length === 0 ? (
-              <p className="text-brand-mutedText text-sm">Selecciona grupos musculares primero.</p>
-            ) : (
-              <div className="space-y-2">
-                {getSuggestions(day.index).map((ex) => (
-                  <label
-                    key={ex.id}
-                    className="flex items-center gap-3 bg-brand-dark border border-brand-border rounded-lg p-3 cursor-pointer"
+          {/* Selected exercises */}
+          {day.exercises.length > 0 && (
+            <div className="space-y-2">
+              {day.exercises.map((ex) => (
+                <div
+                  key={ex.id}
+                  className="flex items-center gap-3 bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-3"
+                >
+                  <div className="flex-1">
+                    <p className="text-brand-primaryText text-sm font-medium">{ex.nombre}</p>
+                    <p className="text-brand-mutedText text-xs">
+                      {ex.grupoMuscular}
+                      {ex.equipo && ` · ${ex.equipo}`}
+                      {ex.variacion && ` · ${ex.variacion}`}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleToggle(day.index, ex)}
+                    className="text-brand-mutedText hover:text-red-400 p-1"
+                    aria-label="Quitar ejercicio"
                   >
-                    <input
-                      type="checkbox"
-                      checked={isSelected(day.index, ex.id)}
-                      onChange={() => handleToggle(day.index, ex)}
-                      className="w-5 h-5 accent-brand-accent rounded"
-                    />
-                    <div className="flex-1">
-                      <p className="text-brand-primaryText text-sm font-medium">{ex.nombre}</p>
-                      <p className="text-brand-mutedText text-xs">{ex.grupoMuscular}</p>
-                    </div>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
 
-          {/* Search more */}
-          <div className="pt-2 border-t border-brand-border">
-            <p className="text-brand-mutedText text-xs mb-2">Buscar más ejercicios</p>
-            <input
-              type="text"
-              placeholder="Buscar en el catálogo..."
-              value={searchQueries[day.index] ?? ''}
-              onChange={(e) =>
-                setSearchQueries((prev) => ({ ...prev, [day.index]: e.target.value }))
-              }
-              className="w-full bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText text-sm min-h-[44px]"
-            />
-            {searchQueries[day.index]?.trim() && (
-              <div className="mt-2 space-y-2 max-h-48 overflow-y-auto">
-                {getSearchResults(day.index).length === 0 ? (
-                  <p className="text-brand-mutedText text-xs">No se encontraron resultados.</p>
-                ) : (
-                  getSearchResults(day.index).map((ex) => (
-                    <label
+          {/* Search and filters — always visible */}
+          <div className="pt-2 border-t border-brand-border space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-mutedText pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Buscar en el catálogo..."
+                value={searchQueries[day.index] ?? ''}
+                onChange={(e) =>
+                  setSearchQueries((prev) => ({ ...prev, [day.index]: e.target.value }))
+                }
+                className="w-full bg-brand-dark border border-brand-border rounded-xl pl-10 pr-9 py-2.5 text-brand-primaryText placeholder:text-brand-mutedText text-sm min-h-[44px] focus:outline-none focus:border-brand-accent focus:ring-1 focus:ring-brand-accent/30"
+              />
+              {searchQueries[day.index] && (
+                <button
+                  onClick={() =>
+                    setSearchQueries((prev) => ({ ...prev, [day.index]: '' }))
+                  }
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-mutedText hover:text-brand-primaryText"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Group filters */}
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              <button
+                onClick={() =>
+                  setActiveFilters((prev) => ({ ...prev, [day.index]: 'todos' }))
+                }
+                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                  (activeFilters[day.index] ?? 'todos') === 'todos'
+                    ? 'bg-brand-accent text-white border-brand-accent'
+                    : 'bg-brand-dark text-brand-mutedText border-brand-border hover:text-brand-primaryText'
+                }`}
+              >
+                Todos
+              </button>
+              {MUSCLE_GROUPS.map((group) => (
+                <button
+                  key={group}
+                  onClick={() =>
+                    setActiveFilters((prev) => ({ ...prev, [day.index]: group }))
+                  }
+                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                    activeFilters[day.index] === group
+                      ? 'bg-brand-accent text-white border-brand-accent'
+                      : 'bg-brand-dark text-brand-mutedText border-brand-border hover:text-brand-primaryText'
+                  }`}
+                >
+                  {group}
+                </button>
+              ))}
+            </div>
+
+            {/* Results */}
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {getFilteredExercises(day.index).length === 0 ? (
+                <p className="text-brand-mutedText text-xs py-2">
+                  {(searchQueries[day.index] ?? '').trim()
+                    ? 'No se encontraron resultados.'
+                    : 'Escribe algo para buscar ejercicios.'}
+                </p>
+              ) : (
+                getFilteredExercises(day.index).map((ex) => {
+                  const alreadySelected = isSelected(day.index, ex.id)
+                  // Skip if already shown in the selected section and no search query
+                  if (alreadySelected && !(searchQueries[day.index] ?? '').trim()) return null
+                  return (
+                    <button
                       key={ex.id}
-                      className="flex items-center gap-3 bg-brand-dark border border-brand-border rounded-lg p-2 cursor-pointer"
+                      onClick={() => handleToggle(day.index, ex)}
+                      className="w-full flex items-center gap-3 bg-brand-dark border border-brand-border rounded-lg p-2 text-left hover:border-brand-borderStrong transition-colors"
                     >
-                      <input
-                        type="checkbox"
-                        checked={isSelected(day.index, ex.id)}
-                        onChange={() => handleToggle(day.index, ex)}
-                        className="w-5 h-5 accent-brand-accent rounded"
-                      />
                       <div className="flex-1">
                         <p className="text-brand-primaryText text-sm">{ex.nombre}</p>
                         <p className="text-brand-mutedText text-xs">{ex.grupoMuscular}</p>
                       </div>
-                    </label>
-                  ))
-                )}
-              </div>
-            )}
+                    </button>
+                  )
+                }).filter(Boolean)
+              )}
+            </div>
           </div>
 
           {/* Inline custom exercise */}
@@ -204,11 +253,11 @@ export function StepExercises() {
                   onChange={(e) =>
                     setCustomNames((prev) => ({ ...prev, [day.index]: e.target.value }))
                   }
-                  className="flex-1 bg-brand-dark border border-brand-border rounded px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText text-sm min-h-[44px]"
+                  className="flex-1 bg-brand-dark border border-brand-border rounded-xl px-3 py-2 text-brand-primaryText placeholder:text-brand-mutedText text-sm min-h-[44px] focus:outline-none focus:border-brand-accent"
                 />
                 <button
                   onClick={() => handleAddCustom(day.index)}
-                  className="bg-brand-accent text-white px-3 py-2 rounded text-sm font-medium active:bg-brand-lightAccent transition-colors"
+                  className="bg-brand-accent text-white px-3 py-2 rounded-xl text-sm font-medium active:bg-brand-lightAccent transition-colors"
                 >
                   Agregar
                 </button>

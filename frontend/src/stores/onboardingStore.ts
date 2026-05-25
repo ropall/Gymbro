@@ -5,17 +5,19 @@ import type { MuscleGroup, WizardDay, WizardExercise } from '../types'
 interface OnboardingState {
   step: number
   days: WizardDay[]
+  activeDayIndex: number | null
   isSubmitting: boolean
   error: string | null
 
   setStep: (step: number) => void
+  setActiveDayIndex: (index: number | null) => void
   toggleDayRest: (dayIndex: number) => void
   toggleMuscleGroup: (dayIndex: number, group: MuscleGroup) => void
   toggleExercise: (dayIndex: number, exercise: WizardExercise) => void
   updateExerciseParams: (
     dayIndex: number,
     exerciseId: string,
-    updates: Partial<Pick<WizardExercise, 'series' | 'repsMin' | 'repsMax' | 'rpe' | 'descanso'>>
+    updates: Partial<Pick<WizardExercise, 'series' | 'repsMin' | 'repsMax' | 'rpe' | 'descanso' | 'equipo' | 'variacion'>>
   ) => void
   submitWizard: () => Promise<void>
   reset: () => void
@@ -31,6 +33,7 @@ const createInitialDays = (): WizardDay[] =>
 const initialState = {
   step: 1,
   days: createInitialDays(),
+  activeDayIndex: null,
   isSubmitting: false,
   error: null,
 }
@@ -39,6 +42,8 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
   ...initialState,
 
   setStep: (step) => set({ step }),
+
+  setActiveDayIndex: (index) => set({ activeDayIndex: index }),
 
   toggleDayRest: (dayIndex) => {
     const days = [...get().days]
@@ -66,16 +71,17 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
     const days = [...get().days]
     const day = days[dayIndex]
     const exists = day.exercises.find((ex) => ex.id === exercise.id)
+    let nextExercises: WizardExercise[]
     if (exists) {
-      days[dayIndex] = {
-        ...day,
-        exercises: day.exercises.filter((ex) => ex.id !== exercise.id),
-      }
+      nextExercises = day.exercises.filter((ex) => ex.id !== exercise.id)
     } else {
-      days[dayIndex] = {
-        ...day,
-        exercises: [...day.exercises, exercise],
-      }
+      nextExercises = [...day.exercises, exercise]
+    }
+    const nextMuscleGroups = [...new Set(nextExercises.map((ex) => ex.grupoMuscular))]
+    days[dayIndex] = {
+      ...day,
+      exercises: nextExercises,
+      muscleGroups: nextMuscleGroups,
     }
     set({ days })
   },
