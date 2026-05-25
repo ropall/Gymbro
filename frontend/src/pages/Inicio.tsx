@@ -97,10 +97,18 @@ export function Inicio() {
           <div className="w-12 h-12 rounded-[10px] bg-brand-accent/20 flex items-center justify-center mx-auto mb-4">
             <Dumbbell className="w-6 h-6 text-brand-lightAccent" />
           </div>
-          <h2 className="text-lg font-bold text-brand-lightAccent mb-2">¡Bienvenido! Comencemos</h2>
-          <p className="text-brand-mutedText text-sm mb-5">
-            Para empezar, crea tu primera rutina de entrenamiento semanal.
-          </p>
+          <h2 className="text-lg font-bold text-brand-lightAccent mb-3">¡Bienvenido! Comencemos</h2>
+          <div className="text-brand-mutedText text-sm mb-5 space-y-2 text-left">
+            <p>
+              <strong className="text-brand-primaryText">Gymbro</strong> es tu compañero de entrenamiento diseñado para ayudarte a construir músculo, perder grasa o ganar fuerza de forma estructurada y sin complicaciones.
+            </p>
+            <p>
+              La app te guía paso a paso: crea tu rutina semanal personalizada, elige ejercicios de nuestro catálogo, registra cada serie con peso y repeticiones, y haz seguimiento de tu progreso con medidas, peso y fotos.
+            </p>
+            <p>
+              Todo en un solo lugar. Sin hojas de Excel, sin adivinar qué toca hoy.
+            </p>
+          </div>
           <button onClick={() => navigate('/onboarding')} className="btn-primary w-full">
             Crear mi primera rutina
           </button>

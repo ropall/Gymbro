@@ -26,7 +26,7 @@ cd frontend && npm run test -- --testPathPattern=catalog
 
 ### 2. Filtrar por grupo muscular
 1. Verificar que hay tabs/filtros para los 11 grupos:
-   - Pecho, Espalda, Hombros, Bíceps/Antebrazos, Tríceps, Cuádriceps, Isquiosurales, Glúteos, Pantorrillas, Abdomen/Core, Cuerpo Completo
+   - Pecho, Espalda, Hombros, Bíceps/Antebrazos, Tríceps, Cuádriceps, Isquiotibiales, Glúteos, Pantorrillas, Abdomen/Core, Cuerpo Completo
 2. Hacer clic en "Pecho"
 3. Solo deben mostrarse ejercicios de pecho (ej. Press Banca, Fondos, Aperturas)
 4. Hacer clic en "Espalda"

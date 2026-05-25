@@ -103,7 +103,7 @@ Gymbro es una aplicación web full-stack (React + Vite + Supabase) con soporte P
 
 ### Catálogo semilla
 
-- ~100 ejercicios extraídos de `plantilla-estatica/semilla.txt` organizados en: Pecho, Espalda, Hombros, Bíceps/Antebrazos, Tríceps, Cuádriceps, Isquiosurales, Glúteos, Pantorrillas, Abdomen/Core, Cuerpo Completo/Halterofilia.
+- ~100 ejercicios extraídos de `plantilla-estatica/semilla.txt` organizados en: Pecho, Espalda, Hombros, Bíceps/Antebrazos, Tríceps, Cuádriceps, Isquiotibiales, Glúteos, Pantorrillas, Abdomen/Core, Cuerpo Completo/Halterofilia.
 - Cada ejercicio puede tener ejercicios hijos (variaciones).
 - El catálogo global es de solo lectura para usuarios regulares.
 - Cada usuario puede agregar ejercicios a su catálogo privado.

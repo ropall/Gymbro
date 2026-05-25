@@ -8,7 +8,7 @@ AFK
 
 ## Que construir
 
-Implementar un browser del catálogo de ejercicios que muestre el catálogo global (semilla) y permita al usuario agregar ejercicios a su catálogo privado. El browser debe tener navegación por grupo muscular (Pecho, Espalda, Hombros, Bíceps/Antebrazos, Tríceps, Cuádriceps, Isquiosurales, Glúteos, Pantorrillas, Abdomen/Core, Cuerpo Completo). Al seleccionar un ejercicio, se muestran sus variaciones (ejercicios hijos con parent_id) en una vista de detalle. El usuario puede agregar ejercicios personalizados a su catálogo privado (nombre, grupo muscular, variación de un ejercicio existente opcional). Escribir tests que validen: (a) filtrado de ejercicios por grupo muscular, (b) visualización de jerarquía padre/hijo, (c) creación de ejercicio personalizado asociado al perfil del usuario, (d) el catálogo global es de solo lectura para usuarios regulares.
+Implementar un browser del catálogo de ejercicios que muestre el catálogo global (semilla) y permita al usuario agregar ejercicios a su catálogo privado. El browser debe tener navegación por grupo muscular (Pecho, Espalda, Hombros, Bíceps/Antebrazos, Tríceps, Cuádriceps, Isquiotibiales, Glúteos, Pantorrillas, Abdomen/Core, Cuerpo Completo). Al seleccionar un ejercicio, se muestran sus variaciones (ejercicios hijos con parent_id) en una vista de detalle. El usuario puede agregar ejercicios personalizados a su catálogo privado (nombre, grupo muscular, variación de un ejercicio existente opcional). Escribir tests que validen: (a) filtrado de ejercicios por grupo muscular, (b) visualización de jerarquía padre/hijo, (c) creación de ejercicio personalizado asociado al perfil del usuario, (d) el catálogo global es de solo lectura para usuarios regulares.
 
 ## Criterios de aceptacion
 
