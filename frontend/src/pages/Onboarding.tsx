@@ -31,7 +31,7 @@ export function Onboarding() {
     if (step === 1) return true
     if (step === 2) {
       const trainingDays = days.filter((d) => !d.isRest)
-      return trainingDays.every((d) => d.muscleGroups.length > 0)
+      return trainingDays.every((d) => d.exercises.length > 0)
     }
     if (step === 3) {
       const trainingDays = days.filter((d) => !d.isRest)
