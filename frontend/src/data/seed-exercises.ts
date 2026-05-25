@@ -1,5 +1,5 @@
 // Parsed 97 exercises from semilla.txt
-export const MUSCLE_GROUPS = ['Pecho (Pectorales)', 'Espalda (Dorsales, Romboides, Trapecios)', 'Hombros (Deltoides)', 'Bíceps y Antebrazos', 'Tríceps', 'Piernas (Cuádriceps)', 'Piernas (Isquiosurales / Femorales)', 'Glúteos', 'Pantorrillas (Gemelos y Sóleo)', 'Abdomen y Core', '🏋️\u200d♂️ Cuerpo Completo / Halterofilia / Funcional (Opcional para la app)'];
+export const MUSCLE_GROUPS = ['Pecho (Pectorales)', 'Espalda (Dorsales, Romboides, Trapecios)', 'Hombros (Deltoides)', 'Bíceps y Antebrazos', 'Tríceps', 'Piernas (Cuádriceps)', 'Piernas (Isquiotibiales / Femorales)', 'Glúteos', 'Pantorrillas (Gemelos y Sóleo)', 'Abdomen y Core', '🏋️\u200d♂️ Cuerpo Completo / Halterofilia / Funcional (Opcional para la app)'];
 
 export interface SeedExercise {
   id: string
@@ -67,14 +67,14 @@ export const SEED_EXERCISES: SeedExercise[] = [
   { id: 'seed-055', nombre: 'Sentadilla Hack / Hack Squat', grupoMuscular: 'Piernas (Cuádriceps)', equipo: 'Máquina / Barra', variaciones: null },
   { id: 'seed-056', nombre: 'Sentadilla Sissy', grupoMuscular: 'Piernas (Cuádriceps)', equipo: 'Peso corporal / Máquina específica', variaciones: null },
   { id: 'seed-057', nombre: 'Subidas al Cajón / Step-ups', grupoMuscular: 'Piernas (Cuádriceps)', equipo: 'Mancuernas / Barra / Peso corporal', variaciones: null },
-  { id: 'seed-058', nombre: 'Peso Muerto Rumano / RDL', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Barra / Mancuernas', variaciones: null },
-  { id: 'seed-059', nombre: 'Peso Muerto con Piernas Rígidas', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Barra', variaciones: null },
-  { id: 'seed-060', nombre: 'Curl de Isquios Acostado', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Máquina', variaciones: null },
-  { id: 'seed-061', nombre: 'Curl de Isquios Sentado', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Máquina', variaciones: null },
-  { id: 'seed-062', nombre: 'Curl de Isquios de Pie', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Máquina / Cables', variaciones: null },
-  { id: 'seed-063', nombre: 'Curl Nórdico / Nordic Hamstring Curl', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Peso corporal con soporte en los tobillos', variaciones: null },
-  { id: 'seed-064', nombre: 'Buenos Días / Good Mornings', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Barra', variaciones: null },
-  { id: 'seed-065', nombre: 'Swing con Pesa Rusa', grupoMuscular: 'Piernas (Isquiosurales / Femorales)', equipo: 'Pesa Rusa', variaciones: null },
+  { id: 'seed-058', nombre: 'Peso Muerto Rumano / RDL', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Barra / Mancuernas', variaciones: null },
+  { id: 'seed-059', nombre: 'Peso Muerto con Piernas Rígidas', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Barra', variaciones: null },
+  { id: 'seed-060', nombre: 'Curl de Isquios Acostado', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Máquina', variaciones: null },
+  { id: 'seed-061', nombre: 'Curl de Isquios Sentado', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Máquina', variaciones: null },
+  { id: 'seed-062', nombre: 'Curl de Isquios de Pie', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Máquina / Cables', variaciones: null },
+  { id: 'seed-063', nombre: 'Curl Nórdico / Nordic Hamstring Curl', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Peso corporal con soporte en los tobillos', variaciones: null },
+  { id: 'seed-064', nombre: 'Buenos Días / Good Mornings', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Barra', variaciones: null },
+  { id: 'seed-065', nombre: 'Swing con Pesa Rusa', grupoMuscular: 'Piernas (Isquiotibiales / Femorales)', equipo: 'Pesa Rusa', variaciones: null },
   { id: 'seed-066', nombre: 'Empuje de Cadera / Hip Thrust', grupoMuscular: 'Glúteos', equipo: 'Barra / Máquina / Mancuerna', variaciones: 'Unilateral, con banda elástica de resistencia.' },
   { id: 'seed-067', nombre: 'Puente de Glúteo / Glute Bridge', grupoMuscular: 'Glúteos', equipo: 'Peso corporal / Barra', variaciones: null },
   { id: 'seed-068', nombre: 'Patada de Glúteo / Glute Kickback', grupoMuscular: 'Glúteos', equipo: 'Cables / Máquina / Peso corporal con banda', variaciones: null },

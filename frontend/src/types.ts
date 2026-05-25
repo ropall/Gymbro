@@ -112,7 +112,7 @@ export type MuscleGroup =
   | 'Bíceps/Antebrazos'
   | 'Tríceps'
   | 'Cuádriceps'
-  | 'Isquiosurales'
+  | 'Isquiotibiales'
   | 'Glúteos'
   | 'Pantorrillas'
   | 'Abdomen/Core'
@@ -125,7 +125,7 @@ export const MUSCLE_GROUPS: MuscleGroup[] = [
   'Bíceps/Antebrazos',
   'Tríceps',
   'Cuádriceps',
-  'Isquiosurales',
+  'Isquiotibiales',
   'Glúteos',
   'Pantorrillas',
   'Abdomen/Core',
@@ -169,7 +169,7 @@ export const ONBOARDING_MUSCLE_GROUP_LABELS: Record<string, MuscleGroup> = {
   'Bíceps': 'Bíceps/Antebrazos',
   Tríceps: 'Tríceps',
   Cuádriceps: 'Cuádriceps',
-  Isquios: 'Isquiosurales',
+  Isquios: 'Isquiotibiales',
   Glúteos: 'Glúteos',
   Pantorrillas: 'Pantorrillas',
   Abdomen: 'Abdomen/Core',

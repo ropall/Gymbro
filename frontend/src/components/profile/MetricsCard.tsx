@@ -1,5 +1,5 @@
 import { useMetricsStore } from '../../stores/metricsStore'
-import { calculateIMC, calculateTMB, calculateEdad } from '../../utils/calculations'
+import { calculateIMC, calculateTMB, calculateTDEE, calculateEdad } from '../../utils/calculations'
 
 export function MetricsCard() {
   const profile = useMetricsStore((state) => state.profile)
@@ -20,13 +20,18 @@ export function MetricsCard() {
       ? calculateTMB(latestWeight.peso, profile.altura, edad, profile.sexo)
       : null
 
+  const tdee =
+    tmb !== null && hasProfile
+      ? calculateTDEE(tmb, profile.nivelActividad)
+      : null
+
   return (
     <div className="card">
       <h3 className="text-brand-lightAccent font-semibold mb-4 font-heading text-sm uppercase tracking-wide">
         Resumen calculado
       </h3>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
         <div className="p-3 rounded-lg bg-brand-dark/40">
           <span className="text-brand-mutedText text-xs">IMC</span>
           <p className="text-brand-primaryText font-bold text-lg mt-1">
@@ -40,7 +45,14 @@ export function MetricsCard() {
           </p>
           <p className="text-[10px] text-brand-mutedText">kcal/día</p>
         </div>
-        <div className="p-3 rounded-lg bg-brand-dark/40 col-span-2 md:col-span-1">
+        <div className="p-3 rounded-lg bg-brand-dark/40">
+          <span className="text-brand-mutedText text-xs">kcal/día</span>
+          <p className="text-brand-primaryText font-bold text-lg mt-1">
+            {tdee !== null ? `${tdee}` : '—'}
+          </p>
+          <p className="text-[10px] text-brand-mutedText">según actividad</p>
+        </div>
+        <div className="p-3 rounded-lg bg-brand-dark/40">
           <span className="text-brand-mutedText text-xs">Edad</span>
           <p className="text-brand-primaryText font-bold text-lg mt-1">
             {edad !== null ? `${edad}` : '—'}
