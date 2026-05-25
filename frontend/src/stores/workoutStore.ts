@@ -36,6 +36,7 @@ interface WorkoutState {
   pendingSync: boolean
 
   restSecondsRemaining: number
+  restTotalSeconds: number
   restTimerRunning: boolean
   restTimerStarted: boolean
   restWarningDismissed: boolean
@@ -50,12 +51,14 @@ interface WorkoutState {
   initializeWorkout: (blockId: string, blockName: string, exercises: BlockExercise[]) => void
   completeSet: () => void
   updateSetWeight: (weight: number | null, setIndex?: number) => void
+  updateSetReps: (reps: number | null, setIndex?: number) => void
   updateSetRpe: (rpe: number | null, setIndex?: number) => void
   startRestTimer: (seconds: number) => void
   pauseRestTimer: () => void
   resumeRestTimer: () => void
   tickRestTimer: () => void
   dismissRestWarning: () => void
+  finishSetRest: () => void
   advanceToNextExercise: () => void
   setPhase: (phase: WorkoutPhase) => void
   setEnergyLevel: (level: number) => void
@@ -75,6 +78,7 @@ const initialState = {
   sessionId: null,
   pendingSync: false,
   restSecondsRemaining: 0,
+  restTotalSeconds: 0,
   restTimerRunning: false,
   restTimerStarted: false,
   restWarningDismissed: false,
@@ -125,13 +129,14 @@ export const useWorkoutStore = create<WorkoutState>()(
           ),
         }
 
-        const nextSetIndex = currentSetIndex + 1
-        const allSetsCompleted = nextSetIndex >= exercise.sets.length
+        const restSeconds = exercise.blockExercise.descanso_segundos ?? 90
 
         set({
           exercises: updatedExercises,
-          currentSetIndex: allSetsCompleted ? currentSetIndex : nextSetIndex,
-          restTimerStarted: false,
+          restTimerStarted: true,
+          restTimerRunning: true,
+          restSecondsRemaining: restSeconds,
+          restTotalSeconds: restSeconds,
           restWarningDismissed: false,
         })
       },
@@ -145,6 +150,20 @@ export const useWorkoutStore = create<WorkoutState>()(
           ...exercise,
           sets: exercise.sets.map((s, i) =>
             i === idx ? { ...s, peso: weight } : s
+          ),
+        }
+        set({ exercises: updatedExercises })
+      },
+
+      updateSetReps: (reps, setIndex) => {
+        const { exercises, currentExerciseIndex, currentSetIndex } = get()
+        const idx = setIndex ?? currentSetIndex
+        const updatedExercises = [...exercises]
+        const exercise = updatedExercises[currentExerciseIndex]
+        updatedExercises[currentExerciseIndex] = {
+          ...exercise,
+          sets: exercise.sets.map((s, i) =>
+            i === idx ? { ...s, reps_reales: reps } : s
           ),
         }
         set({ exercises: updatedExercises })
@@ -191,6 +210,27 @@ export const useWorkoutStore = create<WorkoutState>()(
         set({ restWarningDismissed: true })
       },
 
+      finishSetRest: () => {
+        const { exercises, currentExerciseIndex, currentSetIndex } = get()
+        const exercise = exercises[currentExerciseIndex]
+        const nextSetIndex = currentSetIndex + 1
+        const allSetsCompleted = nextSetIndex >= exercise.sets.length
+
+        set({
+          restTimerStarted: false,
+          restTimerRunning: false,
+          restSecondsRemaining: 0,
+          restTotalSeconds: 0,
+          restWarningDismissed: false,
+        })
+
+        if (allSetsCompleted) {
+          get().advanceToNextExercise()
+        } else {
+          set({ currentSetIndex: nextSetIndex })
+        }
+      },
+
       advanceToNextExercise: () => {
         const { exercises, currentExerciseIndex } = get()
         const nextIndex = currentExerciseIndex + 1
@@ -214,6 +254,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             currentExerciseIndex: nextIndex,
             currentSetIndex: 0,
             restSecondsRemaining: 0,
+            restTotalSeconds: 0,
             restTimerRunning: false,
             restTimerStarted: false,
             restWarningDismissed: false,

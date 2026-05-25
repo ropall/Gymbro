@@ -223,45 +223,45 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
             </button>
           ))}
         </div>
-      </header>
 
-      {/* Selected exercises bar — compact horizontal chips */}
-      <div className="sticky top-0 bg-brand-dark/95 backdrop-blur border-b border-brand-border px-4 py-2 z-10">
-        <div className="flex items-center gap-2 text-xs text-brand-lightAccent mb-2">
-          <Dumbbell className="w-3.5 h-3.5" />
-          <span>
-            {day.exercises.length} ejercicio{day.exercises.length !== 1 ? 's' : ''} seleccionado
-            {day.exercises.length !== 1 ? 's' : ''}
-          </span>
-          {day.muscleGroups.length > 0 && (
-            <span className="text-brand-mutedText ml-1">
-              ({day.muscleGroups.join(', ')})
+        {/* Selected exercises bar — inside header so it scrolls together with search & filters */}
+        <div className="mt-3 pt-2 border-t border-brand-border">
+          <div className="flex items-center gap-2 text-xs text-brand-lightAccent mb-2">
+            <Dumbbell className="w-3.5 h-3.5" />
+            <span>
+              {day.exercises.length} ejercicio{day.exercises.length !== 1 ? 's' : ''} seleccionado
+              {day.exercises.length !== 1 ? 's' : ''}
             </span>
+            {day.muscleGroups.length > 0 && (
+              <span className="text-brand-mutedText ml-1">
+                ({day.muscleGroups.join(', ')})
+              </span>
+            )}
+          </div>
+
+          {day.exercises.length > 0 && (
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+              {day.exercises.map((ex) => (
+                <div
+                  key={ex.id}
+                  className="shrink-0 inline-flex items-center gap-1.5 bg-brand-accent/15 border border-brand-accent/30 rounded-full pl-2.5 pr-1 py-1"
+                >
+                  <span className="text-brand-primaryText text-xs font-medium truncate max-w-[140px]">
+                    {ex.nombre}
+                  </span>
+                  <button
+                    onClick={() => handleDeselect(ex.id)}
+                    className="text-brand-mutedText hover:text-red-400 p-0.5 rounded-full hover:bg-brand-accent/10 transition-colors"
+                    aria-label="Quitar ejercicio"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-
-        {day.exercises.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
-            {day.exercises.map((ex) => (
-              <div
-                key={ex.id}
-                className="shrink-0 inline-flex items-center gap-1.5 bg-brand-accent/15 border border-brand-accent/30 rounded-full pl-2.5 pr-1 py-1"
-              >
-                <span className="text-brand-primaryText text-xs font-medium truncate max-w-[140px]">
-                  {ex.nombre}
-                </span>
-                <button
-                  onClick={() => handleDeselect(ex.id)}
-                  className="text-brand-mutedText hover:text-red-400 p-0.5 rounded-full hover:bg-brand-accent/10 transition-colors"
-                  aria-label="Quitar ejercicio"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      </header>
 
       {/* Exercise list */}
       <main className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
