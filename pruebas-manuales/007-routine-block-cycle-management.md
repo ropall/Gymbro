@@ -76,6 +76,21 @@ cd frontend && npm run test -- --testPathPattern=cycle|block|routine
 3. Los bloques deben reflejar los cambios hechos (si se editaron)
 4. Las sesiones del ciclo anterior permanecen en el historial
 
+### 8. Reordenar días del ciclo (drag & drop)
+#### Escritorio (mouse)
+1. En la vista de bloques (tab "Rutinas"), verificar que cada tarjeta de día muestra un icono de agarre (≡) a la izquierda
+2. Arrastrar un día de descanso desde el icono de agarre y soltarlo sobre otro día
+3. Al arrastrar, los bloques deben abrir espacio visualmente (separarse) para indicar dónde caerá
+4. Al soltar, debe aparecer un modal de confirmación con el mensaje: "¿Quieres mover descanso para después del Día X?"
+5. Hacer clic en "Confirmar" - verificar que el orden visual se actualiza y los números de día se reenumeran (1-7)
+6. Hacer clic en "Cancelar" - verificar que el orden vuelve al original sin cambios
+
+#### Móvil (touch)
+7. En un dispositivo móvil o emulador táctil, presionar y mantener el icono de agarre (≡) durante ~500ms
+8. Mover el dedo sobre otro día - el bloque bajo el dedo debe abrir espacio visualmente
+9. Soltar el dedo - debe aparecer el mismo modal de confirmación
+10. Confirmar y verificar que el reordenamiento persiste tras refrescar
+
 ---
 
 ## Pruebas de endpoints (Postman)
