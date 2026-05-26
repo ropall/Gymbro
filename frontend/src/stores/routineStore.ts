@@ -19,6 +19,7 @@ interface RoutineState {
   removeBlockExercise: (blockExerciseId: string) => Promise<void>
   startNewCycle: () => Promise<void>
   canEditBlock: (posicion: number) => boolean
+  reorderBlocks: (orderedBlockIds: string[]) => Promise<void>
   reset: () => void
 }
 
@@ -419,6 +420,33 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
     if (!cycle) return true
     if (!cycle.activo) return true // paused between cycles
     return posicion > cycle.posicion_actual
+  },
+
+  reorderBlocks: async (orderedBlockIds) => {
+    const { blocks } = get()
+    if (orderedBlockIds.length !== blocks.length) {
+      throw new Error('Lista de bloques incompleta')
+    }
+    set({ error: null })
+
+    // Optimistically update local state first
+    const reorderedBlocks = orderedBlockIds
+      .map((id) => blocks.find((b) => b.id === id)!)
+      .map((b, i) => ({ ...b, posicion: i + 1 }))
+
+    set({ blocks: reorderedBlocks })
+
+    // Use atomic PostgreSQL RPC function to avoid UNIQUE/CHECK constraint violations
+    try {
+      const { error } = await supabase.rpc('reorder_blocks', {
+        block_ids: orderedBlockIds,
+      })
+
+      if (error) throw error
+    } catch (err: any) {
+      set({ blocks, error: err.message ?? 'Error reordenando bloques' })
+      throw new Error(err.message ?? 'Error reordenando bloques')
+    }
   },
 
   reset: () => set(initialState),

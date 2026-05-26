@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BookOpen } from 'lucide-react'
+import { BookOpen, ArrowRightLeft } from 'lucide-react'
 import { CycleView } from '../components/routine/CycleView'
 import { BlockEditor } from '../components/routine/BlockEditor'
 import { CycleSummary } from '../components/routine/CycleSummary'
@@ -9,10 +9,17 @@ import { useExerciseStore } from '../stores/exerciseStore'
 import { useRoutineStore } from '../stores/routineStore'
 import type { Block } from '../types'
 
+interface PendingReorder {
+  orderedIds: string[]
+  movedBlock: Block
+  afterBlock: Block | null
+}
+
 export function Rutinas() {
   const navigate = useNavigate()
   const [editingBlock, setEditingBlock] = useState<Block | null>(null)
   const [showCatalog, setShowCatalog] = useState(false)
+  const [pendingReorder, setPendingReorder] = useState<PendingReorder | null>(null)
 
   const loadData = useExerciseStore((state) => state.loadData)
   const globalExercises = useExerciseStore((state) => state.globalExercises)
@@ -23,6 +30,7 @@ export function Rutinas() {
   const showCycleSummary = useRoutineStore((state) => state.showCycleSummary)
   const advancePosition = useRoutineStore((state) => state.advancePosition)
   const startNewCycle = useRoutineStore((state) => state.startNewCycle)
+  const reorderBlocks = useRoutineStore((state) => state.reorderBlocks)
 
   useEffect(() => {
     loadBlocksAndCycle()
@@ -52,6 +60,34 @@ export function Rutinas() {
     useRoutineStore.setState({ showCycleSummary: false })
   }
 
+  function handleReorderBlocks(orderedIds: string[], draggedId: string) {
+    const blocks = useRoutineStore.getState().blocks
+    const movedBlock = blocks.find((b) => b.id === draggedId)
+    if (!movedBlock) return
+
+    const newIndex = orderedIds.indexOf(draggedId)
+    const afterBlockId = newIndex > 0 ? orderedIds[newIndex - 1] : null
+    const afterBlock = afterBlockId ? blocks.find((b) => b.id === afterBlockId) ?? null : null
+
+    setPendingReorder({ orderedIds, movedBlock, afterBlock })
+  }
+
+  async function handleConfirmReorder() {
+    if (!pendingReorder) return
+    try {
+      await reorderBlocks(pendingReorder.orderedIds)
+    } catch (err: any) {
+      console.error('Error reordenando bloques:', err)
+      // Error is shown via routineError state from the store
+    } finally {
+      setPendingReorder(null)
+    }
+  }
+
+  function handleCancelReorder() {
+    setPendingReorder(null)
+  }
+
   function handleOpenCatalog() {
     const hasCatalogData = globalExercises.length > 0 || customExercises.length > 0
     if (!hasCatalogData) {
@@ -59,6 +95,17 @@ export function Rutinas() {
     }
     setShowCatalog(true)
   }
+
+  const confirmMessage = pendingReorder
+    ? (() => {
+        const { movedBlock, afterBlock } = pendingReorder
+        const blockName = movedBlock.es_descanso ? 'descanso' : movedBlock.nombre
+        if (afterBlock) {
+          return `¿Quieres mover ${blockName} para después del ${afterBlock.nombre}?`
+        }
+        return `¿Quieres mover ${blockName} al inicio del ciclo?`
+      })()
+    : ''
 
   return (
     <div className="pb-20">
@@ -93,6 +140,7 @@ export function Rutinas() {
             onEditBlock={handleEditBlock}
             onStartWorkout={handleStartWorkout}
             onRestDay={handleRestDay}
+            onReorderBlocks={handleReorderBlocks}
           />
         )}
 
@@ -126,6 +174,47 @@ export function Rutinas() {
               </button>
             </div>
             <CatalogBrowser />
+          </div>
+        </div>
+      )}
+
+      {/* Reorder confirmation modal */}
+      {pendingReorder && (
+        <div
+          className="fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          onClick={handleCancelReorder}
+        >
+          <div
+            className="bg-brand-card w-full sm:max-w-sm sm:rounded-lg rounded-t-lg p-5 border border-brand-border"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-brand-accent/15 flex items-center justify-center shrink-0">
+                <ArrowRightLeft className="w-5 h-5 text-brand-lightAccent" />
+              </div>
+              <h3 className="text-lg font-bold text-brand-primaryText font-heading">
+                Reordenar días
+              </h3>
+            </div>
+
+            <p className="text-brand-primaryText text-sm mb-6 leading-relaxed">
+              {confirmMessage}
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelReorder}
+                className="btn-secondary flex-1 h-10 text-sm"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmReorder}
+                className="btn-primary flex-1 h-10 text-sm"
+              >
+                Confirmar
+              </button>
+            </div>
           </div>
         </div>
       )}
