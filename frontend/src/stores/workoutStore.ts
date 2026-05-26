@@ -57,6 +57,7 @@ interface WorkoutState {
   pauseRestTimer: () => void
   resumeRestTimer: () => void
   tickRestTimer: () => void
+  skipRestTimer: () => void
   dismissRestWarning: () => void
   finishSetRest: () => void
   advanceToNextExercise: () => void
@@ -204,6 +205,10 @@ export const useWorkoutStore = create<WorkoutState>()(
         const { restSecondsRemaining, restTimerRunning } = get()
         if (!restTimerRunning || restSecondsRemaining <= 0) return
         set({ restSecondsRemaining: restSecondsRemaining - 1 })
+      },
+
+      skipRestTimer: () => {
+        set({ restSecondsRemaining: 0, restTimerRunning: false })
       },
 
       dismissRestWarning: () => {
