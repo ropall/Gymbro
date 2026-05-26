@@ -8,6 +8,7 @@ interface RecoveryChecklistProps {
 export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
   const energyLevel = useWorkoutStore((s) => s.energyLevel)
   const supplements = useWorkoutStore((s) => s.supplements)
+  const exercises = useWorkoutStore((s) => s.exercises)
   const setEnergyLevel = useWorkoutStore((s) => s.setEnergyLevel)
   const toggleSupplement = useWorkoutStore((s) => s.toggleSupplement)
   const finishWorkout = useWorkoutStore((s) => s.finishWorkout)
@@ -15,7 +16,12 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const canFinish = energyLevel !== null
+  const completedSetsCount = exercises.reduce(
+    (acc, ex) => acc + ex.sets.filter((s) => s.completed).length,
+    0
+  )
+
+  const canFinish = energyLevel !== null && completedSetsCount > 0
 
   const handleFinish = async () => {
     if (!canFinish) return
@@ -102,7 +108,12 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
         </div>
       </div>
 
-      {/* Error message */}
+      {/* Validation messages */}
+      {completedSetsCount === 0 && (
+        <div className="p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
+          No has completado ninguna serie. Vuelve al entrenamiento para registrar al menos una serie.
+        </div>
+      )}
       {error && (
         <div className="p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
           {error}
