@@ -122,7 +122,15 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
 
     // Auto-select if there's at most 1 equipment option and at most 1 variation
     if (equipoOptions.length <= 1 && variacionOptions.length <= 1) {
-      addExercise(ex, equipoOptions[0] || 'Sin equipo', variacionOptions[0] || '')
+      addExercise(ex, {
+        equipo: equipoOptions[0] || 'Sin equipo',
+        variacion: variacionOptions[0] || '',
+        series: 3,
+        repsMin: 8,
+        repsMax: 12,
+        rpe: 7,
+        descanso: 90,
+      })
       return
     }
 
@@ -168,7 +176,15 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
     })
     const latestCustom = useExerciseStore.getState().customExercises.at(-1)
     if (latestCustom) {
-      addExercise(latestCustom, customEquipo.trim() || 'Sin equipo', customVariaciones.trim())
+      addExercise(latestCustom, {
+        equipo: customEquipo.trim() || 'Sin equipo',
+        variacion: customVariaciones.trim(),
+        series: 3,
+        repsMin: 8,
+        repsMax: 12,
+        rpe: 7,
+        descanso: 90,
+      })
     }
     closeCustomOverlay()
   }
