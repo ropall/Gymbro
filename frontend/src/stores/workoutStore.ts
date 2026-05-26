@@ -281,8 +281,8 @@ export const useWorkoutStore = create<WorkoutState>()(
       },
 
       finishWorkout: async () => {
-        const { blockId, exercises, sessionId, energyLevel, supplements } = get()
-        if (!blockId || !sessionId || energyLevel === null) {
+        const { blockId, exercises, energyLevel, supplements } = get()
+        if (!blockId || energyLevel === null) {
           throw new Error('Faltan datos para finalizar el entrenamiento')
         }
 
