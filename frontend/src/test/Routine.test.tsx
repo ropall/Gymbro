@@ -10,6 +10,7 @@ import { supabase } from '../lib/supabase'
 vi.mock('../lib/supabase', () => ({
   supabase: {
     from: vi.fn(),
+    rpc: vi.fn(),
     auth: { getUser: vi.fn() },
   },
 }))
@@ -102,6 +103,10 @@ function mockSupabaseRoutine({ cycleOverrides = {} }: { cycleOverrides?: any } =
 
   vi.mocked(supabase.from).mockImplementation((table: string) =>
     createMockChain(table, { cycle: cycleOverrides })
+  )
+
+  vi.mocked(supabase.rpc).mockImplementation((_fn: string, _params?: any) =>
+    Promise.resolve({ data: null, error: null })
   )
 }
 
@@ -354,5 +359,51 @@ describe('Routine/Block/Cycle Management', () => {
     expect(setData.snapshot_reps_objetivo_max).toBe(12)
     expect(setData.snapshot_rpe_objetivo).toBe(7)
     expect(setData.snapshot_descanso_segundos).toBe(90)
+  })
+
+  it('shows drag handle on all block cards', async () => {
+    mockSupabaseRoutine({ cycleOverrides: { activo: true } })
+    render(
+      <MemoryRouter>
+        <Rutinas />
+      </MemoryRouter>
+    )
+
+    await waitFor(() => {
+      expect(screen.queryByText(/Cargando rutina/i)).not.toBeInTheDocument()
+    })
+
+    const cards = screen.getAllByTestId('block-card')
+    expect(cards.length).toBe(7)
+
+    // All cards should have the grip handle
+    cards.forEach((card) => {
+      expect(card.querySelector('[aria-label="Mover día"]')).toBeInTheDocument()
+    })
+  })
+
+  it('reorders blocks via store and updates positions', async () => {
+    mockSupabaseRoutine({ cycleOverrides: { activo: false } })
+
+    await useRoutineStore.getState().loadBlocksAndCycle()
+
+    const stateBefore = useRoutineStore.getState().blocks
+    expect(stateBefore[0].nombre).toBe('Día 1 - Pecho')
+    expect(stateBefore[0].posicion).toBe(1)
+    expect(stateBefore[2].nombre).toBe('Descanso')
+    expect(stateBefore[2].posicion).toBe(3)
+
+    // Reorder: move rest day (b3) to position 1
+    const newOrder = ['b3', 'b1', 'b2', 'b4', 'b5', 'b6', 'b7']
+    await useRoutineStore.getState().reorderBlocks(newOrder)
+
+    const stateAfter = useRoutineStore.getState().blocks
+    expect(stateAfter[0].id).toBe('b3')
+    expect(stateAfter[0].posicion).toBe(1)
+    expect(stateAfter[0].nombre).toBe('Descanso')
+
+    expect(stateAfter[1].id).toBe('b1')
+    expect(stateAfter[1].posicion).toBe(2)
+    expect(stateAfter[1].nombre).toBe('Día 1 - Pecho')
   })
 })
