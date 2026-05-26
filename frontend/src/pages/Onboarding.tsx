@@ -4,15 +4,13 @@ import { useOnboardingStore } from '../stores/onboardingStore'
 import { StepStructure } from '../components/onboarding/StepStructure'
 import { StepMuscleGroups } from '../components/onboarding/StepMuscleGroups'
 import { StepExercises } from '../components/onboarding/StepExercises'
-import { StepParams } from '../components/onboarding/StepParams'
 import { StepSummary } from '../components/onboarding/StepSummary'
 
 const STEPS = [
   { number: 1, title: 'Estructura' },
   { number: 2, title: 'Grupos' },
   { number: 3, title: 'Ejercicios' },
-  { number: 4, title: 'Parámetros' },
-  { number: 5, title: 'Resumen' },
+  { number: 4, title: 'Resumen' },
 ]
 
 export function Onboarding() {
@@ -37,18 +35,12 @@ export function Onboarding() {
       const trainingDays = days.filter((d) => !d.isRest)
       return trainingDays.every((d) => d.exercises.length > 0)
     }
-    if (step === 4) {
-      const trainingDays = days.filter((d) => !d.isRest)
-      return trainingDays.every((d) =>
-        d.exercises.every((ex) => ex.series > 0 && ex.repsMin > 0 && ex.repsMax > 0 && ex.rpe >= 1 && ex.rpe <= 10)
-      )
-    }
     return true
   }
 
   function handleNext() {
     setSubmitError(null)
-    if (step < 5) {
+    if (step < 4) {
       setStep(step + 1)
     }
   }
@@ -106,8 +98,7 @@ export function Onboarding() {
         {step === 1 && <StepStructure />}
         {step === 2 && <StepMuscleGroups />}
         {step === 3 && <StepExercises />}
-        {step === 4 && <StepParams />}
-        {step === 5 && <StepSummary />}
+        {step === 4 && <StepSummary />}
 
         {(error || submitError) && (
           <div className="mt-4 p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
@@ -118,7 +109,7 @@ export function Onboarding() {
 
       {/* Footer actions */}
       <footer className="sticky bottom-0 bg-brand-dark/95 backdrop-blur border-t border-brand-border px-4 py-3">
-        {step < 5 ? (
+        {step < 4 ? (
           <button
             onClick={handleNext}
             disabled={!canProceed()}

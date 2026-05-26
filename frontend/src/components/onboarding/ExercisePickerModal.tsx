@@ -31,7 +31,15 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
 
   const [localQuery, setLocalQuery] = useState('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [inlineSelections, setInlineSelections] = useState<Record<string, { equipo: string; variacion: string }>>({})
+  const [inlineSelections, setInlineSelections] = useState<Record<string, {
+    equipo: string
+    variacion: string
+    series: number
+    repsMin: number
+    repsMax: number
+    rpe: number
+    descanso: number
+  }>>({})
 
   // Custom exercise overlay state
   const [showCustomOverlay, setShowCustomOverlay] = useState(false)
@@ -90,19 +98,19 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
     }
   }
 
-  function addExercise(ex: Exercise, equipo: string, variacion: string) {
+  function addExercise(ex: Exercise, config: { equipo: string; variacion: string; series: number; repsMin: number; repsMax: number; rpe: number; descanso: number }) {
     const wizardEx: WizardExercise = {
       id: ex.id,
       nombre: ex.nombre,
       grupoMuscular: ex.grupoMuscular,
       isCustom: ex.isCustom,
-      series: 3,
-      repsMin: 8,
-      repsMax: 12,
-      rpe: 7,
-      descanso: 90,
-      equipo: equipo || 'Sin equipo',
-      variacion: variacion || undefined,
+      series: config.series,
+      repsMin: config.repsMin,
+      repsMax: config.repsMax,
+      rpe: config.rpe,
+      descanso: config.descanso,
+      equipo: config.equipo || 'Sin equipo',
+      variacion: config.variacion || undefined,
     }
     toggleExercise(dayIndex, wizardEx)
     setExpandedId(null)
@@ -114,7 +122,15 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
 
     // Auto-select if there's at most 1 equipment option and at most 1 variation
     if (equipoOptions.length <= 1 && variacionOptions.length <= 1) {
-      addExercise(ex, equipoOptions[0] || 'Sin equipo', variacionOptions[0] || '')
+      addExercise(ex, {
+        equipo: equipoOptions[0] || 'Sin equipo',
+        variacion: variacionOptions[0] || '',
+        series: 3,
+        repsMin: 8,
+        repsMax: 12,
+        rpe: 7,
+        descanso: 90,
+      })
       return
     }
 
@@ -124,6 +140,11 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
       [ex.id]: {
         equipo: equipoOptions[0] || 'Sin equipo',
         variacion: variacionOptions[0] || '',
+        series: 3,
+        repsMin: 8,
+        repsMax: 12,
+        rpe: 7,
+        descanso: 90,
       },
     }))
     setExpandedId(ex.id)
@@ -155,7 +176,15 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
     })
     const latestCustom = useExerciseStore.getState().customExercises.at(-1)
     if (latestCustom) {
-      addExercise(latestCustom, customEquipo.trim() || 'Sin equipo', customVariaciones.trim())
+      addExercise(latestCustom, {
+        equipo: customEquipo.trim() || 'Sin equipo',
+        variacion: customVariaciones.trim(),
+        series: 3,
+        repsMin: 8,
+        repsMax: 12,
+        rpe: 7,
+        descanso: 90,
+      })
     }
     closeCustomOverlay()
   }
@@ -364,8 +393,97 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
                         </div>
                       )}
 
+                      {/* Params */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <p className="text-brand-lightAccent text-[10px] font-medium mb-1">Series</p>
+                          <input
+                            type="number"
+                            min={1}
+                            max={20}
+                            value={selections.series}
+                            onChange={(e) =>
+                              setInlineSelections((prev) => ({
+                                ...prev,
+                                [ex.id]: { ...selections, series: Number(e.target.value) },
+                              }))
+                            }
+                            className="w-full bg-brand-dark border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-brand-lightAccent text-[10px] font-medium mb-1">Descanso (s)</p>
+                          <input
+                            type="number"
+                            min={0}
+                            step={15}
+                            value={selections.descanso}
+                            onChange={(e) =>
+                              setInlineSelections((prev) => ({
+                                ...prev,
+                                [ex.id]: { ...selections, descanso: Number(e.target.value) },
+                              }))
+                            }
+                            className="w-full bg-brand-dark border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-brand-lightAccent text-[10px] font-medium mb-1">Rep min</p>
+                          <input
+                            type="number"
+                            min={1}
+                            value={selections.repsMin}
+                            onChange={(e) =>
+                              setInlineSelections((prev) => ({
+                                ...prev,
+                                [ex.id]: { ...selections, repsMin: Number(e.target.value) },
+                              }))
+                            }
+                            className="w-full bg-brand-dark border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-brand-lightAccent text-[10px] font-medium mb-1">Rep max</p>
+                          <input
+                            type="number"
+                            min={1}
+                            value={selections.repsMax}
+                            onChange={(e) =>
+                              setInlineSelections((prev) => ({
+                                ...prev,
+                                [ex.id]: { ...selections, repsMax: Number(e.target.value) },
+                              }))
+                            }
+                            className="w-full bg-brand-dark border border-brand-border rounded px-2 py-1.5 text-brand-primaryText text-sm"
+                          />
+                        </div>
+                        <div className="col-span-2">
+                          <p className="text-brand-lightAccent text-[10px] font-medium mb-1">RPE objetivo (1-10)</p>
+                          <div className="flex gap-1.5 flex-wrap">
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((rpe) => (
+                              <button
+                                key={rpe}
+                                onClick={() =>
+                                  setInlineSelections((prev) => ({
+                                    ...prev,
+                                    [ex.id]: { ...selections, rpe },
+                                  }))
+                                }
+                                className={`flex-1 min-w-[36px] py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                                  selections.rpe === rpe
+                                    ? 'bg-brand-accent text-white border-brand-accent'
+                                    : 'bg-brand-dark text-brand-primaryText border-brand-border hover:border-brand-borderStrong'
+                                }`}
+                              >
+                                {rpe}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
                       <button
-                        onClick={() => addExercise(ex, selections.equipo, selections.variacion)}
+                        onClick={() => addExercise(ex, selections)}
                         className="w-full bg-brand-accent text-white py-2.5 rounded-xl text-sm font-bold active:bg-brand-lightAccent transition-colors"
                       >
                         Agregar ejercicio
