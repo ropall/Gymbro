@@ -57,6 +57,7 @@ interface WorkoutState {
   pauseRestTimer: () => void
   resumeRestTimer: () => void
   tickRestTimer: () => void
+  skipRestTimer: () => void
   dismissRestWarning: () => void
   finishSetRest: () => void
   advanceToNextExercise: () => void
@@ -206,6 +207,10 @@ export const useWorkoutStore = create<WorkoutState>()(
         set({ restSecondsRemaining: restSecondsRemaining - 1 })
       },
 
+      skipRestTimer: () => {
+        set({ restSecondsRemaining: 0, restTimerRunning: false })
+      },
+
       dismissRestWarning: () => {
         set({ restWarningDismissed: true })
       },
@@ -281,8 +286,8 @@ export const useWorkoutStore = create<WorkoutState>()(
       },
 
       finishWorkout: async () => {
-        const { blockId, exercises, sessionId, energyLevel, supplements } = get()
-        if (!blockId || !sessionId || energyLevel === null) {
+        const { blockId, exercises, energyLevel, supplements } = get()
+        if (!blockId || energyLevel === null) {
           throw new Error('Faltan datos para finalizar el entrenamiento')
         }
 

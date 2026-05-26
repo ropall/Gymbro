@@ -113,7 +113,7 @@ describe('Onboarding Wizard', () => {
     await user.click(screen.getByRole('button', { name: /Crear mi primera rutina/i }))
 
     await waitFor(() => {
-      expect(screen.getByText(/Paso 1 de 5/)).toBeInTheDocument()
+      expect(screen.getByText(/Paso 1 de 4/)).toBeInTheDocument()
     })
   })
 
@@ -190,14 +190,7 @@ describe('Onboarding Wizard', () => {
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 4
-    await waitFor(() => {
-      expect(screen.getByText(/Parámetros de entrenamiento/i)).toBeInTheDocument()
-    })
-
-    await user.click(screen.getByRole('button', { name: /Siguiente/i }))
-
-    // Step 5
+    // Step 4 — Summary
     await waitFor(() => {
       expect(screen.getByText(/Resumen de tu rutina/i)).toBeInTheDocument()
     })
@@ -260,7 +253,7 @@ describe('Onboarding Wizard', () => {
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 3 should show the selected exercise
+    // Step 3 should show the selected exercise for review
     await waitFor(() => {
       expect(screen.getByText(/Revisa tus ejercicios/i)).toBeInTheDocument()
     })
@@ -372,14 +365,7 @@ describe('Onboarding Wizard', () => {
 
     await user.click(screen.getByRole('button', { name: /Siguiente/i }))
 
-    // Step 4
-    await waitFor(() => {
-      expect(screen.getByText(/Parámetros de entrenamiento/i)).toBeInTheDocument()
-    })
-
-    await user.click(screen.getByRole('button', { name: /Siguiente/i }))
-
-    // Step 5
+    // Step 4 — Summary
     await waitFor(() => {
       expect(screen.getByText(/Resumen de tu rutina/i)).toBeInTheDocument()
     })

@@ -42,6 +42,7 @@ export function RestTimerModal() {
   const pauseRestTimer = useWorkoutStore((s) => s.pauseRestTimer)
   const resumeRestTimer = useWorkoutStore((s) => s.resumeRestTimer)
   const finishSetRest = useWorkoutStore((s) => s.finishSetRest)
+  const skipRestTimer = useWorkoutStore((s) => s.skipRestTimer)
   const updateSetWeight = useWorkoutStore((s) => s.updateSetWeight)
   const updateSetReps = useWorkoutStore((s) => s.updateSetReps)
   const updateSetRpe = useWorkoutStore((s) => s.updateSetRpe)
@@ -120,12 +121,22 @@ export function RestTimerModal() {
             </p>
           )}
           {!isTimerDone && (
-            <button
-              onClick={restTimerRunning ? pauseRestTimer : resumeRestTimer}
-              className="mt-3 bg-brand-dark border border-brand-border text-brand-primaryText px-6 py-2 rounded-lg text-sm font-bold min-h-[48px] active:bg-brand-card transition-colors"
-            >
-              {restTimerRunning ? 'Pausar' : 'Reanudar'}
-            </button>
+            <div className="mt-3 flex gap-2 justify-center">
+              <button
+                onClick={restTimerRunning ? pauseRestTimer : resumeRestTimer}
+                className="bg-brand-dark border border-brand-border text-brand-primaryText px-6 py-2 rounded-lg text-sm font-bold min-h-[48px] active:bg-brand-card transition-colors"
+              >
+                {restTimerRunning ? 'Pausar' : 'Reanudar'}
+              </button>
+              {saved && (
+                <button
+                  onClick={skipRestTimer}
+                  className="bg-brand-dark border border-brand-border text-brand-lightAccent px-6 py-2 rounded-lg text-sm font-bold min-h-[48px] active:bg-brand-card transition-colors"
+                >
+                  Saltar descanso
+                </button>
+              )}
+            </div>
           )}
         </div>
 

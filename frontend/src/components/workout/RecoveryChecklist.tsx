@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useWorkoutStore } from '../../stores/workoutStore'
 
 interface RecoveryChecklistProps {
@@ -7,19 +8,31 @@ interface RecoveryChecklistProps {
 export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
   const energyLevel = useWorkoutStore((s) => s.energyLevel)
   const supplements = useWorkoutStore((s) => s.supplements)
+  const exercises = useWorkoutStore((s) => s.exercises)
   const setEnergyLevel = useWorkoutStore((s) => s.setEnergyLevel)
   const toggleSupplement = useWorkoutStore((s) => s.toggleSupplement)
   const finishWorkout = useWorkoutStore((s) => s.finishWorkout)
 
-  const canFinish = energyLevel !== null
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const completedSetsCount = exercises.reduce(
+    (acc, ex) => acc + ex.sets.filter((s) => s.completed).length,
+    0
+  )
+
+  const canFinish = energyLevel !== null && completedSetsCount > 0
 
   const handleFinish = async () => {
     if (!canFinish) return
+    setSaving(true)
+    setError(null)
     try {
       await finishWorkout()
       onFinish()
     } catch (err: any) {
-      console.error('Error finishing workout:', err)
+      setSaving(false)
+      setError(err.message ?? 'Error al guardar el entrenamiento')
     }
   }
 
@@ -95,17 +108,29 @@ export function RecoveryChecklist({ onFinish }: RecoveryChecklistProps) {
         </div>
       </div>
 
+      {/* Validation messages */}
+      {completedSetsCount === 0 && (
+        <div className="p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
+          No has completado ninguna serie. Vuelve al entrenamiento para registrar al menos una serie.
+        </div>
+      )}
+      {error && (
+        <div className="p-3 bg-brand-dangerBg border border-brand-dangerBorder rounded-lg text-brand-danger text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Finish button */}
       <button
         onClick={handleFinish}
-        disabled={!canFinish}
+        disabled={!canFinish || saving}
         className={`w-full py-4 rounded-xl text-lg font-bold min-h-[48px] transition-colors ${
-          canFinish
+          canFinish && !saving
             ? 'bg-brand-accent text-white active:bg-brand-lightAccent'
             : 'bg-brand-dark border border-brand-border text-brand-mutedText cursor-not-allowed'
         }`}
       >
-        Finalizar entrenamiento
+        {saving ? 'Guardando...' : 'Finalizar entrenamiento'}
       </button>
     </div>
   )
