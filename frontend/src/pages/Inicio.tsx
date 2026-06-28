@@ -141,30 +141,38 @@ export function Inicio() {
             <div>
               <h2 className="text-base font-bold text-brand-primaryText font-heading">Hoy toca</h2>
               <p className="text-brand-mutedText text-xs">
-                {currentBlock
-                  ? currentBlock.es_descanso
-                    ? 'Día de descanso activo'
-                    : `${currentBlockExercises.length} ejercicios`
-                  : 'Sin rutina configurada'}
+                {!cycle?.activo
+                  ? 'No tienes un ciclo activo'
+                  : currentBlock
+                    ? currentBlock.es_descanso
+                      ? 'Día de descanso activo'
+                      : `${currentBlockExercises.length} ejercicios`
+                    : 'Sin rutina configurada'}
               </p>
             </div>
           </div>
-          {currentBlock && !currentBlock.es_descanso && (
+          {!cycle?.activo ? (
+            <button
+              onClick={() => navigate('/rutinas')}
+              className="btn-primary h-9 px-4 text-[13px]"
+            >
+              Iniciar ciclo
+            </button>
+          ) : currentBlock && !currentBlock.es_descanso ? (
             <button
               onClick={() => navigate(`/workout/${currentBlock.id}`)}
               className="btn-primary h-9 px-4 text-[13px]"
             >
               Entrenar
             </button>
-          )}
-          {currentBlock && currentBlock.es_descanso && (
+          ) : currentBlock && currentBlock.es_descanso ? (
             <span className="badge bg-brand-accent/20 text-brand-lightAccent border border-brand-accent/30">
               Descanso
             </span>
-          )}
+          ) : null}
         </div>
 
-        {currentBlock && !currentBlock.es_descanso && currentBlockExercises.length > 0 && (
+        {cycle?.activo && currentBlock && !currentBlock.es_descanso && currentBlockExercises.length > 0 && (
           <div className="space-y-2">
             {currentBlockExercises.slice(0, 4).map((ex) => (
               <div
@@ -187,7 +195,7 @@ export function Inicio() {
           </div>
         )}
 
-        {currentBlock && currentBlock.es_descanso && (
+        {cycle?.activo && currentBlock && currentBlock.es_descanso && (
           <div className="py-4 text-center">
             <p className="text-brand-secondaryText text-sm">
               Tu cuerpo se recupera. Camina, estira o hidrátate.

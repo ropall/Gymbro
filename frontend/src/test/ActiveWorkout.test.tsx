@@ -202,7 +202,9 @@ describe('Active Workout Mode', () => {
       )
 
       await user.click(screen.getByRole('button', { name: /Completar/i }))
-      await user.click(screen.getByRole('button', { name: /Continuar/i }))
+      await user.click(screen.getByRole('button', { name: /Aceptar/i }))
+      await user.click(screen.getByRole('button', { name: /Saltar descanso/i }))
+      await user.click(screen.getByRole('button', { name: /Siguiente serie/i }))
 
       expect(useWorkoutStore.getState().currentSetIndex).toBe(1)
     })
@@ -254,6 +256,9 @@ describe('Active Workout Mode', () => {
 
     it('finish button is enabled after selecting energy level', async () => {
       const user = userEvent.setup()
+      // A session needs at least one completed set to be finishable.
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
+      useWorkoutStore.getState().completeSet()
       render(<RecoveryChecklist onFinish={() => {}} />)
 
       await user.click(screen.getByText('5'))
