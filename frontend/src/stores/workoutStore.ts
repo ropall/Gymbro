@@ -19,6 +19,7 @@ export interface ActiveExercise {
 
 export interface PendingSession {
   blockId: string
+  cycleId: string
   exercises: ActiveExercise[]
   energyLevel: number
   supplements: { creatina: boolean; proteina: boolean; glicinato_magnesio: boolean }
@@ -27,6 +28,7 @@ export interface PendingSession {
 
 interface WorkoutState {
   blockId: string | null
+  cycleId: string | null
   blockName: string
   exercises: ActiveExercise[]
   currentExerciseIndex: number
@@ -37,9 +39,13 @@ interface WorkoutState {
 
   restSecondsRemaining: number
   restTotalSeconds: number
+  restEndAt: number | null  // Unix ms timestamp when rest ends (for background-safe timing)
   restTimerRunning: boolean
   restTimerStarted: boolean
   restWarningDismissed: boolean
+
+  // Sets from the last completed session for this block (keyed by block_exercise_id)
+  previousSets: Record<string, { peso: number | null; reps_reales: number | null }[]>
 
   energyLevel: number | null
   supplements: {
@@ -48,7 +54,8 @@ interface WorkoutState {
     glicinato_magnesio: boolean
   }
 
-  initializeWorkout: (blockId: string, blockName: string, exercises: BlockExercise[]) => void
+  initializeWorkout: (blockId: string, blockName: string, exercises: BlockExercise[], cycleId: string) => void
+  loadPreviousSession: (blockId: string) => Promise<void>
   completeSet: () => void
   updateSetWeight: (weight: number | null, setIndex?: number) => void
   updateSetReps: (reps: number | null, setIndex?: number) => void
@@ -71,6 +78,7 @@ interface WorkoutState {
 
 const initialState = {
   blockId: null,
+  cycleId: null,
   blockName: '',
   exercises: [],
   currentExerciseIndex: 0,
@@ -80,9 +88,11 @@ const initialState = {
   pendingSync: false,
   restSecondsRemaining: 0,
   restTotalSeconds: 0,
+  restEndAt: null,
   restTimerRunning: false,
   restTimerStarted: false,
   restWarningDismissed: false,
+  previousSets: {},
   energyLevel: null as number | null,
   supplements: {
     creatina: false,
@@ -96,7 +106,7 @@ export const useWorkoutStore = create<WorkoutState>()(
     (set, get) => ({
       ...initialState,
 
-      initializeWorkout: (blockId, blockName, exercises) => {
+      initializeWorkout: (blockId, blockName, exercises, cycleId) => {
         const activeExercises = exercises.map((be) => ({
           blockExercise: be,
           sets: Array.from({ length: be.series_objetivo }, (_, i) => ({
@@ -112,9 +122,38 @@ export const useWorkoutStore = create<WorkoutState>()(
         set({
           ...initialState,
           blockId,
+          cycleId,
           blockName,
           exercises: activeExercises,
         })
+      },
+
+      loadPreviousSession: async (blockId) => {
+        const { data: lastSession } = await supabase
+          .from('sessions')
+          .select('id')
+          .eq('block_id', blockId)
+          .order('fecha_completado', { ascending: false })
+          .limit(1)
+          .maybeSingle()
+
+        if (!lastSession) {
+          set({ previousSets: {} })
+          return
+        }
+
+        const { data: sets } = await supabase
+          .from('session_sets')
+          .select('block_exercise_id, peso, reps_reales, orden_serie')
+          .eq('session_id', lastSession.id)
+          .order('orden_serie', { ascending: true })
+
+        const grouped: Record<string, { peso: number | null; reps_reales: number | null }[]> = {}
+        for (const s of sets ?? []) {
+          if (!grouped[s.block_exercise_id]) grouped[s.block_exercise_id] = []
+          grouped[s.block_exercise_id].push({ peso: s.peso, reps_reales: s.reps_reales })
+        }
+        set({ previousSets: grouped })
       },
 
       completeSet: () => {
@@ -138,6 +177,7 @@ export const useWorkoutStore = create<WorkoutState>()(
           restTimerRunning: true,
           restSecondsRemaining: restSeconds,
           restTotalSeconds: restSeconds,
+          restEndAt: Date.now() + restSeconds * 1000,
           restWarningDismissed: false,
         })
       },
@@ -187,6 +227,8 @@ export const useWorkoutStore = create<WorkoutState>()(
       startRestTimer: (seconds) => {
         set({
           restSecondsRemaining: seconds,
+          restTotalSeconds: seconds,
+          restEndAt: Date.now() + seconds * 1000,
           restTimerRunning: true,
           restTimerStarted: true,
           restWarningDismissed: false,
@@ -194,21 +236,27 @@ export const useWorkoutStore = create<WorkoutState>()(
       },
 
       pauseRestTimer: () => {
-        set({ restTimerRunning: false })
+        set({ restTimerRunning: false, restEndAt: null })
       },
 
       resumeRestTimer: () => {
-        set({ restTimerRunning: true })
+        const { restSecondsRemaining } = get()
+        set({
+          restTimerRunning: true,
+          restEndAt: Date.now() + restSecondsRemaining * 1000,
+        })
       },
 
+      // Computes remaining time from wall clock so background throttling doesn't break it
       tickRestTimer: () => {
-        const { restSecondsRemaining, restTimerRunning } = get()
-        if (!restTimerRunning || restSecondsRemaining <= 0) return
-        set({ restSecondsRemaining: restSecondsRemaining - 1 })
+        const { restTimerRunning, restEndAt } = get()
+        if (!restTimerRunning || restEndAt === null) return
+        const remaining = Math.max(0, Math.ceil((restEndAt - Date.now()) / 1000))
+        set({ restSecondsRemaining: remaining })
       },
 
       skipRestTimer: () => {
-        set({ restSecondsRemaining: 0, restTimerRunning: false })
+        set({ restSecondsRemaining: 0, restTimerRunning: false, restEndAt: null })
       },
 
       dismissRestWarning: () => {
@@ -226,6 +274,7 @@ export const useWorkoutStore = create<WorkoutState>()(
           restTimerRunning: false,
           restSecondsRemaining: 0,
           restTotalSeconds: 0,
+          restEndAt: null,
           restWarningDismissed: false,
         })
 
@@ -251,6 +300,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             exercises: updatedExercises,
             phase: 'celebrating',
             restTimerRunning: false,
+            restEndAt: null,
             restWarningDismissed: false,
           })
         } else {
@@ -262,6 +312,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             restTotalSeconds: 0,
             restTimerRunning: false,
             restTimerStarted: false,
+            restEndAt: null,
             restWarningDismissed: false,
           })
         }
@@ -286,9 +337,12 @@ export const useWorkoutStore = create<WorkoutState>()(
       },
 
       finishWorkout: async () => {
-        const { blockId, exercises, energyLevel, supplements } = get()
+        const { blockId, cycleId, exercises, energyLevel, supplements } = get()
         if (!blockId || energyLevel === null) {
           throw new Error('Faltan datos para finalizar el entrenamiento')
+        }
+        if (!cycleId) {
+          throw new Error('No hay ciclo activo. Ve a Rutinas e inicia un nuevo ciclo.')
         }
 
         const allSets: { block_exercise_id: string; peso: number | null; reps_reales: number | null; rpe_real: number | null; orden_serie: number }[] = []
@@ -310,6 +364,7 @@ export const useWorkoutStore = create<WorkoutState>()(
         if (!navigator.onLine) {
           const pending: PendingSession = {
             blockId,
+            cycleId,
             exercises: JSON.parse(JSON.stringify(exercises)),
             energyLevel,
             supplements: { ...supplements },
@@ -326,7 +381,7 @@ export const useWorkoutStore = create<WorkoutState>()(
         const { data: sessionData, error: sessionError } = await supabase
           .from('sessions')
           .insert({
-            cycle_id: (await supabase.from('cycles').select('id').eq('activo', true).order('created_at', { ascending: false }).limit(1).maybeSingle()).data?.id,
+            cycle_id: cycleId,
             block_id: blockId,
           })
           .select('id')
@@ -417,30 +472,8 @@ export const useWorkoutStore = create<WorkoutState>()(
 
         if (recoveryError) throw recoveryError
 
-        const { data: cycleData } = await supabase
-          .from('cycles')
-          .select('id, posicion_actual')
-          .eq('activo', true)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
-
-        if (cycleData) {
-          const nextPos = cycleData.posicion_actual + 1
-          if (nextPos > 7) {
-            await supabase
-              .from('cycles')
-              .update({ activo: false, posicion_actual: 7 })
-              .eq('id', cycleData.id)
-          } else {
-            await supabase
-              .from('cycles')
-              .update({ posicion_actual: nextPos })
-              .eq('id', cycleData.id)
-          }
-        }
-
         set({ sessionId: newSessionId })
+        // Cycle advancement is handled by routineStore.advancePosition() in ActiveWorkout
       },
 
       syncPendingSession: async () => {
@@ -457,7 +490,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             const { data: sessionData, error: sessionError } = await supabase
               .from('sessions')
               .insert({
-                cycle_id: (await supabase.from('cycles').select('id').eq('activo', true).order('created_at', { ascending: false }).limit(1).maybeSingle()).data?.id,
+                cycle_id: session.cycleId,
                 block_id: session.blockId,
               })
               .select('id')
@@ -510,6 +543,7 @@ export const useWorkoutStore = create<WorkoutState>()(
       name: 'gymbro-workout-state',
       partialize: (state) => ({
         blockId: state.blockId,
+        cycleId: state.cycleId,
         blockName: state.blockName,
         exercises: state.exercises,
         currentExerciseIndex: state.currentExerciseIndex,
