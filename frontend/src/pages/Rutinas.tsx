@@ -20,6 +20,7 @@ export function Rutinas() {
   const [editingBlock, setEditingBlock] = useState<Block | null>(null)
   const [showCatalog, setShowCatalog] = useState(false)
   const [pendingReorder, setPendingReorder] = useState<PendingReorder | null>(null)
+  const [summaryDismissed, setSummaryDismissed] = useState(false)
 
   const loadData = useExerciseStore((state) => state.loadData)
   const globalExercises = useExerciseStore((state) => state.globalExercises)
@@ -31,6 +32,15 @@ export function Rutinas() {
   const advancePosition = useRoutineStore((state) => state.advancePosition)
   const startNewCycle = useRoutineStore((state) => state.startNewCycle)
   const reorderBlocks = useRoutineStore((state) => state.reorderBlocks)
+  const cycle = useRoutineStore((state) => state.cycle)
+  const blocks = useRoutineStore((state) => state.blocks)
+  const isLoading = useRoutineStore((state) => state.isLoading)
+
+  // Show the "start new cycle" screen when the previous cycle has ended (no active
+  // cycle in the DB) but the user still has a routine configured. Otherwise the user
+  // would be stuck with no way to begin the next cycle.
+  const cycleEnded = !isLoading && blocks.length > 0 && !cycle?.activo
+  const showSummary = (showCycleSummary || cycleEnded) && !summaryDismissed
 
   useEffect(() => {
     loadBlocksAndCycle()
@@ -58,6 +68,7 @@ export function Rutinas() {
 
   function handleEditBlocks() {
     useRoutineStore.setState({ showCycleSummary: false })
+    setSummaryDismissed(true)
   }
 
   function handleReorderBlocks(orderedIds: string[], draggedId: string) {
@@ -130,7 +141,7 @@ export function Rutinas() {
           </div>
         )}
 
-        {showCycleSummary ? (
+        {showSummary ? (
           <CycleSummary
             onStartNewCycle={handleStartNewCycle}
             onEditBlocks={handleEditBlocks}

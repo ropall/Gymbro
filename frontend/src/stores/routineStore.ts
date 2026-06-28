@@ -377,15 +377,17 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
 
   startNewCycle: async () => {
     const { cycle } = get()
-    if (!cycle) return
 
     try {
       const { data: userData } = await supabase.auth.getUser()
       const userId = userData.user?.id
       if (!userId) throw new Error('No hay usuario autenticado')
 
-      // Deactivate old cycle
-      await supabase.from('cycles').update({ activo: false }).eq('id', cycle.id)
+      // Deactivate the previous cycle if there is one (when starting a new cycle
+      // right after finishing one, there may be no active cycle in memory).
+      if (cycle) {
+        await supabase.from('cycles').update({ activo: false }).eq('id', cycle.id)
+      }
 
       // Create new cycle
       const { data: newCycleData, error: newCycleError } = await supabase

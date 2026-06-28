@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useWorkoutStore } from '../stores/workoutStore'
 import { useRoutineStore } from '../stores/routineStore'
@@ -28,22 +28,34 @@ export function ActiveWorkout() {
   const loadBlocksAndCycle = useRoutineStore((s) => s.loadBlocksAndCycle)
   const advancePosition = useRoutineStore((s) => s.advancePosition)
 
+  const [loadDone, setLoadDone] = useState(false)
+
   useEffect(() => {
-    loadBlocksAndCycle()
+    loadBlocksAndCycle().finally(() => setLoadDone(true))
   }, [loadBlocksAndCycle])
 
   useEffect(() => {
-    if (!blockId || blocks.length === 0 || !cycle?.id) return
+    // Wait until the routine + cycle have finished loading before deciding anything,
+    // otherwise we'd act on the initial empty state.
+    if (!loadDone) return
+
+    // No active cycle (e.g. the previous cycle just ended) → there's nothing to train.
+    // Send the user to Rutinas to start a new cycle instead of hanging on "Cargando".
+    if (!cycle?.activo) {
+      navigate('/rutinas', { replace: true })
+      return
+    }
 
     const block = blocks.find((b) => b.id === blockId)
-    if (!block) return
-
-    const blockExs = blockExercises.filter((e) => e.block_id === blockId)
-    if (blockExs.length === 0) return
+    const blockExs = block ? blockExercises.filter((e) => e.block_id === blockId) : []
+    if (!block || blockExs.length === 0) {
+      navigate('/rutinas', { replace: true })
+      return
+    }
 
     initializeWorkout(block.id, block.nombre, blockExs, cycle.id)
     loadPreviousSession(block.id)
-  }, [blockId, blocks, blockExercises, cycle?.id, initializeWorkout, loadPreviousSession])
+  }, [loadDone, blockId, blocks, blockExercises, cycle?.activo, cycle?.id, initializeWorkout, loadPreviousSession, navigate])
 
   const handleSetComplete = useCallback(() => {
     completeSet()
