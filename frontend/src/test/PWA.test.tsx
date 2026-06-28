@@ -42,7 +42,7 @@ describe('PWA - Workout Store Persistence', () => {
   })
 
   it('persists workout state in localStorage via middleware', () => {
-    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises)
+    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises, 'test-cycle-id')
     useWorkoutStore.getState().completeSet()
 
     const raw = localStorage.getItem('gymbro-workout-state')
@@ -56,7 +56,7 @@ describe('PWA - Workout Store Persistence', () => {
   })
 
   it('survives page refresh (rehydrates from localStorage)', () => {
-    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises)
+    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises, 'test-cycle-id')
     useWorkoutStore.getState().completeSet()
 
     const raw = localStorage.getItem('gymbro-workout-state')
@@ -71,7 +71,7 @@ describe('PWA - Workout Store Persistence', () => {
   })
 
   it('does not persist transient state like rest timer', () => {
-    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises)
+    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises, 'test-cycle-id')
     useWorkoutStore.getState().startRestTimer(90)
 
     const raw = localStorage.getItem('gymbro-workout-state')
@@ -91,7 +91,7 @@ describe('PWA - Offline Fallback', () => {
   })
 
   it('saves pending session to localStorage when offline', async () => {
-    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises)
+    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises, 'test-cycle-id')
     useWorkoutStore.getState().completeSet()
 
     // Set navigator.onLine to false
@@ -116,7 +116,7 @@ describe('PWA - Offline Fallback', () => {
   })
 
   it('sets pendingSync flag when saved offline', async () => {
-    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises)
+    useWorkoutStore.getState().initializeWorkout('b1', 'Test Block', mockBlockExercises, 'test-cycle-id')
     useWorkoutStore.getState().completeSet()
 
     vi.stubGlobal('navigator', { onLine: false })

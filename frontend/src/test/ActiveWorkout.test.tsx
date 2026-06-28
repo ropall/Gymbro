@@ -44,7 +44,7 @@ describe('Active Workout Mode', () => {
 
   describe('ExerciseInfo', () => {
     it('displays exercise name and params', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(<ExerciseInfo blockName="Día 1 - Pecho" totalExercises={1} />)
 
@@ -57,7 +57,7 @@ describe('Active Workout Mode', () => {
     })
 
     it('shows progress bar', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(<ExerciseInfo blockName="Día 1 - Pecho" totalExercises={1} />)
 
@@ -68,7 +68,7 @@ describe('Active Workout Mode', () => {
 
   describe('SetTracker', () => {
     it('shows correct number of sets', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(<SetTracker onSetComplete={() => {}} />)
 
@@ -78,7 +78,7 @@ describe('Active Workout Mode', () => {
     })
 
     it('shows Completar button for current set', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(<SetTracker onSetComplete={() => {}} />)
 
@@ -87,7 +87,7 @@ describe('Active Workout Mode', () => {
 
     it('marks set as completed when clicked', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(<SetTracker onSetComplete={() => useWorkoutStore.getState().completeSet()} />)
 
@@ -101,7 +101,7 @@ describe('Active Workout Mode', () => {
   describe('RestTimerModal', () => {
     it('appears automatically after completing a set', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(
         <>
@@ -118,7 +118,7 @@ describe('Active Workout Mode', () => {
 
     it('shows weight, reps and RPE inputs inside the modal', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(
         <>
@@ -137,7 +137,7 @@ describe('Active Workout Mode', () => {
 
     it('allows entering weight and reps', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(
         <>
@@ -159,7 +159,7 @@ describe('Active Workout Mode', () => {
 
     it('allows selecting RPE', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(
         <>
@@ -176,7 +176,7 @@ describe('Active Workout Mode', () => {
 
     it('shows pause button while running', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(
         <>
@@ -192,7 +192,7 @@ describe('Active Workout Mode', () => {
 
     it('advances to next set when continuing', async () => {
       const user = userEvent.setup()
-      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Día 1 - Pecho', mockBlockExercises, 'test-cycle-id')
 
       render(
         <>
@@ -278,7 +278,7 @@ describe('Active Workout Mode', () => {
 
   describe('WorkoutStore', () => {
     it('initializes with correct number of sets', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
 
       const state = useWorkoutStore.getState()
       expect(state.exercises.length).toBe(1)
@@ -288,7 +288,7 @@ describe('Active Workout Mode', () => {
     })
 
     it('completes a set and starts rest timer automatically', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
       useWorkoutStore.getState().completeSet()
 
       const state = useWorkoutStore.getState()
@@ -301,7 +301,7 @@ describe('Active Workout Mode', () => {
     })
 
     it('advances to next set after finishing rest', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
       useWorkoutStore.getState().completeSet()
       useWorkoutStore.getState().finishSetRest()
 
@@ -332,7 +332,7 @@ describe('Active Workout Mode', () => {
             isCustom: false,
           },
         },
-      ])
+      ], 'test-cycle-id')
 
       useWorkoutStore.getState().completeSet()
       useWorkoutStore.getState().finishSetRest()
@@ -345,7 +345,7 @@ describe('Active Workout Mode', () => {
     it('shows celebration when last exercise completed', () => {
       useWorkoutStore.getState().initializeWorkout('b1', 'Test', [
         { ...mockBlockExercises[0], series_objetivo: 1 },
-      ])
+      ], 'test-cycle-id')
 
       useWorkoutStore.getState().completeSet()
       useWorkoutStore.getState().finishSetRest()
@@ -355,7 +355,7 @@ describe('Active Workout Mode', () => {
     })
 
     it('starts rest timer manually', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
       useWorkoutStore.getState().startRestTimer(90)
 
       const state = useWorkoutStore.getState()
@@ -365,15 +365,19 @@ describe('Active Workout Mode', () => {
     })
 
     it('ticks rest timer', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      const now = Date.now()
+      vi.spyOn(Date, 'now').mockReturnValueOnce(now).mockReturnValueOnce(now + 1500)
+
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
       useWorkoutStore.getState().startRestTimer(90)
       useWorkoutStore.getState().tickRestTimer()
 
+      vi.restoreAllMocks()
       expect(useWorkoutStore.getState().restSecondsRemaining).toBe(89)
     })
 
     it('pauses and resumes rest timer', () => {
-      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises)
+      useWorkoutStore.getState().initializeWorkout('b1', 'Test', mockBlockExercises, 'test-cycle-id')
       useWorkoutStore.getState().startRestTimer(90)
 
       useWorkoutStore.getState().pauseRestTimer()

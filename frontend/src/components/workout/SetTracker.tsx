@@ -9,9 +9,12 @@ export function SetTracker({ onSetComplete }: SetTrackerProps) {
   const currentExerciseIndex = useWorkoutStore((s) => s.currentExerciseIndex)
   const currentSetIndex = useWorkoutStore((s) => s.currentSetIndex)
   const restTimerStarted = useWorkoutStore((s) => s.restTimerStarted)
+  const previousSets = useWorkoutStore((s) => s.previousSets)
 
   const currentExercise = exercises[currentExerciseIndex]
   if (!currentExercise) return null
+
+  const prevSetsForExercise = previousSets[currentExercise.blockExercise.id] ?? []
 
   return (
     <div className="space-y-3">
@@ -29,6 +32,7 @@ export function SetTracker({ onSetComplete }: SetTrackerProps) {
           const isCurrent = idx === currentSetIndex
           const isCompleted = set.completed
           const isPast = idx < currentSetIndex
+          const prev = prevSetsForExercise[idx]
 
           return (
             <div
@@ -53,9 +57,18 @@ export function SetTracker({ onSetComplete }: SetTrackerProps) {
                 >
                   {isCompleted ? '✓' : set.orden}
                 </div>
-                <span className={`text-sm font-medium ${isCompleted ? 'text-brand-lightAccent' : 'text-brand-primaryText'}`}>
-                  Serie {set.orden}
-                </span>
+                <div>
+                  <span className={`text-sm font-medium ${isCompleted ? 'text-brand-lightAccent' : 'text-brand-primaryText'}`}>
+                    Serie {set.orden}
+                  </span>
+                  {prev && (
+                    <p className="text-[11px] text-brand-mutedText leading-tight mt-0.5">
+                      Ant:{' '}
+                      {prev.peso != null ? `${prev.peso}kg` : '—'}
+                      {prev.reps_reales != null ? ` × ${prev.reps_reales}` : ''}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {isCurrent && !restTimerStarted && (

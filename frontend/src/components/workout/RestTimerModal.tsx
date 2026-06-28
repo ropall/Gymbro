@@ -89,6 +89,17 @@ export function RestTimerModal() {
     }
   }, [isTimerDone, restTimerStarted])
 
+  // Sync timer from wall clock when app returns from background
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        tickRestTimer()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [tickRestTimer])
+
   if (!restTimerStarted || !currentSet || !currentSet.completed) return null
 
   const allSetsCompleted = currentExercise.sets.every((s) => s.completed)

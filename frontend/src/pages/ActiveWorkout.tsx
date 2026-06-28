@@ -17,20 +17,23 @@ export function ActiveWorkout() {
   const exercises = useWorkoutStore((s) => s.exercises)
 
   const initializeWorkout = useWorkoutStore((s) => s.initializeWorkout)
+  const loadPreviousSession = useWorkoutStore((s) => s.loadPreviousSession)
   const completeSet = useWorkoutStore((s) => s.completeSet)
   const setPhase = useWorkoutStore((s) => s.setPhase)
   const reset = useWorkoutStore((s) => s.reset)
 
   const blocks = useRoutineStore((s) => s.blocks)
+  const cycle = useRoutineStore((s) => s.cycle)
   const blockExercises = useRoutineStore((s) => s.blockExercises)
   const loadBlocksAndCycle = useRoutineStore((s) => s.loadBlocksAndCycle)
+  const advancePosition = useRoutineStore((s) => s.advancePosition)
 
   useEffect(() => {
     loadBlocksAndCycle()
   }, [loadBlocksAndCycle])
 
   useEffect(() => {
-    if (!blockId || blocks.length === 0) return
+    if (!blockId || blocks.length === 0 || !cycle?.id) return
 
     const block = blocks.find((b) => b.id === blockId)
     if (!block) return
@@ -38,8 +41,9 @@ export function ActiveWorkout() {
     const blockExs = blockExercises.filter((e) => e.block_id === blockId)
     if (blockExs.length === 0) return
 
-    initializeWorkout(block.id, block.nombre, blockExs)
-  }, [blockId, blocks, blockExercises, initializeWorkout])
+    initializeWorkout(block.id, block.nombre, blockExs, cycle.id)
+    loadPreviousSession(block.id)
+  }, [blockId, blocks, blockExercises, cycle?.id, initializeWorkout, loadPreviousSession])
 
   const handleSetComplete = useCallback(() => {
     completeSet()
@@ -49,9 +53,10 @@ export function ActiveWorkout() {
     setPhase('recovery')
   }, [setPhase])
 
-  const handleRecoveryFinish = useCallback(() => {
+  const handleRecoveryFinish = useCallback(async () => {
+    await advancePosition()
     navigate('/')
-  }, [navigate])
+  }, [advancePosition, navigate])
 
   const handleCancel = useCallback(() => {
     reset()
