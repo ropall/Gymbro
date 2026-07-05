@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.svg', 'icons.svg', 'pwa-192.svg', 'pwa-512.svg'],
+        includeAssets: ['favicon.svg', 'icons.svg', 'apple-touch-icon.png'],
         manifest: {
           name: 'Gymbro',
           short_name: 'Gymbro',
@@ -25,16 +25,22 @@ export default defineConfig(({ mode }) => {
           start_url: '/',
           icons: [
             {
-              src: '/pwa-192.svg',
+              src: '/pwa-192.png',
               sizes: '192x192',
-              type: 'image/svg+xml',
+              type: 'image/png',
               purpose: 'any',
             },
             {
-              src: '/pwa-512.svg',
+              src: '/pwa-512.png',
               sizes: '512x512',
-              type: 'image/svg+xml',
-              purpose: 'any maskable',
+              type: 'image/png',
+              purpose: 'any',
+            },
+            {
+              src: '/pwa-512.png',
+              sizes: '512x512',
+              type: 'image/png',
+              purpose: 'maskable',
             },
           ],
         },
