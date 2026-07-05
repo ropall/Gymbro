@@ -161,7 +161,7 @@ describe('Onboarding Wizard', () => {
     )
 
     // Step 1: leave only 1 training day (Day 1), set Day 2 and Day 3 to rest
-    expect(screen.getByText(/Paso 1 de 5/)).toBeInTheDocument()
+    expect(screen.getByText(/Paso 1 de 4/)).toBeInTheDocument()
     const day2Button = screen.getByLabelText(/Día 2: Entrenamiento/i)
     const day3Button = screen.getByLabelText(/Día 3: Entrenamiento/i)
     await user.click(day2Button)
