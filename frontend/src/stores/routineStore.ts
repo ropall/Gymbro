@@ -1,8 +1,9 @@
 import { create } from 'zustand'
 import { supabase } from '../lib/supabase'
-import type { Block, BlockExercise, Cycle, SessionSet, Exercise } from '../types'
+import type { Block, BlockExercise, Cycle, Routine, SessionSet, Exercise } from '../types'
 
 interface RoutineState {
+  routines: Routine[]
   blocks: Block[]
   cycle: Cycle | null
   blockExercises: BlockExercise[]
@@ -20,10 +21,14 @@ interface RoutineState {
   startNewCycle: () => Promise<void>
   canEditBlock: (posicion: number) => boolean
   reorderBlocks: (orderedBlockIds: string[]) => Promise<void>
+  activateRoutine: (routineId: string) => Promise<void>
+  renameRoutine: (routineId: string, nombre: string) => Promise<void>
+  deleteRoutine: (routineId: string) => Promise<void>
   reset: () => void
 }
 
 const initialState = {
+  routines: [],
   blocks: [],
   cycle: null,
   blockExercises: [],
@@ -72,11 +77,36 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
       const userId = userData.user?.id
       if (!userId) throw new Error('No hay usuario autenticado')
 
-      // Load blocks
+      // Load all routines for this user and figure out which one is active
+      const { data: routinesData, error: routinesError } = await supabase
+        .from('routines')
+        .select('id, profile_id, nombre, activa, created_at')
+        .eq('profile_id', userId)
+        .order('created_at', { ascending: true })
+
+      if (routinesError) throw routinesError
+
+      const routines: Routine[] = (routinesData ?? []).map((r: any) => ({
+        id: r.id,
+        profile_id: r.profile_id,
+        nombre: r.nombre,
+        activa: r.activa,
+        created_at: r.created_at,
+      }))
+
+      const activeRoutine = routines.find((r) => r.activa) ?? null
+
+      if (!activeRoutine) {
+        // No routine configured yet (or none active) - nothing to load.
+        set({ routines, blocks: [], cycle: null, blockExercises: [], isLoading: false })
+        return
+      }
+
+      // Load blocks for the active routine
       const { data: blocksData, error: blocksError } = await supabase
         .from('blocks')
-        .select('id, profile_id, nombre, posicion, es_descanso, created_at')
-        .eq('profile_id', userId)
+        .select('id, profile_id, routine_id, nombre, posicion, es_descanso, created_at')
+        .eq('routine_id', activeRoutine.id)
         .order('posicion', { ascending: true })
 
       if (blocksError) throw blocksError
@@ -84,17 +114,18 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
       const blocks: Block[] = (blocksData ?? []).map((b: any) => ({
         id: b.id,
         profile_id: b.profile_id,
+        routine_id: b.routine_id,
         nombre: b.nombre,
         posicion: b.posicion,
         es_descanso: b.es_descanso,
         created_at: b.created_at,
       }))
 
-      // Load active cycle
+      // Load active cycle for the active routine
       const { data: cycleData, error: cycleError } = await supabase
         .from('cycles')
-        .select('id, profile_id, fecha_inicio, posicion_actual, activo, created_at')
-        .eq('profile_id', userId)
+        .select('id, profile_id, routine_id, fecha_inicio, posicion_actual, activo, created_at')
+        .eq('routine_id', activeRoutine.id)
         .eq('activo', true)
         .order('created_at', { ascending: false })
         .limit(1)
@@ -107,6 +138,7 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
         cycle = {
           id: cycleData.id,
           profile_id: cycleData.profile_id,
+          routine_id: cycleData.routine_id,
           fecha_inicio: cycleData.fecha_inicio,
           posicion_actual: cycleData.posicion_actual,
           activo: cycleData.activo,
@@ -172,6 +204,7 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
       }
 
       set({
+        routines,
         blocks,
         cycle,
         blockExercises,
@@ -376,7 +409,8 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
   },
 
   startNewCycle: async () => {
-    const { cycle } = get()
+    const { cycle, routines } = get()
+    const activeRoutine = routines.find((r) => r.activa)
 
     try {
       const { data: userData } = await supabase.auth.getUser()
@@ -394,10 +428,11 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
         .from('cycles')
         .insert({
           profile_id: userId,
+          routine_id: activeRoutine?.id ?? null,
           posicion_actual: 1,
           activo: true,
         })
-        .select('id, profile_id, fecha_inicio, posicion_actual, activo, created_at')
+        .select('id, profile_id, routine_id, fecha_inicio, posicion_actual, activo, created_at')
         .single()
 
       if (newCycleError) throw newCycleError
@@ -405,6 +440,7 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
       const newCycle: Cycle = {
         id: newCycleData.id,
         profile_id: newCycleData.profile_id,
+        routine_id: newCycleData.routine_id,
         fecha_inicio: newCycleData.fecha_inicio,
         posicion_actual: newCycleData.posicion_actual,
         activo: newCycleData.activo,
@@ -448,6 +484,97 @@ export const useRoutineStore = create<RoutineState>()((set, get) => ({
     } catch (err: any) {
       set({ blocks, error: err.message ?? 'Error reordenando bloques' })
       throw new Error(err.message ?? 'Error reordenando bloques')
+    }
+  },
+
+  activateRoutine: async (routineId) => {
+    set({ error: null })
+    try {
+      const { data: userData } = await supabase.auth.getUser()
+      const userId = userData.user?.id
+      if (!userId) throw new Error('No hay usuario autenticado')
+
+      // Two sequential updates (no swap/race concern): first clear whatever was
+      // active, then activate the target. Mirrors the pattern used in startNewCycle.
+      const { error: deactivateError } = await supabase
+        .from('routines')
+        .update({ activa: false })
+        .eq('profile_id', userId)
+        .eq('activa', true)
+
+      if (deactivateError) throw deactivateError
+
+      const { error: activateError } = await supabase
+        .from('routines')
+        .update({ activa: true })
+        .eq('id', routineId)
+
+      if (activateError) throw activateError
+
+      // If this routine has never been trained, give it a fresh cycle so the
+      // user can start right away instead of landing on an empty state.
+      const { data: existingCycle, error: existingCycleError } = await supabase
+        .from('cycles')
+        .select('id')
+        .eq('routine_id', routineId)
+        .limit(1)
+        .maybeSingle()
+
+      if (existingCycleError) throw existingCycleError
+
+      if (!existingCycle) {
+        const { error: newCycleError } = await supabase.from('cycles').insert({
+          profile_id: userId,
+          routine_id: routineId,
+          posicion_actual: 1,
+          activo: true,
+        })
+        if (newCycleError) throw newCycleError
+      }
+
+      set({ showCycleSummary: false })
+      await get().loadBlocksAndCycle()
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error activando la rutina' })
+      throw err
+    }
+  },
+
+  renameRoutine: async (routineId, nombre) => {
+    const { routines } = get()
+    try {
+      const { error } = await supabase
+        .from('routines')
+        .update({ nombre })
+        .eq('id', routineId)
+
+      if (error) throw error
+
+      set({
+        routines: routines.map((r) => (r.id === routineId ? { ...r, nombre } : r)),
+      })
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error renombrando la rutina' })
+      throw err
+    }
+  },
+
+  deleteRoutine: async (routineId) => {
+    const { routines } = get()
+    const routine = routines.find((r) => r.id === routineId)
+    if (!routine) throw new Error('Rutina no encontrada')
+    if (routine.activa) {
+      throw new Error('Activa otra rutina antes de eliminar esta')
+    }
+
+    try {
+      const { error } = await supabase.from('routines').delete().eq('id', routineId)
+      if (error) throw error
+
+      set({ routines: routines.filter((r) => r.id !== routineId) })
+    } catch (err: any) {
+      set({ error: err.message ?? 'Error eliminando la rutina' })
+      throw err
     }
   },
 

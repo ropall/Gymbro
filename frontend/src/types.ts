@@ -178,9 +178,18 @@ export const ONBOARDING_MUSCLE_GROUP_LABELS: Record<string, MuscleGroup> = {
 
 export const ONBOARDING_MUSCLE_GROUPS = Object.keys(ONBOARDING_MUSCLE_GROUP_LABELS)
 
+export interface Routine {
+  id: string
+  profile_id: string
+  nombre: string
+  activa: boolean
+  created_at?: string
+}
+
 export interface Block {
   id: string
   profile_id: string
+  routine_id: string
   nombre: string
   posicion: number
   es_descanso: boolean
@@ -203,6 +212,7 @@ export interface BlockExercise {
 export interface Cycle {
   id: string
   profile_id: string
+  routine_id: string | null
   fecha_inicio: string
   posicion_actual: number
   activo: boolean

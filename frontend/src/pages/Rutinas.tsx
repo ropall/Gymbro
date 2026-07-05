@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BookOpen, ArrowRightLeft } from 'lucide-react'
+import { BookOpen, ArrowRightLeft, Repeat } from 'lucide-react'
 import { CycleView } from '../components/routine/CycleView'
 import { BlockEditor } from '../components/routine/BlockEditor'
 import { CycleSummary } from '../components/routine/CycleSummary'
+import { RoutineSwitcher } from '../components/routine/RoutineSwitcher'
 import { CatalogBrowser } from '../components/exercise/CatalogBrowser'
 import { useExerciseStore } from '../stores/exerciseStore'
 import { useRoutineStore } from '../stores/routineStore'
@@ -19,6 +20,7 @@ export function Rutinas() {
   const navigate = useNavigate()
   const [editingBlock, setEditingBlock] = useState<Block | null>(null)
   const [showCatalog, setShowCatalog] = useState(false)
+  const [showRoutineSwitcher, setShowRoutineSwitcher] = useState(false)
   const [pendingReorder, setPendingReorder] = useState<PendingReorder | null>(null)
   const [summaryDismissed, setSummaryDismissed] = useState(false)
 
@@ -34,7 +36,10 @@ export function Rutinas() {
   const reorderBlocks = useRoutineStore((state) => state.reorderBlocks)
   const cycle = useRoutineStore((state) => state.cycle)
   const blocks = useRoutineStore((state) => state.blocks)
+  const routines = useRoutineStore((state) => state.routines)
   const isLoading = useRoutineStore((state) => state.isLoading)
+
+  const activeRoutine = routines.find((r) => r.activa) ?? null
 
   // Show the "start new cycle" screen when the previous cycle has ended (no active
   // cycle in the DB) but the user still has a routine configured. Otherwise the user
@@ -125,13 +130,25 @@ export function Rutinas() {
         <h1 className="text-white font-bold font-heading text-2xl md:text-4xl tracking-tight">
           Rutinas
         </h1>
-        <button
-          onClick={handleOpenCatalog}
-          className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors backdrop-blur-sm"
-        >
-          <BookOpen className="w-4 h-4" />
-          Catálogo
-        </button>
+        {activeRoutine && (
+          <p className="text-white/80 text-sm mt-1">{activeRoutine.nombre}</p>
+        )}
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          <button
+            onClick={() => setShowRoutineSwitcher(true)}
+            className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors backdrop-blur-sm"
+          >
+            <Repeat className="w-4 h-4" />
+            Rutinas
+          </button>
+          <button
+            onClick={handleOpenCatalog}
+            className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors backdrop-blur-sm"
+          >
+            <BookOpen className="w-4 h-4" />
+            Catálogo
+          </button>
+        </div>
       </div>
 
       <div className="px-4">
@@ -162,6 +179,11 @@ export function Rutinas() {
           />
         )}
       </div>
+
+      {/* Routine switcher modal */}
+      {showRoutineSwitcher && (
+        <RoutineSwitcher onClose={() => setShowRoutineSwitcher(false)} />
+      )}
 
       {/* Catalog modal */}
       {showCatalog && (

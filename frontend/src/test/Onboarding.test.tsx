@@ -37,7 +37,20 @@ function mockSupabaseForOnboarding({ hasBlocks = false }: { hasBlocks?: boolean 
           error: null,
         })
       ),
+      update: vi.fn(() => chain),
       insert: vi.fn((data: any) => {
+        if (table === 'routines') {
+          return {
+            select: vi.fn((_cols: string) => ({
+              single: vi.fn(() =>
+                Promise.resolve({
+                  data: { id: `routine-${Math.random().toString(36).slice(2)}`, ...data },
+                  error: null,
+                })
+              ),
+            })),
+          }
+        }
         if (table === 'blocks') {
           return {
             select: vi.fn((_cols: string) => ({
@@ -272,7 +285,20 @@ describe('Onboarding Wizard', () => {
         order: vi.fn(() => chain),
         limit: vi.fn(() => Promise.resolve({ data: [], error: null })),
         single: vi.fn(() => Promise.resolve({ data: null, error: null })),
+        update: vi.fn(() => chain),
         insert: vi.fn((data: any) => {
+          if (table === 'routines') {
+            return {
+              select: vi.fn((_cols: string) => ({
+                single: vi.fn(() =>
+                  Promise.resolve({
+                    data: { id: `routine-${Math.random().toString(36).slice(2)}`, ...data },
+                    error: null,
+                  })
+                ),
+              })),
+            }
+          }
           if (table === 'blocks') {
             return {
               select: vi.fn((_cols: string) => ({
