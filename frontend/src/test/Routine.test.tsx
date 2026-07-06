@@ -15,19 +15,24 @@ vi.mock('../lib/supabase', () => ({
   },
 }))
 
+const mockRoutines = [
+  { id: 'r1', profile_id: 'u1', nombre: 'Mi rutina', activa: true, created_at: '2024-01-01' },
+]
+
 const mockBlocks = [
-  { id: 'b1', profile_id: 'u1', nombre: 'Día 1 - Pecho', posicion: 1, es_descanso: false, created_at: '2024-01-01' },
-  { id: 'b2', profile_id: 'u1', nombre: 'Día 2 - Espalda', posicion: 2, es_descanso: false, created_at: '2024-01-01' },
-  { id: 'b3', profile_id: 'u1', nombre: 'Descanso', posicion: 3, es_descanso: true, created_at: '2024-01-01' },
-  { id: 'b4', profile_id: 'u1', nombre: 'Día 4 - Piernas', posicion: 4, es_descanso: false, created_at: '2024-01-01' },
-  { id: 'b5', profile_id: 'u1', nombre: 'Día 5 - Hombros', posicion: 5, es_descanso: false, created_at: '2024-01-01' },
-  { id: 'b6', profile_id: 'u1', nombre: 'Descanso', posicion: 6, es_descanso: true, created_at: '2024-01-01' },
-  { id: 'b7', profile_id: 'u1', nombre: 'Día 7 - Full Body', posicion: 7, es_descanso: false, created_at: '2024-01-01' },
+  { id: 'b1', profile_id: 'u1', routine_id: 'r1', nombre: 'Día 1 - Pecho', posicion: 1, es_descanso: false, created_at: '2024-01-01' },
+  { id: 'b2', profile_id: 'u1', routine_id: 'r1', nombre: 'Día 2 - Espalda', posicion: 2, es_descanso: false, created_at: '2024-01-01' },
+  { id: 'b3', profile_id: 'u1', routine_id: 'r1', nombre: 'Descanso', posicion: 3, es_descanso: true, created_at: '2024-01-01' },
+  { id: 'b4', profile_id: 'u1', routine_id: 'r1', nombre: 'Día 4 - Piernas', posicion: 4, es_descanso: false, created_at: '2024-01-01' },
+  { id: 'b5', profile_id: 'u1', routine_id: 'r1', nombre: 'Día 5 - Hombros', posicion: 5, es_descanso: false, created_at: '2024-01-01' },
+  { id: 'b6', profile_id: 'u1', routine_id: 'r1', nombre: 'Descanso', posicion: 6, es_descanso: true, created_at: '2024-01-01' },
+  { id: 'b7', profile_id: 'u1', routine_id: 'r1', nombre: 'Día 7 - Full Body', posicion: 7, es_descanso: false, created_at: '2024-01-01' },
 ]
 
 const mockCycle = {
   id: 'c1',
   profile_id: 'u1',
+  routine_id: 'r1',
   fecha_inicio: '2024-01-01',
   posicion_actual: 1,
   activo: true,
@@ -57,6 +62,7 @@ let capturedInserts: Record<string, any[]> = {}
 
 function createMockChain(table: string, overrides: any = {}) {
   const responses: Record<string, any> = {
+    routines: { data: mockRoutines, error: null },
     blocks: { data: mockBlocks, error: null },
     cycles: { data: { ...mockCycle, ...overrides.cycle }, error: null },
     block_exercises: { data: mockBlockExercises, error: null },

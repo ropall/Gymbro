@@ -6,11 +6,13 @@ interface OnboardingState {
   step: number
   days: WizardDay[]
   activeDayIndex: number | null
+  routineName: string
   isSubmitting: boolean
   error: string | null
 
   setStep: (step: number) => void
   setActiveDayIndex: (index: number | null) => void
+  setRoutineName: (name: string) => void
   toggleDayRest: (dayIndex: number) => void
   toggleMuscleGroup: (dayIndex: number, group: MuscleGroup) => void
   toggleExercise: (dayIndex: number, exercise: WizardExercise) => void
@@ -34,6 +36,7 @@ const initialState = {
   step: 1,
   days: createInitialDays(),
   activeDayIndex: null,
+  routineName: '',
   isSubmitting: false,
   error: null,
 }
@@ -44,6 +47,8 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
   setStep: (step) => set({ step }),
 
   setActiveDayIndex: (index) => set({ activeDayIndex: index }),
+
+  setRoutineName: (name) => set({ routineName: name }),
 
   toggleDayRest: (dayIndex) => {
     const days = [...get().days]
@@ -109,6 +114,30 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
       const state = get()
       const createdBlocks: { id: string; posicion: number }[] = []
 
+      // 0. Deactivate any routine the user already had active, then create the
+      // new one as active (covers both first-time onboarding and building an
+      // additional routine from the routine switcher).
+      const { error: deactivateError } = await supabase
+        .from('routines')
+        .update({ activa: false })
+        .eq('profile_id', userId)
+        .eq('activa', true)
+
+      if (deactivateError) throw deactivateError
+
+      const { data: routineData, error: routineError } = await supabase
+        .from('routines')
+        .insert({
+          profile_id: userId,
+          nombre: state.routineName.trim() || 'Mi rutina',
+          activa: true,
+        })
+        .select('id')
+        .single()
+
+      if (routineError) throw routineError
+      const routineId = routineData.id
+
       // 1. Create blocks for all 7 positions
       for (let i = 0; i < 7; i++) {
         const day = state.days[i]
@@ -120,6 +149,7 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
           .from('blocks')
           .insert({
             profile_id: userId,
+            routine_id: routineId,
             nombre: blockName,
             posicion: i + 1,
             es_descanso: day.isRest,
@@ -158,6 +188,7 @@ export const useOnboardingStore = create<OnboardingState>()((set, get) => ({
       // 3. Create active cycle
       const { error: cycleError } = await supabase.from('cycles').insert({
         profile_id: userId,
+        routine_id: routineId,
         posicion_actual: 1,
         activo: true,
       })

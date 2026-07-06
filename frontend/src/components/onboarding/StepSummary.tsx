@@ -2,6 +2,8 @@ import { useOnboardingStore } from '../../stores/onboardingStore'
 
 export function StepSummary() {
   const days = useOnboardingStore((s) => s.days)
+  const routineName = useOnboardingStore((s) => s.routineName)
+  const setRoutineName = useOnboardingStore((s) => s.setRoutineName)
 
   return (
     <div className="space-y-6">
@@ -12,6 +14,20 @@ export function StepSummary() {
         <p className="text-brand-mutedText text-sm mb-4">
           Revisa cómo quedó tu ciclo de 7 días antes de guardarlo.
         </p>
+      </div>
+
+      <div>
+        <label htmlFor="routine-name" className="block text-xs text-brand-mutedText mb-1">
+          Nombre de tu rutina
+        </label>
+        <input
+          id="routine-name"
+          type="text"
+          value={routineName}
+          onChange={(e) => setRoutineName(e.target.value)}
+          placeholder="Mi rutina"
+          className="w-full bg-brand-card border border-brand-border rounded-xl px-4 py-3 text-brand-lightText placeholder:text-brand-mutedText focus:outline-none focus:border-brand-lightAccent transition-colors"
+        />
       </div>
 
       <div className="space-y-3">

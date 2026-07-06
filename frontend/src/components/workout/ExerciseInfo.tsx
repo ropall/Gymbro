@@ -1,13 +1,27 @@
 import { useWorkoutStore } from '../../stores/workoutStore'
+import { getWeightRecommendation } from '../../utils/weightRecommendation'
 
 interface ExerciseInfoProps {
   blockName: string
   totalExercises: number
 }
 
+const RECOMMENDATION_STYLES = {
+  subir: 'bg-brand-accent/15 border-brand-accent/40 text-brand-lightAccent',
+  bajar: 'bg-brand-warningBg border-brand-warningBorder text-brand-warning',
+  mantener: 'bg-brand-dark border-brand-border text-brand-mutedText',
+} as const
+
+const RECOMMENDATION_ICONS = {
+  subir: '↑',
+  bajar: '↓',
+  mantener: '→',
+} as const
+
 export function ExerciseInfo({ blockName, totalExercises }: ExerciseInfoProps) {
   const exercises = useWorkoutStore((s) => s.exercises)
   const currentExerciseIndex = useWorkoutStore((s) => s.currentExerciseIndex)
+  const previousSets = useWorkoutStore((s) => s.previousSets)
   const completedCount = exercises.filter((e) => e.completed).length
 
   const currentExercise = exercises[currentExerciseIndex]
@@ -15,6 +29,12 @@ export function ExerciseInfo({ blockName, totalExercises }: ExerciseInfoProps) {
 
   const be = currentExercise.blockExercise
   const exerciseName = be.exercise?.nombre ?? 'Ejercicio'
+
+  const recommendation = getWeightRecommendation(
+    previousSets[be.id] ?? [],
+    be.reps_objetivo_min,
+    be.reps_objetivo_max
+  )
 
   return (
     <div className="space-y-4">
@@ -55,6 +75,18 @@ export function ExerciseInfo({ blockName, totalExercises }: ExerciseInfoProps) {
             <p className="text-brand-primaryText text-lg font-bold">{be.descanso_segundos ?? '—'}s</p>
           </div>
         </div>
+
+        {/* Weight recommendation based on last session's actual reps vs target */}
+        {recommendation && (
+          <div
+            className={`mt-3 rounded-lg p-3 border flex items-start gap-2 ${RECOMMENDATION_STYLES[recommendation.direction]}`}
+          >
+            <span className="text-lg font-bold leading-none">
+              {RECOMMENDATION_ICONS[recommendation.direction]}
+            </span>
+            <p className="text-xs leading-snug">{recommendation.mensaje}</p>
+          </div>
+        )}
       </div>
 
       {/* Overall progress */}

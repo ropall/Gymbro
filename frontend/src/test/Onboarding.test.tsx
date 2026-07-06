@@ -37,7 +37,20 @@ function mockSupabaseForOnboarding({ hasBlocks = false }: { hasBlocks?: boolean 
           error: null,
         })
       ),
+      update: vi.fn(() => chain),
       insert: vi.fn((data: any) => {
+        if (table === 'routines') {
+          return {
+            select: vi.fn((_cols: string) => ({
+              single: vi.fn(() =>
+                Promise.resolve({
+                  data: { id: `routine-${Math.random().toString(36).slice(2)}`, ...data },
+                  error: null,
+                })
+              ),
+            })),
+          }
+        }
         if (table === 'blocks') {
           return {
             select: vi.fn((_cols: string) => ({
@@ -148,7 +161,7 @@ describe('Onboarding Wizard', () => {
     )
 
     // Step 1: leave only 1 training day (Day 1), set Day 2 and Day 3 to rest
-    expect(screen.getByText(/Paso 1 de 5/)).toBeInTheDocument()
+    expect(screen.getByText(/Paso 1 de 4/)).toBeInTheDocument()
     const day2Button = screen.getByLabelText(/Día 2: Entrenamiento/i)
     const day3Button = screen.getByLabelText(/Día 3: Entrenamiento/i)
     await user.click(day2Button)
@@ -272,7 +285,20 @@ describe('Onboarding Wizard', () => {
         order: vi.fn(() => chain),
         limit: vi.fn(() => Promise.resolve({ data: [], error: null })),
         single: vi.fn(() => Promise.resolve({ data: null, error: null })),
+        update: vi.fn(() => chain),
         insert: vi.fn((data: any) => {
+          if (table === 'routines') {
+            return {
+              select: vi.fn((_cols: string) => ({
+                single: vi.fn(() =>
+                  Promise.resolve({
+                    data: { id: `routine-${Math.random().toString(36).slice(2)}`, ...data },
+                    error: null,
+                  })
+                ),
+              })),
+            }
+          }
           if (table === 'blocks') {
             return {
               select: vi.fn((_cols: string) => ({
