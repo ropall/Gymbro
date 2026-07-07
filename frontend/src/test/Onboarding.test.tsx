@@ -181,10 +181,13 @@ describe('Onboarding Wizard', () => {
       expect(screen.getByText(/Día 1/i)).toBeInTheDocument()
     })
 
-    // Select first exercise in the modal — auto-selects because only 1 equipment option
+    // Select first exercise in the modal — expands inline config
     const exerciseButtons = screen.getAllByRole('button', { name: /Press de Banca Plano/i })
     expect(exerciseButtons.length).toBeGreaterThan(0)
     await user.click(exerciseButtons[0])
+
+    // Confirm the inline config to actually add it
+    await user.click(screen.getByRole('button', { name: /Agregar ejercicio/i }))
 
     // Close modal
     await user.click(screen.getByRole('button', { name: /Listo/i }))
@@ -251,6 +254,9 @@ describe('Onboarding Wizard', () => {
 
     const exerciseBtn = screen.getByRole('button', { name: /Press de Banca Plano/i })
     await user.click(exerciseBtn)
+
+    // Confirm the inline config to actually add it
+    await user.click(screen.getByRole('button', { name: /Agregar ejercicio/i }))
 
     await user.click(screen.getByRole('button', { name: /Listo/i }))
 
@@ -372,6 +378,7 @@ describe('Onboarding Wizard', () => {
       const exerciseBtns = screen.getAllByRole('button', { name: /Press de Banca Plano/i })
       if (exerciseBtns.length > 0) {
         await user.click(exerciseBtns[0])
+        await user.click(screen.getByRole('button', { name: /Agregar ejercicio/i }))
       }
 
       await user.click(screen.getByRole('button', { name: /Listo/i }))

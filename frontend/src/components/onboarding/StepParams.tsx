@@ -50,7 +50,7 @@ export function StepParams() {
                         type="number"
                         min={1}
                         max={20}
-                        value={ex.series}
+                        value={ex.series || ''}
                         onChange={(e) =>
                           updateExerciseParams(day.index, ex.id, {
                             series: Number(e.target.value),
@@ -67,7 +67,7 @@ export function StepParams() {
                         type="number"
                         min={0}
                         step={15}
-                        value={ex.descanso}
+                        value={ex.descanso || ''}
                         onChange={(e) =>
                           updateExerciseParams(day.index, ex.id, {
                             descanso: Number(e.target.value),
@@ -83,7 +83,7 @@ export function StepParams() {
                       <input
                         type="number"
                         min={1}
-                        value={ex.repsMin}
+                        value={ex.repsMin || ''}
                         onChange={(e) =>
                           updateExerciseParams(day.index, ex.id, {
                             repsMin: Number(e.target.value),
@@ -99,7 +99,7 @@ export function StepParams() {
                       <input
                         type="number"
                         min={1}
-                        value={ex.repsMax}
+                        value={ex.repsMax || ''}
                         onChange={(e) =>
                           updateExerciseParams(day.index, ex.id, {
                             repsMax: Number(e.target.value),
@@ -116,7 +116,7 @@ export function StepParams() {
                         type="number"
                         min={1}
                         max={10}
-                        value={ex.rpe}
+                        value={ex.rpe || ''}
                         onChange={(e) =>
                           updateExerciseParams(day.index, ex.id, {
                             rpe: Number(e.target.value),

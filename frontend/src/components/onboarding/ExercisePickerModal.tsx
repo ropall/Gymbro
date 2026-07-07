@@ -120,21 +120,9 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
     const equipoOptions = parseOptions(ex.equipo)
     const variacionOptions = parseOptions(ex.variaciones)
 
-    // Auto-select if there's at most 1 equipment option and at most 1 variation
-    if (equipoOptions.length <= 1 && variacionOptions.length <= 1) {
-      addExercise(ex, {
-        equipo: equipoOptions[0] || 'Sin equipo',
-        variacion: variacionOptions[0] || '',
-        series: 3,
-        repsMin: 8,
-        repsMax: 12,
-        rpe: 7,
-        descanso: 90,
-      })
-      return
-    }
-
-    // Expand inline with defaults pre-selected
+    // Always expand inline so the user can review/adjust series, reps,
+    // descanso and RPE before adding — even when there's nothing to pick for
+    // equipo/variación (those sections just don't render in that case).
     setInlineSelections((prev) => ({
       ...prev,
       [ex.id]: {
@@ -401,7 +389,7 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
                             type="number"
                             min={1}
                             max={20}
-                            value={selections.series}
+                            value={selections.series || ''}
                             onChange={(e) =>
                               setInlineSelections((prev) => ({
                                 ...prev,
@@ -417,7 +405,7 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
                             type="number"
                             min={0}
                             step={15}
-                            value={selections.descanso}
+                            value={selections.descanso || ''}
                             onChange={(e) =>
                               setInlineSelections((prev) => ({
                                 ...prev,
@@ -432,7 +420,7 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
                           <input
                             type="number"
                             min={1}
-                            value={selections.repsMin}
+                            value={selections.repsMin || ''}
                             onChange={(e) =>
                               setInlineSelections((prev) => ({
                                 ...prev,
@@ -447,7 +435,7 @@ export function ExercisePickerModal({ dayIndex, isOpen, onClose }: ExercisePicke
                           <input
                             type="number"
                             min={1}
-                            value={selections.repsMax}
+                            value={selections.repsMax || ''}
                             onChange={(e) =>
                               setInlineSelections((prev) => ({
                                 ...prev,

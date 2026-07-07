@@ -132,7 +132,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                 <label className="text-brand-mutedText text-[10px]">Series</label>
                 <input
                   type="number"
-                  value={newExerciseParams.series}
+                  value={newExerciseParams.series || ''}
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, series: Number(e.target.value) }))
                   }
@@ -143,7 +143,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                 <label className="text-brand-mutedText text-[10px]">Rep min</label>
                 <input
                   type="number"
-                  value={newExerciseParams.repsMin}
+                  value={newExerciseParams.repsMin || ''}
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, repsMin: Number(e.target.value) }))
                   }
@@ -154,7 +154,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                 <label className="text-brand-mutedText text-[10px]">Rep max</label>
                 <input
                   type="number"
-                  value={newExerciseParams.repsMax}
+                  value={newExerciseParams.repsMax || ''}
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, repsMax: Number(e.target.value) }))
                   }
@@ -170,7 +170,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                   type="number"
                   min={1}
                   max={10}
-                  value={newExerciseParams.rpe}
+                  value={newExerciseParams.rpe || ''}
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, rpe: Number(e.target.value) }))
                   }
@@ -181,7 +181,7 @@ export function BlockEditor({ block, onClose }: BlockEditorProps) {
                 <label className="text-brand-mutedText text-[10px]">Descanso (s)</label>
                 <input
                   type="number"
-                  value={newExerciseParams.descanso}
+                  value={newExerciseParams.descanso || ''}
                   onChange={(e) =>
                     setNewExerciseParams((p) => ({ ...p, descanso: Number(e.target.value) }))
                   }
